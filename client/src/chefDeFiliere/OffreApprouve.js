@@ -11,7 +11,7 @@ const OffreApprouve = ({ chefFiliereId }) => {
     const fetchApprovedOffers = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:3001/chefdefiliere/approvedOffers/2'
+          'http://localhost:3001/chefdefiliere/approvedOffers/GL'
         );
         setApprovedOffers(response.data);
       } catch (err) {

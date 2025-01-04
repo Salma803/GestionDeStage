@@ -99,7 +99,7 @@ const ModifyEntreprise = () => {
         <div>
           <label>Mot de Passe</label>
           <input
-            type="password"
+            type="text"
             name="MotDePasse_Entreprise"
             value={entreprise.MotDePasse_Entreprise}
             onChange={handleChange}

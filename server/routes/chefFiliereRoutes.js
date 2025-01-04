@@ -4,13 +4,9 @@ const { OffreFlag, Offre,ChefFiliere,Entreprise } = require('../models');
 
 
 //Route to flag an offer
-router.post('/flaggerOffre', async (req, res) => {
-  const {
-    id_cdf: ID_CDF,
-    id_offre: ID_Offre,
-    status_flag: Status_Flag,
-    comments: Comments,
-  } = req.body;
+router.post('/flaggerOffre/:id_cdf', async (req, res) => {
+  const { id_cdf: ID_CDF } = req.params;  // Extract ID_CDF from URL parameters
+  const { id_offre: ID_Offre, status_flag: Status_Flag, comments: Comments } = req.body;
 
   try {
     // Validate input
@@ -26,7 +22,7 @@ router.post('/flaggerOffre', async (req, res) => {
     // Check if the offer exists
     const offre = await Offre.findByPk(ID_Offre);
     if (!offre) {
-      return res.status(404).json({ error: 'Offre not found' });
+      return res.status(404).json({ error: 'Offer not found' });
     }
 
     // Check if the (ID_Offre, ID_CDF) combination already exists
@@ -67,6 +63,7 @@ router.post('/flaggerOffre', async (req, res) => {
     return res.status(500).json({ error: 'Failed to flag offer' });
   }
 });
+
 
 // Get all approved offers for a specific ChefFiliere
 router.get('/approvedOffers/:id_cdf', async (req, res) => {

@@ -8,7 +8,7 @@ const CreerOffre = () => {
     titre_offre: '',
     description_offre: '',
     status_offre: '',
-    keywords_offre: '',
+    keywords_offre: '', // We will split this into an array when sending
     id_company: '',
   });
 
@@ -25,8 +25,15 @@ const CreerOffre = () => {
     setError('');
     setSuccess('');
 
+    // Convert the comma-separated keywords string to an array
+    const keywordsArray = formData.keywords_offre
+      ? formData.keywords_offre.split(',').map((keyword) => keyword.trim())
+      : [];
+
+    const dataToSend = { ...formData, keywords_offre: keywordsArray };
+
     try {
-      const response = await axios.post('http://localhost:3001/entreprise/creerOffre', formData);
+      const response = await axios.post('http://localhost:3001/entreprise/creerOffre', dataToSend);
       setSuccess('Offer created successfully!');
       setFormData({
         titre_offre: '',
@@ -42,7 +49,7 @@ const CreerOffre = () => {
 
   return (
     <Container className="mt-5">
-        <div><Link to="/entreprise/consulteroffres"> Voir les Offres</Link></div>
+      <div><Link to="/entreprise/consulteroffres">Voir les Offres</Link></div>
       <h2>Create New Offer</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
@@ -73,7 +80,7 @@ const CreerOffre = () => {
           <Form.Label>Status</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter offer status"
+            placeholder="Enter offer status (open/closed)"
             name="status_offre"
             value={formData.status_offre}
             onChange={handleChange}

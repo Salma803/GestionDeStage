@@ -24,11 +24,11 @@ const ListeOffres = () => {
   }, []);
 
   const handleFlagOffer = async (id_offre, status_flag) => {
-    const id_cdf = 2; // Replace with the actual ChefFiliere ID
+    const id_cdf = "GL"; // Replace with the actual ChefFiliere ID
     const comment = comments[id_offre] || "";
 
     try {
-      await axios.post("http://localhost:3001/chefdefiliere/flaggerOffre", {
+      await axios.post("http://localhost:3001/chefdefiliere/flaggerOffre/GL", {
         id_cdf,
         id_offre,
         status_flag,

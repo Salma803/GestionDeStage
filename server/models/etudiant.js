@@ -1,9 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Etudiant = sequelize.define('Etudiant', {
     ID_Etudiant: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+      type: DataTypes.STRING, // Change type to STRING for manual assignment
+      primaryKey: true, // Keep it as the primary key
     },
     Nom_Etudiant: DataTypes.STRING,
     Prenom_Etudiant: DataTypes.STRING,
@@ -14,12 +13,15 @@ module.exports = (sequelize, DataTypes) => {
     Tel_Etudiant: DataTypes.STRING,
     CV_Etudiant: DataTypes.STRING,
     Filiere_Etudiant: {
-      type: DataTypes.INTEGER, // Make sure this matches the type of 'ID_CDF'
+      type: DataTypes.STRING, // Change to match the type of 'ID_CDF' in ChefFiliere
     },
-    Statut_Recherche: DataTypes.STRING,
+    Statut_Recherche: {
+      type: DataTypes.STRING,
+      defaultValue: 'false',  // Default value as a string 'false'
+    },    
     MotDePasse_Etudiant: DataTypes.STRING,
   }, {
-    timestamps: false // Disable createdAt and updatedAt columns
+    timestamps: false, // Disable createdAt and updatedAt columns
   });
 
   Etudiant.associate = (models) => {

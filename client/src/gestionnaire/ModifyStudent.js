@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const ModifyStudent = () => {
   const { id } = useParams();
   const [student, setStudent] = useState({
+    ID_Etudiant:'',
     Nom_Etudiant: '',
     Prenom_Etudiant: '',
     Date_Naissance_Etudiant: '',
@@ -66,6 +67,10 @@ const ModifyStudent = () => {
       {error && <p className="error">{error}</p>} {/* Display errors */}
       <form onSubmit={handleSubmit}>
         <div>
+          <label>ID: </label>
+          <span>{student.ID_Etudiant}</span>
+        </div>
+        <div>
           <label>Nom</label>
           <input
             type="text"
@@ -115,15 +120,6 @@ const ModifyStudent = () => {
           />
         </div>
         <div>
-          <label>CV</label>
-          <input
-            type="text"
-            name="CV_Etudiant"
-            value={student.CV_Etudiant}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
           <label>Filière</label>
           <input
             type="text"
@@ -144,7 +140,7 @@ const ModifyStudent = () => {
         <div>
           <label>Mot de Passe</label>
           <input
-            type="password"
+            type="text"
             name="MotDePasse_Etudiant"
             value={student.MotDePasse_Etudiant}
             onChange={handleChange}
