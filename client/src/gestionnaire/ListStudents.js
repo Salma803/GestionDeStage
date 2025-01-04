@@ -24,6 +24,7 @@ const ListStudents = () => {
       <table>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
@@ -38,6 +39,7 @@ const ListStudents = () => {
         <tbody>
           {students.map((student) => (
             <tr key={student.ID_Etudiant}>
+              <td>{student.ID_Etudiant}</td>
               <td>{student.Nom_Etudiant}</td>
               <td>{student.Prenom_Etudiant}</td>
               <td>{student.Email_Etudiant}</td>

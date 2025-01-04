@@ -24,6 +24,7 @@ const ListChefsFiliere = () => {
       <table>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
@@ -35,6 +36,7 @@ const ListChefsFiliere = () => {
         <tbody>
           {chefsFiliere.map((chef) => (
             <tr key={chef.ID_CDF}>
+              <td>{chef.ID_CDF}</td>
               <td>{chef.Nom_CDF}</td>
               <td>{chef.Prenom_CDF}</td>
               <td>{chef.Email_CDF}</td>
