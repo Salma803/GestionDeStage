@@ -2,29 +2,52 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Container, Spinner, Alert } from 'react-bootstrap';
 
-const OffreApprouve = ({ chefFiliereId }) => {
+const OffreApprouve = () => {
+  const [userId, setUserId] = useState(null);
   const [approvedOffers, setApprovedOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchApprovedOffers = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:3001/chefdefiliere/approvedOffers/GL'
-        );
-        setApprovedOffers(response.data);
-      } catch (err) {
-        setError(
-          err.response?.data?.message || 'Failed to fetch approved offers.'
-        );
+        const response = await axios.get('http://localhost:3001/chefdefiliere/me', {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        });
+        setUserId(response.data.ID_CDF);
+        await fetchApprovedOffers(response.data.ID_CDF);
+      } catch (error) {
+        setError('Failed to fetch user data');
+        console.error('Error fetching user data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchApprovedOffers();
-  }, [chefFiliereId]);
+const fetchApprovedOffers = async (id) => {
+  try {
+    const response = await axios.get(`http://localhost:3001/chefdefiliere/approvedOffers/${id}`);
+    
+    if (!response.status === 404) {
+      setError('No approved offers found.');
+      setApprovedOffers([]); // Set empty array if no offers
+    } else if (response.status === 500) {
+      setError('Failed to fetch approved offers');
+      setApprovedOffers([]); // Set empty array in case of server error
+    } else {
+      setApprovedOffers(response.data || []); // Set approved offers data
+    }
+  } catch (error) {
+    
+    setApprovedOffers([]); // Set empty array if error occurs
+  }
+};
+
+
+    fetchUserData();
+  }, []);
 
   if (loading) {
     return (
@@ -66,12 +89,12 @@ const OffreApprouve = ({ chefFiliereId }) => {
               const offer = offerFlag.Offre || {};
               const company = offer.Company || {};
               return (
-                <tr key={offer.ID_Offre || offerFlag.ID_Flag}>
+                <tr key={offerFlag.ID_Flag || offer.ID_Offre}>
                   <td>{offer.ID_Offre || 'N/A'}</td>
                   <td>{offer.Titre_Offre || 'N/A'}</td>
                   <td>{offer.Description_Offre || 'N/A'}</td>
                   <td>{offer.Status_Offre || 'N/A'}</td>
-                  <td>{offer.Keywords_Offre || 'N/A'}</td>
+                  <td>{offer.Keywords_Offre ? offer.Keywords_Offre.join(', ') : 'N/A'}</td>
                   <td>{company.Nom_Entreprise || 'N/A'}</td>
                   <td>{company.Email_Entreprise || 'N/A'}</td>
                 </tr>

@@ -1,7 +1,59 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const { OffreFlag, Offre,ChefFiliere,Entreprise } = require('../models');
 
+const { validateToken } = require('../middlewares/AuthMiddleware');
+
+//Route pour Trouver l'id du cdf a partie du token
+router.get('/me', validateToken, (req, res) => {
+  // req.user contains decoded token information
+  const ID_CDF = req.user.ID_CDF;
+  const Email_CDF = req.user.Email_CDF;
+  res.json({ ID_CDF , Email_CDF });
+});
+
+//Route to find the cdf information by ID
+router.get('/find/:cdfId', async (req, res) => {
+  const { cdfID } = req.params; // Extract clientID from req.params
+  try {
+    const cdf = await ChefFiliere.findOne({ where: { ID_CDF: cdfID } }); // Use ID_CDF instead of id
+    if (!cdf) {
+      return res.status(404).json({ error: 'Chef Filière not found' });
+    }
+    res.json(cdf);
+  } catch (error) {
+    console.error('Error fetching Chef Filière:', error);
+    res.status(500).json({ error: 'Failed to fetch Chef Filière' });
+  }
+});
+
+// Route for Chef Filière login
+router.post('/login', async (req, res) => {
+  const { email, mot_de_passe } = req.body;
+
+  try {
+      // Find Admin by email
+      const user = await ChefFiliere.findOne({ where: { Email_CDF: email } });
+
+      // Check if Admin exists
+      if (!user) {
+          return res.status(404).json({ error: "Account doesn't exist" });
+      }
+      //comparer les mot de passe hashé
+      if (mot_de_passe != user.MotDePasse_CDF) {
+          return res.status(401).json({ error: "Wrong username and password combination" });
+      }
+      // Successful login
+      const accessToken = jwt.sign( { Email_CDF :user.Email_CDF,  ID_CDF :user.ID_CDF }, "secret", {expiresIn: '1h'});
+      res.json({ accessToken, role: user.ID_CDF });
+
+  } catch (error) {
+      console.error('Error logging in:', error);
+      return res.status(500).json({ error: 'Unexpected error during login' });
+  }
+});
 
 //Route to flag an offer
 router.post('/flaggerOffre/:id_cdf', async (req, res) => {
@@ -115,11 +167,20 @@ router.get('/disapprovedOffers/:id_cdf', async (req, res) => {
         ID_CDF: id_cdf,
         Status_Flag: 'rejected', // Filter by rejected status
       },
-      include: [{
-        model: Offre,
-        as: 'Offre',
-        attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre', 'Status_Offre'], // Specify attributes to return
-      }],
+      include: [
+        {
+          model: Offre,
+          as: 'Offre',
+          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre', 'Status_Offre'], // Specify attributes to return
+          include: [
+            {
+              model: Entreprise, // Include the company information
+              as: 'Company',
+              attributes: ['ID_Entreprise', 'Nom_Entreprise', 'Adresse_Entreprise', 'Tel_Entreprise', 'Email_Entreprise'], // Specify company attributes to return
+            },
+          ],
+        },
+      ],
     });
 
     if (disapprovedOffers.length === 0) {

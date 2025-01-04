@@ -8,9 +8,25 @@ const ListeOffres = () => {
   const [error, setError] = useState(null);
   const [comments, setComments] = useState({});
   const [editingOfferId, setEditingOfferId] = useState(null); // Track which offer is being edited
+  const [cdfId, setCdfId] = useState(null); // Track ChefFiliere's ID
 
   useEffect(() => {
-    // Fetch the list of offers from the backend
+    // Fetch the ChefFiliere's ID
+    axios
+      .get("http://localhost:3001/chefdefiliere/me", {
+        headers: {
+          accessToken: sessionStorage.getItem("accessToken"), // Ensure that the user is authenticated
+        },
+      })
+      .then((response) => {
+        setCdfId(response.data.ID_CDF); // Set the ChefFiliere's ID
+      })
+      .catch((error) => {
+        setError("Failed to fetch ChefFiliere data.");
+        console.error("Error fetching ChefFiliere data:", error);
+      });
+
+    // Fetch the list of offers
     axios
       .get("http://localhost:3001/entreprise/listeOffres")
       .then((response) => {
@@ -24,12 +40,16 @@ const ListeOffres = () => {
   }, []);
 
   const handleFlagOffer = async (id_offre, status_flag) => {
-    const id_cdf = "GL"; // Replace with the actual ChefFiliere ID
+    if (!cdfId) {
+      alert("ChefFiliere ID not available. Please try again later.");
+      return;
+    }
+
     const comment = comments[id_offre] || "";
 
     try {
-      await axios.post("http://localhost:3001/chefdefiliere/flaggerOffre/GL", {
-        id_cdf,
+      await axios.post(`http://localhost:3001/chefdefiliere/flaggerOffre/${cdfId}`, {
+        id_cdf: cdfId, // Use the fetched ChefFiliere ID
         id_offre,
         status_flag,
         comments: comment,
@@ -69,8 +89,8 @@ const ListeOffres = () => {
 
   return (
     <div className="offers-container">
-        <div><Link to="/chefdefiliere/offresapprouvees">Offres approves</Link></div>        
-        <div><Link to="/chefdefiliere/offresrejetees">Offres rejetes</Link></div>
+        <div><Link to="/chefdefiliere/offresapprouvees">Offres approuvées</Link></div>        
+        <div><Link to="/chefdefiliere/offresrejetees">Offres rejetées</Link></div>
 
       <h1>Liste des Offres</h1>
       <ul className="offers-list">

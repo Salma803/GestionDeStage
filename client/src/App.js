@@ -24,6 +24,8 @@ import ListEntreprises from "./gestionnaire/ListEntreprises";
 import ListeOffres from "./chefDeFiliere/ListeOffres";
 import OffreApprouve from "./chefDeFiliere/OffreApprouve";
 import OffreRejet from "./chefDeFiliere/OffreRejet";
+import LoginPage from "./chefDeFiliere/LoginCDF";
+
 
 //Routes for entreprise
 import CreerOffre from "./entreprise/CreerOffre";
@@ -63,6 +65,7 @@ function App() {
             <Route path="/chefDeFiliere/listeOffres" element={<ListeOffres />} />
             <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
             <Route path="/chefDeFiliere/offresRejetees" element={<OffreRejet />} />
+            <Route path="/chefDeFiliere/login" element={<LoginPage />} />
 
             {/* Route entreprises */}
             <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
