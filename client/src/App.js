@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import GestionnaireHome from "./gestionnaire/GestionnaireHome";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import CreateStudent from "./gestionnaire/CreateStudent";
 import CreateEntreprise from "./gestionnaire/CreateEntreprise";
@@ -18,6 +19,15 @@ import DeleteEntreprise from "./gestionnaire/DeleteEntreprise";
 import ListStudents from "./gestionnaire/ListStudents";
 import ListChefsFiliere from "./gestionnaire/ListChefsFiliere";
 import ListEntreprises from "./gestionnaire/ListEntreprises";
+
+//Routes for chef de filiere
+import ListeOffres from "./chefDeFiliere/ListeOffres";
+import OffreApprouve from "./chefDeFiliere/OffreApprouve";
+import OffreRejet from "./chefDeFiliere/OffreRejet";
+
+//Routes for entreprise
+import CreerOffre from "./entreprise/CreerOffre";
+import ConsulterOffres from "./entreprise/ConsulterOffres";
 
 function App() {
   return (
@@ -48,6 +58,16 @@ function App() {
             <Route path="/gestionnaire/listStudents" element={<ListStudents />} />
             <Route path="/gestionnaire/listChefsFiliere" element={<ListChefsFiliere />} />
             <Route path="/gestionnaire/listEntreprises" element={<ListEntreprises />} />
+          
+            {/* Routes por le chef de filiere */}
+            <Route path="/chefDeFiliere/listeOffres" element={<ListeOffres />} />
+            <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
+            <Route path="/chefDeFiliere/offresRejetees" element={<OffreRejet />} />
+
+            {/* Route entreprises */}
+            <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
+            <Route path="/entreprise/consulterOffres" element={<ConsulterOffres />} />
+          
           </Routes>
         </Router>
       </HelmetProvider>
