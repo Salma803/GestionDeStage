@@ -8,7 +8,11 @@ app.use(cors());
 const db = require("./models");
 
 // Routers
-const gestionnaireRoutes = require("./routes/gestionnaireRoutes"); // Add Gestionnaire routes
+const gestionnaireRoutes = require("./routes/gestionnaireRoutes");
+const entrepriseRoutes = require("./routes/entrepriseRoutes"); // Add Entreprise routes
+const chefFiliereRoutes = require("./routes/chefFiliereRoutes"); // Add Chef de Filière routes
+
+// Add Gestionnaire routes
 /*const etudiantRoutes = require("./routes/etudiantRoutes"); // Add Etudiant routes
 const chefFiliereRoutes = require("./routes/chefFiliereRoutes"); // Add Chef de Filière routes
 const entrepriseRoutes = require("./routes/entrepriseRoutes"); // Add Entreprise routes
@@ -19,6 +23,9 @@ const { validateToken } = require("./middlewares/AuthMiddleware");*/
 
 // Use routes
 app.use("/gestionnaire", gestionnaireRoutes);
+app.use("/entreprise", entrepriseRoutes);
+app.use("/chefdefiliere", chefFiliereRoutes);
+ // Add Entreprise routes
 /*app.use("/etudiant", etudiantRoutes);
 app.use("/chefdefiliere", chefFiliereRoutes);
 app.use("/entreprise", entrepriseRoutes);
