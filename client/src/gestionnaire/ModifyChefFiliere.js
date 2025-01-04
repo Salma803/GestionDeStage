@@ -114,7 +114,7 @@ const ModifyChefFiliere = () => {
         <div>
           <label>Mot de Passe</label>
           <input
-            type="password"
+            type="text"
             name="MotDePasse_CDF"
             value={chefFiliere.MotDePasse_CDF}
             onChange={handleChange}
