@@ -1,4 +1,4 @@
-Nom_Etudiant,Prenom_Etudiant,Date_Naissance_Etudiant,Email_Etudiant,Tel_Etudiant,CV_Etudiant,Filiere_Etudiant,Statut_Recherche
-Doe,John,2001-05-20,john.doe@example.com,1234567890,john_cv.pdf,1,True
-Smith,Jane,2000-11-15,jane.smith@example.com,0987654321,jane_cv.pdf,2,False
-Brown,Emily,2002-07-25,emily.brown@example.com,1122334455,emily_cv.pdf,1,True
+ID_Etudiant,Nom_Etudiant,Prenom_Etudiant,Date_Naissance_Etudiant,Email_Etudiant,Tel_Etudiant,Filiere_Etudiant
+ET001,Doe,John,2001-05-20,john.doe@example.com,1234567890,GL
+ET002,Smith,Jane,2000-11-15,jane.smith@example.com,0987654321,GL
+ET003,Brown,Emily,2002-07-25,emily.brown@example.com,1122334455,SSE

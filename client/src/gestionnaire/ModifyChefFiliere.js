@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const ModifyChefFiliere = () => {
   const { id } = useParams();
   const [chefFiliere, setChefFiliere] = useState({
+    ID_CDF:'',
     Nom_CDF: '',
     Prenom_CDF: '',
     Email_CDF: '',
@@ -16,16 +17,9 @@ const ModifyChefFiliere = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Validate if the ID is numeric
-    const numericId = Number(id);
-    if (isNaN(numericId)) {
-      setError('Invalid ID format');
-      return;
-    }
-
     // Fetch the Chef de Filière details by ID
     axios
-      .get(`http://localhost:3001/gestionnaire/chefFiliere/${numericId}`)
+      .get(`http://localhost:3001/gestionnaire/chefFiliere/${id}`)
       .then((response) => {
         setChefFiliere(response.data);
       })
@@ -65,6 +59,10 @@ const ModifyChefFiliere = () => {
       <h2>Modify Chef de Filière</h2>
       {error && <p className="error">{error}</p>} {/* Display errors */}
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>ID: </label>
+          <span>{chefFiliere.ID_CDF}</span>
+        </div>
         <div>
           <label>Nom</label>
           <input

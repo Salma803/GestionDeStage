@@ -41,7 +41,7 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  console.log('File uploaded:', req.file);  // Log uploaded file information
+  console.log('File uploaded:', req.file); // Log uploaded file information
 
   const filePath = req.file.path;
   const students = [];
@@ -50,17 +50,27 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
     fs.createReadStream(filePath)
       .pipe(csvParser())
       .on('data', (row) => {
-        console.log('Row data:', row);  // Log the data being read from the CSV
-        // Push each student to an array to be processed later
-        students.push(row);
+        console.log('Row data:', row); // Log the data being read from the CSV
+        students.push(row); // Push each student to an array to be processed later
       })
       .on('end', async () => {
-        console.log('CSV processing finished, students:', students);  // Log the final student array
+        console.log('CSV processing finished, students:', students); // Log the final student array
 
         try {
-          // Process each student from CSV
-          for (const student of students) {
-            console.log('Processing student:', student);  // Log each student being processed
+          const existingEmails = await Etudiant.findAll({
+            attributes: ['Email_Etudiant'],
+            where: {
+              Email_Etudiant: students.map(student => student.Email_Etudiant),
+            },
+          });
+
+          const existingEmailsSet = new Set(existingEmails.map(e => e.Email_Etudiant));
+          const newStudents = students.filter(student => !existingEmailsSet.has(student.Email_Etudiant));
+
+          console.log('New students to be created:', newStudents); // Log the students who are not already in the database
+
+          for (const student of newStudents) {
+            console.log('Processing student:', student); // Log each student being processed
 
             const generateRandomPassword = () => {
               const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -70,37 +80,36 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
               }
               return password;
             };
-            
+
             await Etudiant.create({
+              ID_Etudiant: student.ID_Etudiant,
               Nom_Etudiant: student.Nom_Etudiant,
               Prenom_Etudiant: student.Prenom_Etudiant,
               Date_Naissance_Etudiant: student.Date_Naissance_Etudiant,
               Email_Etudiant: student.Email_Etudiant,
               Tel_Etudiant: student.Tel_Etudiant,
-              CV_Etudiant: student.CV_Etudiant,
               Filiere_Etudiant: student.Filiere_Etudiant,
-              Statut_Recherche: student.Statut_Recherche,
-              MotDePasse_Etudiant: generateRandomPassword() // Generate a random password here
+              MotDePasse_Etudiant: generateRandomPassword(), // Generate a random password here
             });
           }
 
-          //Clean up the uploaded file
-          fs.unlinkSync(filePath);
+          fs.unlinkSync(filePath); // Clean up the uploaded file
           console.log('File deleted after processing.');
 
           res.status(201).json({ message: 'Students created successfully!' });
         } catch (error) {
-          console.error('Error processing students:', error);  // Log any errors in processing the students
-          fs.unlinkSync(filePath);  // Clean up the uploaded file in case of error
+          console.error('Error processing students:', error); // Log any errors in processing the students
+          fs.unlinkSync(filePath); // Clean up the uploaded file in case of error
           res.status(500).json({ error: 'Failed to create students from CSV' });
         }
       });
   } catch (error) {
-    console.error('Error reading CSV file:', error);  // Log errors in reading the CSV file
+    console.error('Error reading CSV file:', error); // Log errors in reading the CSV file
     res.status(500).json({ error: 'Error processing CSV file' });
   }
 });
 
+// Upload CSV to create ChefDeFiliere
 // Upload CSV to create ChefDeFiliere
 router.post('/upload/chefs', upload.single('file'), async (req, res) => {
   if (!req.file) {
@@ -118,7 +127,24 @@ router.post('/upload/chefs', upload.single('file'), async (req, res) => {
       })
       .on('end', async () => {
         try {
-          for (const chef of chefs) {
+          // Retrieve existing emails from the database
+          const existingEmails = await ChefFiliere.findAll({
+            attributes: ['Email_CDF'],
+            where: {
+              Email_CDF: chefs.map(chef => chef.Email_CDF),
+            },
+          });
+
+          // Create a set of existing emails for quick lookup
+          const existingEmailsSet = new Set(existingEmails.map(e => e.Email_CDF));
+
+          // Filter the chefs list to include only new entries
+          const newChefs = chefs.filter(chef => !existingEmailsSet.has(chef.Email_CDF));
+
+          console.log('New chefs to be created:', newChefs); // Log new chefs
+
+          // Create new chefs
+          for (const chef of newChefs) {
             const generateRandomPassword = () => {
               const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
               let password = '';
@@ -127,7 +153,9 @@ router.post('/upload/chefs', upload.single('file'), async (req, res) => {
               }
               return password;
             };
+
             await ChefFiliere.create({
+              ID_CDF: chef.ID_CDF,
               Nom_CDF: chef.Nom_CDF,
               Prenom_CDF: chef.Prenom_CDF,
               Email_CDF: chef.Email_CDF,
@@ -151,6 +179,8 @@ router.post('/upload/chefs', upload.single('file'), async (req, res) => {
   }
 });
 
+
+// Upload CSV to create Entreprises
 // Upload CSV to create Entreprises
 router.post('/upload/entreprises', upload.single('file'), async (req, res) => {
   if (!req.file) {
@@ -168,7 +198,24 @@ router.post('/upload/entreprises', upload.single('file'), async (req, res) => {
       })
       .on('end', async () => {
         try {
-          for (const entreprise of entreprises) {
+          // Retrieve existing emails from the database
+          const existingEmails = await Entreprise.findAll({
+            attributes: ['Email_Entreprise'],
+            where: {
+              Email_Entreprise: entreprises.map(entreprise => entreprise.Email_Entreprise),
+            },
+          });
+
+          // Create a set of existing emails for quick lookup
+          const existingEmailsSet = new Set(existingEmails.map(e => e.Email_Entreprise));
+
+          // Filter the entreprises list to include only new entries
+          const newEntreprises = entreprises.filter(entreprise => !existingEmailsSet.has(entreprise.Email_Entreprise));
+
+          console.log('New entreprises to be created:', newEntreprises); // Log new entreprises
+
+          // Create new entreprises
+          for (const entreprise of newEntreprises) {
             const generateRandomPassword = () => {
               const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
               let password = '';
@@ -203,38 +250,40 @@ router.post('/upload/entreprises', upload.single('file'), async (req, res) => {
 
 
 
+
 // -- Update Routes --
 
 // Modify Student
 router.put('/student/:id', async (req, res) => {
-  const studentId = req.params.id;
+  const studentId = req.params.id;  // studentId is now a string
   const {
+    ID_Etudiant,
     Nom_Etudiant,
     Prenom_Etudiant,
     Date_Naissance_Etudiant,
     Email_Etudiant,
     Tel_Etudiant,
-    CV_Etudiant,
     Filiere_Etudiant,
     Statut_Recherche,
     MotDePasse_Etudiant,
   } = req.body;
 
   try {
-    const student = await Etudiant.findByPk(studentId);
-    
+    // Use findOne to find the student by the string-based ID
+    const student = await Etudiant.findOne({ where: { ID_Etudiant: studentId } });
+
     if (!student) {
       return res.status(404).json({ message: 'Student not found' });
     }
 
     // Update the student data
     await student.update({
+      ID_Etudiant,
       Nom_Etudiant,
       Prenom_Etudiant,
       Date_Naissance_Etudiant,
       Email_Etudiant,
       Tel_Etudiant,
-      CV_Etudiant,
       Filiere_Etudiant,
       Statut_Recherche,
       MotDePasse_Etudiant,
@@ -246,10 +295,12 @@ router.put('/student/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error updating student' });
   }
 });
+
 // Modify ChefFiliere
 router.put('/chefFiliere/:id', async (req, res) => {
-  const chefFiliereId = req.params.id;
+  const chefFiliereId = req.params.id;  // chefFiliereId is now a string
   const {
+    ID_CDF,
     Nom_CDF,
     Prenom_CDF,
     Email_CDF,
@@ -259,7 +310,8 @@ router.put('/chefFiliere/:id', async (req, res) => {
   } = req.body;
 
   try {
-    const chefFiliere = await ChefFiliere.findByPk(chefFiliereId);
+    // Use findOne to find the ChefFiliere by the string-based ID
+    const chefFiliere = await ChefFiliere.findOne({ where: { ID_CDF: chefFiliereId } });
 
     if (!chefFiliere) {
       return res.status(404).json({ message: 'Chef de Filière not found' });
@@ -267,6 +319,7 @@ router.put('/chefFiliere/:id', async (req, res) => {
 
     // Update the chefFiliere data
     await chefFiliere.update({
+      ID_CDF,
       Nom_CDF,
       Prenom_CDF,
       Email_CDF,
@@ -281,6 +334,8 @@ router.put('/chefFiliere/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error updating Chef de Filière' });
   }
 });
+
+
 // Modify Entreprise
 router.put('/entreprise/:id', async (req, res) => {
   const entrepriseId = req.params.id;
@@ -320,11 +375,14 @@ router.put('/entreprise/:id', async (req, res) => {
 // -- Delete Routes --
 // Delete Student
 router.delete('/student/:id', async (req, res) => {
-  const studentId = req.params.id;
+  const studentId = req.params.id;  // studentId is now a string
 
   try {
-    const student = await Etudiant.findByPk(studentId);
-    
+    // Use findOne to find the student by string-based ID
+    const student = await Etudiant.findOne({
+      where: { ID_Etudiant: studentId }, // Adjusted to use string ID
+    });
+
     if (!student) {
       return res.status(404).json({ message: 'Student not found' });
     }
@@ -338,19 +396,20 @@ router.delete('/student/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error deleting student' });
   }
 });
+
 // Delete ChefFiliere
 router.delete('/chefFiliere/:id', async (req, res) => {
-  const chefFiliereId = req.params.id;
+  const chefFiliereId = req.params.id;  // chefFiliereId is a string now
 
   try {
-    const chefFiliere = await ChefFiliere.findByPk(chefFiliereId);
+    // Use findOne to find the ChefFiliere by string-based ID
+    const chefFiliere = await ChefFiliere.findOne({
+      where: { ID_CDF: chefFiliereId },  // Adjusted to use string ID
+    });
 
     if (!chefFiliere) {
       return res.status(404).json({ message: 'Chef de Filière not found' });
     }
-
-    // Ensure to handle students that may be associated with this chefFiliere.
-    // For example, you might want to update their 'Filiere_Etudiant' field to null before deleting the chefFiliere.
 
     // Optionally handle students associated with this chef before deleting:
     await Etudiant.update(
@@ -367,6 +426,7 @@ router.delete('/chefFiliere/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error deleting Chef de Filière' });
   }
 });
+
 // Delete Entreprise
 router.delete('/entreprise/:id', async (req, res) => {
   const entrepriseId = req.params.id;
@@ -393,10 +453,12 @@ router.delete('/entreprise/:id', async (req, res) => {
 
 // Get Student by ID
 router.get('/student/:id', async (req, res) => {
-  const studentId = req.params.id;
+  const studentId = req.params.id;  // studentId is now a string
 
   try {
-    const student = await Etudiant.findByPk(studentId, {
+    // Use findOne to find the student by string-based ID
+    const student = await Etudiant.findOne({
+      where: { ID_Etudiant: studentId }, // Adjusted to use string ID
       include: [{
         model: ChefFiliere,
         as: 'Filiere', // This ensures we get the Filiere details
@@ -414,13 +476,17 @@ router.get('/student/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching student' });
   }
 });
+
 // Get ChefFiliere by ID
 router.get('/chefFiliere/:id', async (req, res) => {
-  const chefFiliereId = Number(req.params.id); // Ensure the id is a number
+  const chefFiliereId = req.params.id.trim();  // Trim to remove any leading/trailing spaces
   console.log('Request received with ID:', chefFiliereId);
 
   try {
-    const chefFiliere = await ChefFiliere.findByPk(chefFiliereId);
+    // Use findOne to find the ChefFiliere by string-based ID
+    const chefFiliere = await ChefFiliere.findOne({
+      where: { ID_CDF: chefFiliereId },  // Adjusted to use string ID
+    });
 
     if (!chefFiliere) {
       return res.status(404).json({ message: 'Chef de Filière not found' });
@@ -432,6 +498,7 @@ router.get('/chefFiliere/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching Chef de Filière' });
   }
 });
+
 // Get Entreprise by ID
 router.get('/entreprise/:id', async (req, res) => {
   const entrepriseId = req.params.id;
