@@ -7,7 +7,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [role, setRole] = useState("chefdefiliere");
+  const [role, setRole] = useState("chefdefiliere"); // Default role is chefdefiliere
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,6 +16,10 @@ const LoginPage = () => {
     const loginRoute =
       role === "entreprise"
         ? "http://localhost:3001/entreprise/login"
+        : role === "etudiant"
+        ? "http://localhost:3001/etudiant/login"
+        : role === "gestionnaire"
+        ? "http://localhost:3001/gestionnaire/login"
         : "http://localhost:3001/chefdefiliere/login"; // Adjust routes as needed
 
     try {
@@ -24,14 +28,17 @@ const LoginPage = () => {
         mot_de_passe: password,
       });
       const { accessToken } = response.data;
-        sessionStorage.setItem("accessToken", accessToken);
-
+      sessionStorage.setItem("accessToken", accessToken);
 
       alert(`Login successful! Welcome ${response.data.email}`);
 
       // Redirect based on role
       if (role === "entreprise") {
         navigate("/entreprise/creeroffre");
+      } else if (role === "etudiant") {
+        navigate("/etudiant/home");
+      } else if (role === "gestionnaire") {
+        navigate("/gestionnaire/home");
       } else {
         navigate("/chefdefiliere/listeoffres");
       }
@@ -80,6 +87,8 @@ const LoginPage = () => {
               >
                 <option value="entreprise">Entreprise</option>
                 <option value="chefdefiliere">Chef de Filière</option>
+                <option value="etudiant">Etudiant</option>
+                <option value="gestionnaire">Gestionnaire</option>
               </select>
             </div>
             <button type="submit" className="btn btn-primary w-100">

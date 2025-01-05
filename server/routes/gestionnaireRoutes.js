@@ -1,13 +1,45 @@
 const express = require('express');
 const multer = require('multer');
 const csvParser = require('csv-parser');
+const jwt = require('jsonwebtoken');
 const { Gestionnaire, Etudiant, ChefFiliere, Entreprise } = require('../models');  // Import models
-/*const { validateToken } = require('../middlewares/AuthMiddleware');*/
+const { validateToken } = require('../middlewares/AuthMiddleware');
 const fs = require('fs');
 const path = require('path');
 const etudiant = require('../models/etudiant');
 
 const router = express.Router();
+
+// Route for Gestionnaire login
+router.post('/login', async (req, res) => {
+  const { email, mot_de_passe } = req.body;
+
+  try {
+      // Find Gestionnaire by email
+      const user = await Gestionnaire.findOne({ where: { Email_Gestionnaire: email } });
+
+      // Check if Gestionnaire exists
+      if (!user) {
+          return res.status(404).json({ error: "Account doesn't exist" });
+      }
+
+      // Compare hashed passwords
+      if (mot_de_passe !== user.MotDePasse_Gestionnaire) {
+          return res.status(401).json({ error: "Wrong username and password combination" });
+      }
+
+      // Successful login
+      const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '1h' });
+      res.json({
+        accessToken,
+        email: user.Email_Gestionnaire,
+      });
+
+  } catch (error) {
+      console.error('Error logging in:', error);
+      return res.status(500).json({ error: 'Unexpected error during login' });
+  }
+});
 
 
 // Set up multer for file upload
@@ -131,7 +163,6 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
   }
 });
 
-// Upload CSV to create ChefDeFiliere
 // Upload CSV to create ChefDeFiliere
 router.post('/upload/chefs', upload.single('file'), async (req, res) => {
   if (!req.file) {

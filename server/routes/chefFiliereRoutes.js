@@ -47,7 +47,10 @@ router.post('/login', async (req, res) => {
       }
       // Successful login
       const accessToken = jwt.sign( { Email_CDF :user.Email_CDF,  ID_CDF :user.ID_CDF }, "secret", {expiresIn: '1h'});
-      res.json({ accessToken, role: user.ID_CDF });
+      res.json({
+        accessToken,
+        email: user.Email_CDF,
+      });
 
   } catch (error) {
       console.error('Error logging in:', error);

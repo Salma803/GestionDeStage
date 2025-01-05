@@ -15,28 +15,32 @@ import DeleteChefFiliere from "./gestionnaire/DeleteChefFiliere";
 import ModifyEntreprise from "./gestionnaire/ModifyEntreprise";
 import DeleteEntreprise from "./gestionnaire/DeleteEntreprise";
 
-// New routes for viewing lists of accounts
+// Routes for viewing lists of accounts
 import ListStudents from "./gestionnaire/ListStudents";
 import ListChefsFiliere from "./gestionnaire/ListChefsFiliere";
 import ListEntreprises from "./gestionnaire/ListEntreprises";
 
-//Routes for chef de filiere
+// Routes for chef de filiere
 import ListeOffres from "./chefDeFiliere/ListeOffres";
 import OffreApprouve from "./chefDeFiliere/OffreApprouve";
 import OffreRejet from "./chefDeFiliere/OffreRejet";
 import LoginPage from "./chefDeFiliere/LoginCDF";
 
-
-//Routes for entreprise
+// Routes for entreprise
 import CreerOffre from "./entreprise/CreerOffre";
 import ConsulterOffres from "./entreprise/ConsulterOffres";
+
+
+import StudentHome from "./etudiant/StudentHome";  
+import OfferDetails from "./etudiant/OfferDetails"; 
+import StudentProfile from "./etudiant/StudentProfile ";
 
 function App() {
   return (
     <div className="App">
       <HelmetProvider>
         <Helmet>
-          <title>Gestionnaire Dashboard</title>
+          <title>Homepage</title>
         </Helmet>
         <Router>
           <Routes>
@@ -61,15 +65,21 @@ function App() {
             <Route path="/gestionnaire/listChefsFiliere" element={<ListChefsFiliere />} />
             <Route path="/gestionnaire/listEntreprises" element={<ListEntreprises />} />
           
-            {/* Routes por le chef de filiere */}
+            {/* Routes for chef de filiere */}
             <Route path="/chefDeFiliere/listeOffres" element={<ListeOffres />} />
             <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
             <Route path="/chefDeFiliere/offresRejetees" element={<OffreRejet />} />
             <Route path="/chefDeFiliere/login" element={<LoginPage />} />
 
-            {/* Route entreprises */}
+            {/* Routes for entreprise */}
             <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
             <Route path="/entreprise/consulterOffres" element={<ConsulterOffres />} />
+
+            {/* Routes for Etudiant */}
+            <Route path="/etudiant/home" element={<StudentHome />} />
+            <Route path="/etudiant/offer/:offerId" element={<OfferDetails />} />
+            <Route path="/etudiant/profile" element={<StudentProfile />} />
+
           
           </Routes>
         </Router>

@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'Filiere_Etudiant', 
       as: 'Etudiants',
     });
+
+    // Add association with OffreFlag
+    ChefFiliere.hasMany(models.OffreFlag, {
+      foreignKey: 'ID_CDF', 
+      as: 'OffreFlags',
+    });
   };
 
   return ChefFiliere;
