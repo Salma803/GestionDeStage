@@ -33,7 +33,7 @@ import ConsulterOffres from "./entreprise/ConsulterOffres";
 
 import StudentHome from "./etudiant/StudentHome";  
 import OfferDetails from "./etudiant/OfferDetails"; 
-
+import StudentProfile from "./etudiant/StudentProfile ";
 
 function App() {
   return (
@@ -78,6 +78,7 @@ function App() {
             {/* Routes for Etudiant */}
             <Route path="/etudiant/home" element={<StudentHome />} />
             <Route path="/etudiant/offer/:offerId" element={<OfferDetails />} />
+            <Route path="/etudiant/profile" element={<StudentProfile />} />
 
           
           </Routes>

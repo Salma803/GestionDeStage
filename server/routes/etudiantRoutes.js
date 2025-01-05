@@ -2,6 +2,99 @@ const express = require('express');
 const { OffreFlag, Offre, Entreprise, Etudiant } = require('../models'); // Adjust the path based on your project structure
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const { validateToken } = require('../middlewares/AuthMiddleware');
+const path = require('path');
+const fs = require('fs');
+
+const multer = require('multer');
+
+
+// Set storage engine for multer to store files
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads/cvs/'); // Path to store the CVs
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`); // Set file name with a timestamp
+  },
+});
+
+// Initialize multer
+const upload = multer({ storage: storage });
+
+// Route to upload CV
+router.post('/uploadCV', validateToken, upload.single('cv'), async (req, res) => {
+  const ID_Etudiant = req.user.ID_Etudiant;
+  const newCvPath = req.file.path; // Path where the new CV is stored
+  const newCvFileName = req.file.filename; // File name of the new CV
+
+  try {
+    // Find student record
+    const student = await Etudiant.findOne({ where: { ID_Etudiant } });
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    // If the student already has a CV, delete the previous one
+    if (student.CV_Etudiant) {
+      const oldCvPath = path.join(__dirname, '..', 'uploads', 'cvs', student.CV_Etudiant);
+
+      // Check if the old CV exists and delete it
+      fs.exists(oldCvPath, (exists) => {
+        if (exists) {
+          fs.unlink(oldCvPath, (err) => {
+            if (err) {
+              console.error('Error deleting old CV:', err);
+            } else {
+              console.log('Old CV deleted successfully');
+            }
+          });
+        }
+      });
+    }
+
+    // Save the new CV file name in the database
+    student.CV_Etudiant = newCvFileName;
+    await student.save();
+
+    res.json({ message: 'CV uploaded successfully', cvFileName: newCvFileName });
+  } catch (error) {
+    console.error('Error uploading CV:', error);
+    return res.status(500).json({ error: 'Failed to upload CV' });
+  }
+});
+
+
+
+// Route to fetch student profile based on the token
+router.get('/me', validateToken, async (req, res) => {
+  const ID_Etudiant = req.user.ID_Etudiant;
+  const Email_Etudiant = req.user.Email_Etudiant;
+
+  try {
+    const student = await Etudiant.findOne({ where: { ID_Etudiant } });
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.json({
+      ID_Etudiant,
+      Email_Etudiant,
+      Nom_Etudiant: student.Nom_Etudiant,
+      Prenom_Etudiant: student.Prenom_Etudiant,
+      Date_Naissance_Etudiant: student.Date_Naissance_Etudiant,
+      Tel_Etudiant: student.Tel_Etudiant,
+      Filiere_Etudiant: student.Filiere_Etudiant,
+      Statut_Recherche: student.Statut_Recherche,
+      CV_Etudiant: student.CV_Etudiant
+    });
+  } catch (error) {
+    console.error('Error fetching student profile:', error);
+    return res.status(500).json({ error: 'Failed to fetch student profile' });
+  }
+});
 
 
 // Route for Etudiant login
@@ -115,6 +208,30 @@ router.get('/offers/:offerId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching offer details:', error);
     res.status(500).json({ error: 'Failed to fetch offer details' });
+  }
+});
+
+
+// Route to get CV file
+router.get('/getCV', validateToken, async (req, res) => {
+  const ID_Etudiant = req.user.ID_Etudiant;
+
+  try {
+    const student = await Etudiant.findOne({ where: { ID_Etudiant } });
+
+    if (!student || !student.CV_Etudiant) {
+      return res.status(404).json({ error: 'CV not found' });
+    }
+
+    const cvPath = path.resolve(student.CV_Etudiant);
+    if (fs.existsSync(cvPath)) {
+      res.sendFile(cvPath); // Send the CV file to the client
+    } else {
+      return res.status(404).json({ error: 'CV file not found on the server' });
+    }
+  } catch (error) {
+    console.error('Error fetching CV:', error);
+    return res.status(500).json({ error: 'Failed to fetch CV' });
   }
 });
 
