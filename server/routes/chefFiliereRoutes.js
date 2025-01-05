@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const { OffreFlag, Offre,ChefFiliere,Entreprise } = require('../models');
+const { OffreFlag, Offre,ChefFiliere,Entreprise,Etudiant } = require('../models');
 
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
@@ -16,16 +16,41 @@ router.get('/me', validateToken, (req, res) => {
 
 //Route to find the cdf information by ID
 router.get('/find/:cdfId', async (req, res) => {
-  const { cdfID } = req.params; // Extract clientID from req.params
+  const { cdfId } = req.params; // Correctly extract cdfId (case-sensitive)
   try {
-    const cdf = await ChefFiliere.findOne({ where: { ID_CDF: cdfID } }); // Use ID_CDF instead of id
+    // Ensure ID_CDF is compared properly
+    const cdf = await ChefFiliere.findOne({
+      where: { ID_CDF: cdfId },
+    });
+
     if (!cdf) {
       return res.status(404).json({ error: 'Chef Filière not found' });
     }
+
     res.json(cdf);
   } catch (error) {
     console.error('Error fetching Chef Filière:', error);
     res.status(500).json({ error: 'Failed to fetch Chef Filière' });
+  }
+});
+
+router.get('/etudiant/:cdfId', async (req, res) => {
+  const { cdfId } = req.params; // Correctly extract cdfId
+  try {
+    // Find all students with the given ID_CDF
+    const etudiants = await Etudiant.findAll({
+      where: { Filiere_Etudiant: cdfId },
+    });
+
+    if (etudiants.length === 0) {
+      return res.status(404).json({ error: 'No students found for the given Chef Filière ID.' });
+    }
+
+    // Respond with the list of students
+    res.json(etudiants);
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    res.status(500).json({ error: 'Failed to fetch students. Please try again later.' });
   }
 });
 
@@ -59,13 +84,13 @@ router.post('/login', async (req, res) => {
 });
 
 //Route to flag an offer
-router.post('/flaggerOffre/:id_cdf', async (req, res) => {
-  const { id_cdf: ID_CDF } = req.params;  // Extract ID_CDF from URL parameters
-  const { id_offre: ID_Offre, status_flag: Status_Flag, comments: Comments } = req.body;
+router.post('/flaggerOffre/:id_offre/:id_cdf', async (req, res) => {
+  const { id_offre: ID_Offre, id_cdf: ID_CDF } = req.params; // Extract parameters
+  const { status_flag: Status_Flag, comments: Comments } = req.body; // Extract from body
 
   try {
     // Validate input
-    if (!ID_CDF || !ID_Offre || !Status_Flag) {
+    if (!ID_Offre || !ID_CDF || !Status_Flag) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -110,14 +135,12 @@ router.post('/flaggerOffre/:id_cdf', async (req, res) => {
       flag: newFlag,
     });
   } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ error: 'This flag already exists.' });
-    }
-
     console.error('Error flagging offer:', error);
     return res.status(500).json({ error: 'Failed to flag offer' });
   }
 });
+
+
 
 
 // Get all approved offers for a specific ChefFiliere

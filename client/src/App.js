@@ -21,11 +21,12 @@ import ListChefsFiliere from "./gestionnaire/ListChefsFiliere";
 import ListEntreprises from "./gestionnaire/ListEntreprises";
 
 // Routes for chef de filiere
-import ListeOffres from "./chefDeFiliere/ListeOffres";
-import OffreApprouve from "./chefDeFiliere/OffreApprouve";
-import OffreRejet from "./chefDeFiliere/OffreRejet";
-import LoginPage from "./chefDeFiliere/LoginCDF";
-
+import ListeOffres from "./chefDeFiliere/pages/ListeOffres";
+import OffreApprouve from "./chefDeFiliere/pages/OffreApprouve";
+import OffreRejet from "./chefDeFiliere/pages/OffreRejet";
+import LoginPage from "./chefDeFiliere/pages/LoginCDF";
+import InfoCDF from "./chefDeFiliere/pages/InfoCDF";
+import EtudiantsCDF from "./chefDeFiliere/pages/EtudiantsCDF";
 // Routes for entreprise
 import CreerOffre from "./entreprise/CreerOffre";
 import ConsulterOffres from "./entreprise/ConsulterOffres";
@@ -70,6 +71,9 @@ function App() {
             <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
             <Route path="/chefDeFiliere/offresRejetees" element={<OffreRejet />} />
             <Route path="/chefDeFiliere/login" element={<LoginPage />} />
+            <Route path="/chefdefiliere/info"  element={<InfoCDF /> } />
+            <Route path="/chefdefiliere/etudiants"  element={<EtudiantsCDF /> } />
+
 
             {/* Routes for entreprise */}
             <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
