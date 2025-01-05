@@ -89,8 +89,15 @@ const ListeOffres = () => {
 
   return (
     <div className="offers-container">
-        <div><Link to="/chefdefiliere/offresapprouvees">Offres approuvées</Link></div>        
-        <div><Link to="/chefdefiliere/offresrejetees">Offres rejetées</Link></div>
+      <div>
+        <Link to="/chefdefiliere/offresapprouvees">Offres approuvées</Link>
+      </div>
+      <div>
+        <Link to="/chefdefiliere/offresrejetees">Offres rejetées</Link>
+      </div>
+      <div>
+        <Link to="/chefdefiliere/candidatures">Voir les Candidatures</Link>
+      </div> 
 
       <h1>Liste des Offres</h1>
       <ul className="offers-list">

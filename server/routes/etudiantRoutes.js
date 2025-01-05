@@ -1,5 +1,5 @@
 const express = require('express');
-const { OffreFlag, Offre, Entreprise, Etudiant } = require('../models'); // Adjust the path based on your project structure
+const { OffreFlag, Offre, Entreprise, Etudiant, Candidature } = require('../models'); // Adjust the path based on your project structure
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { validateToken } = require('../middlewares/AuthMiddleware');
@@ -234,6 +234,142 @@ router.get('/getCV', validateToken, async (req, res) => {
     return res.status(500).json({ error: 'Failed to fetch CV' });
   }
 });
+
+
+// Route to handle application (candidature)
+router.post('/candidater', async (req, res) => {
+  const { ID_Etudiant, ID_Offre } = req.body;
+  console.log('Received data:', req.body);
+
+  try {
+    // Ensure that the student exists
+    const student = await Etudiant.findOne({ where: { ID_Etudiant } });
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    // Check if the student has already applied to the offer
+    const existingApplication = await Candidature.findOne({
+      where: { ID_Etudiant, ID_Offre }
+    });
+    if (existingApplication) {
+      return res.status(400).json({ error: 'You have already applied for this offer' });
+    }
+
+    // Create a new application
+    await Candidature.create({
+      ID_Etudiant,
+      ID_Offre,
+      Réponse_Entreprise: 'pending', // Initially, no response from the company
+      Réponse_Etudiant: 'pending', // The student is waiting for a response
+      Réponse_CDF: 'pending' // The offer is awaiting review by the Chef de Filière
+    });
+
+    res.status(201).json({ message: 'Application submitted successfully' });
+  } catch (error) {
+    console.error('Error applying for offer:', error);
+    res.status(500).json({ error: 'Failed to apply for the offer' });
+  }
+});
+
+// Route to check if the student has applied for the offer
+router.get('/candidatures/:studentId/:offerId', async (req, res) => {
+  const { studentId, offerId } = req.params;
+  
+  try {
+    const existingApplication = await Candidature.findOne({
+      where: { ID_Etudiant: studentId, ID_Offre: offerId },
+    });
+    
+    if (existingApplication) {
+      return res.json({ hasApplied: true });
+    } else {
+      return res.json({ hasApplied: false });
+    }
+  } catch (error) {
+    console.error('Error checking application status:', error);
+    res.status(500).json({ error: 'Failed to check application status' });
+  }
+});
+
+// Route to remove the application (candidature)
+router.delete('/candidatures/:studentId/:offerId', async (req, res) => {
+  const { studentId, offerId } = req.params;
+
+  try {
+    // Find and delete the application
+    const application = await Candidature.findOne({
+      where: { ID_Etudiant: studentId, ID_Offre: offerId },
+    });
+    
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+    
+    await application.destroy();
+    res.status(200).json({ message: 'Application removed successfully' });
+  } catch (error) {
+    console.error('Error removing application:', error);
+    res.status(500).json({ error: 'Failed to remove application' });
+  }
+});
+
+// Route to fetch candidatures for the authenticated student
+router.get('/candidatures', async (req, res) => {
+  const { ID_Etudiant } = req.query;  // Get student ID from the query parameters
+  console.log('Received student ID:', ID_Etudiant);
+
+  try {
+    // Fetch the candidatures associated with the student
+    const candidatures = await Candidature.findAll({
+      where: { ID_Etudiant },
+      include: [{
+        model: Offre,
+        as: 'Offre',  // Assuming 'Offre' is the alias for the associated offer
+        attributes: ['ID_Offre', 'Titre_Offre'],
+      }],
+    });
+
+    if (!candidatures || candidatures.length === 0) {
+      return res.status(404).json({ error: 'No candidatures found' });
+    }
+
+    // Send the candidatures data as response
+    res.status(200).json(candidatures);
+  } catch (error) {
+    console.error('Error fetching candidatures:', error);
+    res.status(500).json({ error: 'Failed to fetch candidatures' });
+  }
+});
+
+// Route to accept candidature
+router.put('/candidature/updateResponse/:candidatureId', async (req, res) => {
+  const { candidatureId } = req.params;
+  const { response } = req.body; // The new response
+
+  try {
+    // Find the candidature
+    const candidature = await Candidature.findOne({
+      where: { ID_Candidature: candidatureId },
+    });
+
+    if (!candidature) {
+      return res.status(404).json({ error: 'Candidature not found' });
+    }
+
+    // Update the Réponse_Etudiant field
+    candidature.Réponse_Etudiant = response;
+    await candidature.save();
+
+    res.status(200).json({ success: true, message: 'Response updated successfully' });
+  } catch (err) {
+    console.error('Error updating response:', err);
+    res.status(500).json({ error: 'Failed to update response' });
+  }
+});
+
+
+
 
 
 

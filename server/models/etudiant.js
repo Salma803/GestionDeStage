@@ -25,9 +25,16 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Etudiant.associate = (models) => {
+    // Association with ChefFiliere (Filiere_Etudiant points to ID_CDF)
     Etudiant.belongsTo(models.ChefFiliere, {
       foreignKey: 'Filiere_Etudiant',
       as: 'Filiere',
+    });
+
+    // Association with Candidature table (to link student applications)
+    Etudiant.hasMany(models.Candidature, {
+      foreignKey: 'ID_Etudiant',
+      as: 'Candidatures',
     });
   };
 

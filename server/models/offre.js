@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       Keywords_Offre: {
         type: DataTypes.JSON, // Store keywords as JSON
-        
       },
       Status_Offre: {
         type: DataTypes.STRING,
@@ -44,6 +43,12 @@ module.exports = (sequelize, DataTypes) => {
     Offre.hasMany(models.OffreFlag, {
       foreignKey: 'ID_Offre',
       as: 'Flags',
+    });
+
+    // Association with the Candidature table
+    Offre.hasMany(models.Candidature, {
+      foreignKey: 'ID_Offre',
+      as: 'Candidatures',
     });
   };
 

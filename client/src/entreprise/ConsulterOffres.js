@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Container, Spinner, Alert } from 'react-bootstrap';
+import { Table, Container, Spinner, Alert, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';  // Import Link for navigation
 
-const CompanyOffers = ({ companyId }) => {
+const CompanyOffers = ({companyId}) => {
   const [userId, setUserId] = useState(null);
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +73,7 @@ const CompanyOffers = ({ companyId }) => {
               <th>Status</th>
               <th>Keywords</th>
               <th>Company Name</th>
+              <th>Actions</th>  {/* New column for actions */}
             </tr>
           </thead>
           <tbody>
@@ -85,6 +87,11 @@ const CompanyOffers = ({ companyId }) => {
                   <td>{offer.Status_Offre || 'N/A'}</td>
                   <td>{offer.Keywords_Offre || 'N/A'}</td>
                   <td>{company.Nom_Entreprise || 'N/A'}</td>
+                  <td>
+                    <Link to={`/entreprise/candidatures/${offer.ID_Offre}`}>
+                      <Button variant="info">Consulter Candidature</Button>
+                    </Link>
+                  </td>
                 </tr>
               );
             })}

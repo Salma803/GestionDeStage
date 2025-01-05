@@ -95,6 +95,14 @@ const StudentOffers = () => {
     navigate(`/etudiant/offer/${offerId}`); // Redirect to offer details page with the offer ID
   };
 
+  // Inside the StudentOffers component
+  const handleViewCandidatures = () => {
+    navigate('/etudiant/candidatures'); // Adjust the path to the candidatures page
+  };
+
+
+
+
   // Handler to navigate to the profile page
   const handleViewProfile = () => {
     navigate('/etudiant/profile'); // Adjust the path to your profile page
@@ -105,6 +113,8 @@ const StudentOffers = () => {
       <h2>Available Internship Offers</h2>
       {/* Add the View Profile Button */}
       <button onClick={handleViewProfile}>View Profile</button>
+      <button onClick={handleViewCandidatures}>View My Candidatures</button>
+
 
       {/* Filter by Status Flag */}
       <select
@@ -152,7 +162,7 @@ const StudentOffers = () => {
                 <td>{offer.Description_Offre}</td>
                 <td>{offer.Status_Offre}</td>
                 <td>
-                <button onClick={() => handleViewOffer(offer.ID_Offre)}>View Offer</button>
+                  <button onClick={() => handleViewOffer(offer.ID_Offre)}>View Offer</button>
                 </td>
               </tr>
             ))

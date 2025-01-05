@@ -25,15 +25,18 @@ import ListeOffres from "./chefDeFiliere/ListeOffres";
 import OffreApprouve from "./chefDeFiliere/OffreApprouve";
 import OffreRejet from "./chefDeFiliere/OffreRejet";
 import LoginPage from "./chefDeFiliere/LoginCDF";
+import ListeCandidatures from "./chefDeFiliere/CandidatureCDF";
 
 // Routes for entreprise
 import CreerOffre from "./entreprise/CreerOffre";
 import ConsulterOffres from "./entreprise/ConsulterOffres";
+import CandidaturesEntreprise from "./entreprise/Candidatures";
 
-
+// Routes for etudiant
 import StudentHome from "./etudiant/StudentHome";  
 import OfferDetails from "./etudiant/OfferDetails"; 
 import StudentProfile from "./etudiant/StudentProfile ";
+import Candidatures from "./etudiant/Candidatures";
 
 function App() {
   return (
@@ -70,15 +73,18 @@ function App() {
             <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
             <Route path="/chefDeFiliere/offresRejetees" element={<OffreRejet />} />
             <Route path="/chefDeFiliere/login" element={<LoginPage />} />
+            <Route path="/chefdefiliere/candidatures" element={<ListeCandidatures />} />
 
             {/* Routes for entreprise */}
             <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
             <Route path="/entreprise/consulterOffres" element={<ConsulterOffres />} />
+            <Route path="/entreprise/candidatures/:offerId" element={<CandidaturesEntreprise />} />
 
             {/* Routes for Etudiant */}
             <Route path="/etudiant/home" element={<StudentHome />} />
             <Route path="/etudiant/offer/:offerId" element={<OfferDetails />} />
             <Route path="/etudiant/profile" element={<StudentProfile />} />
+            <Route path="/etudiant/candidatures" element={<Candidatures />} />
 
           
           </Routes>
