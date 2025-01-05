@@ -3,23 +3,43 @@ import axios from 'axios';
 import { Table, Container, Spinner, Alert } from 'react-bootstrap';
 
 const CompanyOffers = ({ companyId }) => {
+  const [userId, setUserId] = useState(null);
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchOffers = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/entreprise/offresParEntreprise/1');
-        setOffers(response.data);
-      } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch offers.');
+        const response = await axios.get('http://localhost:3001/entreprise/me', {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        });
+        setUserId(response.data.ID_Entreprise);
+        await fetchOffers(response.data.ID_Entreprise);
+      } catch (error) {
+        setError('Failed to fetch user data');
+        console.error('Error fetching user data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOffers();
+    const fetchOffers = async (id) => {
+      try {
+        const response = await axios.get(`http://localhost:3001/entreprise/offresParEntreprise/${id}`);
+        setOffers(response.data);
+      } catch (err) {
+        const errMsg = err.response?.data?.error || 'Failed to fetch offers';
+        setError(errMsg);
+        console.error('Error fetching offers:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, [companyId]);
 
   if (loading) {

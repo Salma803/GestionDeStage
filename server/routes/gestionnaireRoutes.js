@@ -1,13 +1,45 @@
 const express = require('express');
 const multer = require('multer');
 const csvParser = require('csv-parser');
+const jwt = require('jsonwebtoken');
 const { Gestionnaire, Etudiant, ChefFiliere, Entreprise } = require('../models');  // Import models
-/*const { validateToken } = require('../middlewares/AuthMiddleware');*/
+const { validateToken } = require('../middlewares/AuthMiddleware');
 const fs = require('fs');
 const path = require('path');
 const etudiant = require('../models/etudiant');
 
 const router = express.Router();
+
+// Route for Gestionnaire login
+router.post('/login', async (req, res) => {
+  const { email, mot_de_passe } = req.body;
+
+  try {
+      // Find Gestionnaire by email
+      const user = await Gestionnaire.findOne({ where: { Email_Gestionnaire: email } });
+
+      // Check if Gestionnaire exists
+      if (!user) {
+          return res.status(404).json({ error: "Account doesn't exist" });
+      }
+
+      // Compare hashed passwords
+      if (mot_de_passe !== user.MotDePasse_Gestionnaire) {
+          return res.status(401).json({ error: "Wrong username and password combination" });
+      }
+
+      // Successful login
+      const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '1h' });
+      res.json({
+        accessToken,
+        email: user.Email_Gestionnaire,
+      });
+
+  } catch (error) {
+      console.error('Error logging in:', error);
+      return res.status(500).json({ error: 'Unexpected error during login' });
+  }
+});
 
 
 // Set up multer for file upload
@@ -32,6 +64,28 @@ const upload = multer({
     }
   }
 });
+
+// Set up multer for CV
+const cvStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads/cvs/'); // Store CVs in a separate folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  },
+});
+const uploadCV = multer({
+  storage: cvStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // Limit file size to 10MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only PDF files are allowed.'), false);
+    }
+  },
+});
+
 
 
 // -- CSV Upload Routes --
@@ -539,16 +593,27 @@ router.get('/students', async (req, res) => {
         {
           model: ChefFiliere,
           as: 'Filiere',
-          attributes: ['FiliereAssociee_CDF'], // You can choose the attributes to include from the ChefFiliere model
+          attributes: ['FiliereAssociee_CDF'], // Include related filière details
         },
       ],
     });
-    res.json(students);
+
+    // Add a full URL for CV_Etudiant field if it exists
+    const studentsWithCV = students.map((student) => ({
+      ...student.toJSON(),
+      CV_Etudiant: student.CV_Etudiant
+        ? `${req.protocol}://${req.get('host')}/uploads/cvs/${student.CV_Etudiant}`
+        : null,
+    }));
+
+    res.json(studentsWithCV);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Error fetching students' });
   }
 });
+
+
 
 // Route to get the list of Entreprises
 router.get('/entreprises', async (req, res) => {

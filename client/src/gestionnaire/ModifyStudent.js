@@ -140,7 +140,7 @@ const ModifyStudent = () => {
         <div>
           <label>Mot de Passe</label>
           <input
-            type="password"
+            type="text"
             name="MotDePasse_Etudiant"
             value={student.MotDePasse_Etudiant}
             onChange={handleChange}

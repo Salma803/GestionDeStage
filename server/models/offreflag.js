@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      ID_CDF: DataTypes.INTEGER,
+      ID_CDF: DataTypes.STRING,
       ID_Offre: DataTypes.INTEGER,
       Status_Flag: {
         type: DataTypes.STRING,

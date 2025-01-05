@@ -1,0 +1,188 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import NavBar from "../Components/NavBar";
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+import SideNav from "../Components/SideNav";
+import '../css/ListeOffres.css';
+
+const ListeOffres = () => {
+  const [offres, setOffres] = useState([]);
+  const [comments, setComments] = useState({});
+  const [editingOfferId, setEditingOfferId] = useState(null);
+  const [idCdf, setIdCdf] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/chefdefiliere/me', {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        });
+        setIdCdf(response.data.ID_CDF);
+        await fetchOffers();
+      } catch (error) {
+        setError('Failed to fetch user data');
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchOffers = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/entreprise/listeOffres");
+        setOffres(response.data);
+      } catch (error) {
+        console.error("Error fetching offers:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleFlagOffer = async (id_offre, status_flag) => {
+    const comment = comments[id_offre] || "";
+
+    if (!idCdf) {
+      alert("User ID not available.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        `http://localhost:3001/chefdefiliere/flaggerOffre/${id_offre}/${idCdf}`,
+        {
+          id_offre,
+          id_cdf: idCdf, // Include id_cdf in the request
+          status_flag,
+          comments: comment,
+        },
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
+
+      setOffres((prev) =>
+        prev.map((offer) =>
+          offer.ID_Offre === id_offre
+            ? { ...offer, Status_Offre: status_flag }
+            : offer
+        )
+      );
+      setEditingOfferId(null);
+      alert(`Offer ${status_flag} successfully!`);
+    } catch (error) {
+      console.error("Error flagging offer:", error);
+      alert("Failed to flag offer.");
+    }
+  };
+
+  const handleCommentChange = (id_offre, value) => {
+    setComments((prev) => ({ ...prev, [id_offre]: value }));
+  };
+
+  const toggleEditMode = (id_offre) => {
+    setEditingOfferId((prev) => (prev === id_offre ? null : id_offre));
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  return (
+    <div className="liste-offres-page">
+      <SideNav />
+      <div className="content-area">
+        <Header />
+        <main className="offers-main">
+          
+          <h1 className="offers-title">Liste des Offres</h1>
+          <div className="offers-cards-container">
+            {offres.map((offer) => (
+              <div key={offer.ID_Offre} className="offer-card">
+                <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
+                <p className="offer-description">
+                  <strong>Description:</strong>{" "}
+                  {offer.Description_Offre || "No description available"}
+                </p>
+                <p className="offer-status">
+                  <strong>Status:</strong> {offer.Status_Offre || "Pending"}
+                </p>
+                <div className="company-info">
+                  {offer.Company ? (
+                    <>
+                      <p>
+                        <strong>Company:</strong> {offer.Company.Nom_Entreprise}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {offer.Company.Email_Entreprise}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {offer.Company.Tel_Entreprise}
+                      </p>
+                      <p>
+                        <strong>Address:</strong> {offer.Company.Adresse_Entreprise}
+                      </p>
+                    </>
+                  ) : (
+                    <p>No company information available</p>
+                  )}
+                </div>
+                {editingOfferId === offer.ID_Offre ? (
+                  <div className="offer-edit-section">
+                    <textarea
+                      placeholder="Add a comment (optional)"
+                      value={comments[offer.ID_Offre] || ""}
+                      onChange={(e) => handleCommentChange(offer.ID_Offre, e.target.value)}
+                      className="comment-textarea"
+                    ></textarea>
+                    <div className="offer-action-buttons">
+                      <button
+                        className="offer-approve-button"
+                        onClick={() => handleFlagOffer(offer.ID_Offre, "approved")}
+                      >
+                        Aprouver
+                      </button>
+                      <button
+                        className="offer-reject-button"
+                        onClick={() => handleFlagOffer(offer.ID_Offre, "rejected")}
+                      >
+                        Rejeter
+                      </button>
+                      <button
+                        className="offer-cancel-button"
+                        onClick={() => setEditingOfferId(null)}
+                      >
+                        Retour
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    className="offer-edit-button"
+                    onClick={() => toggleEditMode(offer.ID_Offre)}
+                  >
+                    {offer.Status_Offre === "approved"
+                      ? "Change Approval"
+                      : offer.Status_Offre === "rejected"
+                      ? "Change Rejection"
+                      : "Changer Statut"}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </main>
+        <Footer />
+      </div>
+    </div>
+  );
+};
+
+export default ListeOffres;
