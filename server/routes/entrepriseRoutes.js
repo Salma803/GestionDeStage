@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Offre, Entreprise,OffreFlag, Candidature, Etudiant, ChefFiliere } = require('../models');
+const { Offre, Entreprise,OffreFlag, Candidature, Etudiant, ChefFiliere, Entretien } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validateToken } = require('../middlewares/AuthMiddleware');
@@ -59,18 +59,18 @@ router.get('/find/:cdfId', async (req, res) => {
 
 //Route pour voir toutes les offres postés par toutes les entreprises
 router.get('/listeOffres', async (req, res) => {        
-    try {
-        const offres = await Offre.findAll({
-            include: [{
-                model: Entreprise,
-                as: 'Company',
-            }],
-        });
-        res.status(200).json(offres);
-    } catch (error) {
-        console.error('Error fetching offers:', error);
-        res.status(500).json({ error: 'Failed to fetch offers' });
-    }
+  try {
+      const offres = await Offre.findAll({
+          include: [{
+              model: Entreprise,
+              as: 'Company',
+          }],
+      });
+      res.status(200).json(offres);
+  } catch (error) {
+      console.error('Error fetching offers:', error);
+      res.status(500).json({ error: 'Failed to fetch offers' });
+  }
 });
 
 //route pour voir les offres postés par une entreprise
@@ -229,7 +229,7 @@ router.get('/candidatures/:entrepriseId/:offerId', async (req, res) => {
         {
           model: Etudiant,
           as: 'Etudiant',  // Using the alias defined in the model
-          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant', 'CV_Etudiant'],
+          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant','Annee_Etudiant', 'CV_Etudiant'],
         },
       ],
     });
@@ -278,78 +278,36 @@ router.put('/candidature/accept/:entrepriseId/:candidatureId', async (req, res) 
   }
 });
 
-// Route to view all candidatures for an offer by entreprise
-router.get('/candidatures/:entrepriseId/:offerId', async (req, res) => {
-  const { entrepriseId, offerId } = req.params;
-
-  try {
-    // Check if the offer belongs to the entreprise
-    const offer = await Offre.findOne({
-      where: { 
-        ID_Offre: offerId,
-        ID_Company: entrepriseId 
-      }
-    });
-
-    if (!offer) {
-      return res.status(404).json({ error: 'Offer not found or does not belong to this entreprise' });
-    }
-
-    // Fetch candidatures for the offer
-    const candidatures = await Candidature.findAll({
-      where: { ID_Offre: offerId },
-      include: [
-        {
-          model: Etudiant,
-          as: 'Etudiant',  // Using the alias defined in the model
-          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant', 'CV_Etudiant','Annee_Etudiant'],
-        },
-      ],
-    });
-
-    if (candidatures.length === 0) {
-      return res.status(404).json({ error: 'No candidatures found for this offer' });
-    }
-
-    res.status(200).json(candidatures);
-  } catch (error) {
-    console.error('Error fetching candidatures for entreprise:', error);
-    res.status(500).json({ error: 'Failed to fetch candidatures' });
-  }
-});
-
-// Route to modify Réponse_Entreprise when company accepts
-router.put('/candidature/accept/:entrepriseId/:candidatureId', async (req, res) => {
+// Accept Réponse Entretien
+router.put('/entretien/accept/:entrepriseId/:candidatureId', async (req, res) => {
   const { entrepriseId, candidatureId } = req.params;
-  const { response } = req.body;  // The new response value (should be 'accepted')
+  const { response } = req.body; // Expected response: 'accepted' or 'rejected'
 
   try {
-    // Check if the candidature exists and if it belongs to the right entreprise
-    const candidature = await Candidature.findOne({
+    // Find the Entretien entry by ID_Candidature
+    const entretien = await Entretien.findOne({
       where: { ID_Candidature: candidatureId },
-      include: [
-        {
-          model: Offre,
-          as: 'Offre',  // Assuming 'Offre' is the alias in the model
-          where: { ID_Company: entrepriseId },  // Check if the entreprise owns the offer
-        },
-      ],
     });
 
-    if (!candidature) {
-      return res.status(404).json({ error: 'Candidature not found or does not belong to this entreprise' });
+    if (!entretien) {
+      return res.status(404).json({ success: false, message: 'Entretien not found for this candidature' });
     }
 
-    // Update the Réponse_Entreprise field
-    candidature.Réponse_Entreprise = response;  // 'accepted' or other status
-    await candidature.save();
 
-    res.status(200).json({ success: true, message: 'Candidature accepted successfully' });
-  } catch (err) {
-    console.error('Error accepting candidature:', err);
-    res.status(500).json({ error: 'Failed to accept candidature' });
+    // Update the Réponse_Entreprise field in the Entretien table
+    entretien.Réponse_Entreprise = response;
+    await entretien.save();
+
+    res.status(200).json({ success: true, message: 'Réponse Entreprise updated successfully' });
+  } catch (error) {
+    console.error('Error updating Réponse Entreprise in Entretien:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
+
+
+
+
 
 
 

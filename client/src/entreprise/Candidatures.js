@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Container, Spinner, Alert, Table, Button } from 'react-bootstrap';
 
 const CandidaturesEntreprise = () => {
-  const { offerId } = useParams();  // Get offerId from URL
+  const { offerId } = useParams(); // Get offerId from URL
   const [candidatures, setCandidatures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [entrepriseId, setEntrepriseId] = useState(null);  // State to store entreprise ID
+  const [entrepriseId, setEntrepriseId] = useState(null); // State to store entreprise ID
 
   useEffect(() => {
     // Fetch the entreprise ID from the token
@@ -19,7 +19,7 @@ const CandidaturesEntreprise = () => {
             accessToken: sessionStorage.getItem("accessToken"),
           },
         });
-        setEntrepriseId(response.data.ID_Entreprise);  // Set entreprise ID from response
+        setEntrepriseId(response.data.ID_Entreprise); // Set entreprise ID from response
       } catch (err) {
         setError('Failed to fetch entreprise ID');
         console.error('Error fetching entreprise ID:', err);
@@ -30,7 +30,7 @@ const CandidaturesEntreprise = () => {
   }, []);
 
   useEffect(() => {
-    if (!entrepriseId) return;  // Don't fetch candidatures if entrepriseId is not yet available
+    if (!entrepriseId) return; // Don't fetch candidatures if entrepriseId is not yet available
 
     const fetchCandidatures = async () => {
       try {
@@ -46,7 +46,7 @@ const CandidaturesEntreprise = () => {
     };
 
     fetchCandidatures();
-  }, [offerId, entrepriseId]);  // Run when either offerId or entrepriseId changes
+  }, [offerId, entrepriseId]); // Run when either offerId or entrepriseId changes
 
   if (loading) {
     return (
@@ -77,7 +77,7 @@ const CandidaturesEntreprise = () => {
       const response = await axios.put(
         `http://localhost:3001/entreprise/candidature/accept/${entrepriseId}/${candidatureId}`,
         {
-          response: 'accepted',  // New response value
+          response: 'accepted', // New response value
         }
       );
       if (response.data.success) {
@@ -96,6 +96,31 @@ const CandidaturesEntreprise = () => {
     }
   };
 
+  const handleAcceptEntretien = async (candidatureId) => {
+    try {
+      // Send a request to the backend to update Réponse_Entretien to "accepted"
+      const response = await axios.put(
+        `http://localhost:3001/entreprise/entretien/accept/${entrepriseId}/${candidatureId}`,
+        {
+          response: 'accepted', // New response value
+        }
+      );
+      if (response.data.success) {
+        // Update the local state with the new response value
+        setCandidatures((prevCandidatures) =>
+          prevCandidatures.map((candidature) =>
+            candidature.ID_Candidature === candidatureId
+              ? { ...candidature, Réponse_Entretien: 'accepted' }
+              : candidature
+          )
+        );
+      }
+    } catch (err) {
+      setError('Failed to accept entretien');
+      console.error('Error accepting entretien:', err);
+    }
+  };
+
   return (
     <Container className="mt-5">
       <h2>Candidatures for Offer ID: {offerId}</h2>
@@ -110,6 +135,7 @@ const CandidaturesEntreprise = () => {
               <th>Annee</th>
               <th>CV</th> {/* New column for CV button */}
               <th>Réponse Entreprise</th>
+              <th>Réponse Entretien</th> {/* New column for entretien decision */}
             </tr>
           </thead>
           <tbody>
@@ -144,6 +170,23 @@ const CandidaturesEntreprise = () => {
                       Accept
                     </Button>
                   )}
+                </td>
+                <td>
+                  {candidature.Réponse_Entreprise === 'accepted' && candidature.Réponse_CDF === 'accepted' && candidature.Réponse_Entretien !== 'accepted' ? (
+                    <Button
+                      variant="info"
+                      onClick={() => handleAcceptEntretien(candidature.ID_Candidature)}
+                    >
+                      Accept Entretien
+                    </Button>
+                  ) : (
+                    candidature.Réponse_Entretien === 'accepted' ? (
+                      <span>Entretien Accepted</span>
+                    ) : (
+                      <span>Conditions not met for accepting Entretien</span>
+                    )
+                  )}
+
                 </td>
               </tr>
             ))}
