@@ -15,15 +15,22 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   ChefFiliere.associate = (models) => {
+    // Association with Etudiant table
     ChefFiliere.hasMany(models.Etudiant, {
       foreignKey: 'Filiere_Etudiant', 
       as: 'Etudiants',
     });
 
-    // Add association with OffreFlag
+    // Association with OffreFlag table
     ChefFiliere.hasMany(models.OffreFlag, {
       foreignKey: 'ID_CDF', 
       as: 'OffreFlags',
+    });
+
+    // Association with Candidature table
+    ChefFiliere.hasMany(models.Candidature, {
+      foreignKey: 'ID_CDF',
+      as: 'Candidatures',
     });
   };
 

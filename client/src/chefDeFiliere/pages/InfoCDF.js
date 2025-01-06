@@ -93,7 +93,7 @@ const InfoCDF = () => {
 
           {!loading && !error && !chefFiliere && <p>No data found.</p>}
         </main>
-        <Footer />
+        
       </div>
     </div>
   );

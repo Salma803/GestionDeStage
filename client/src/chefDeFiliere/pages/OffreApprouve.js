@@ -24,35 +24,33 @@ const OffreApprouve = () => {
             accessToken: sessionStorage.getItem("accessToken"),
           },
         });
-        setUserId(response.data.ID_CDF);
-        await fetchApprovedOffers(response.data.ID_CDF);
+        const userId = response.data.ID_CDF;
+        setUserId(userId);
+        await fetchApprovedOffers(userId);
       } catch (error) {
-        setError('Failed to fetch user data');
+        setError('Failed to fetch user data.');
         console.error('Error fetching user data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-const fetchApprovedOffers = async (id) => {
-  try {
-    const response = await axios.get(`http://localhost:3001/chefdefiliere/approvedOffers/${id}`);
-    
-    if (!response.status === 404) {
-      setError('No approved offers found.');
-      setApprovedOffers([]); // Set empty array if no offers
-    } else if (response.status === 500) {
-      setError('Failed to fetch approved offers');
-      setApprovedOffers([]); // Set empty array in case of server error
-    } else {
-      setApprovedOffers(response.data || []); // Set approved offers data
-    }
-  } catch (error) {
-    
-    setApprovedOffers([]); // Set empty array if error occurs
-  }
-};
-
+    const fetchApprovedOffers = async (id) => {
+      try {
+        const response = await axios.get(`http://localhost:3001/chefdefiliere/approvedOffers/${id}`);
+        if (response.status === 200 && response.data) {
+          setApprovedOffers(response.data);
+        } else if (response.status === 404) {
+          setError('No approved offers found.');
+          setApprovedOffers([]);
+        } else {
+          throw new Error('Unexpected server response');
+        }
+      } catch (error) {
+        
+        setApprovedOffers([]);
+      }
+    };
 
     fetchUserData();
   }, []);
@@ -80,51 +78,61 @@ const fetchApprovedOffers = async (id) => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-          
-  
           <h1 className="offers-title">Liste des Offres Approuvées</h1>
           <div className="offers-cards-container">
-            {approvedOffers.map((offerFlag) => {
-              const offer = offerFlag.Offre || {};
-              const company = offer.Company || {};
-  
-              return (
-                <div key={offerFlag.ID_Flag || offer.ID_Offre} className="offer-card">
-                  <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
-                  <p className="offer-description">
-                    <strong>Description:</strong> {offer.Description_Offre || "No description available"}
-                  </p>
-                  <p className="offer-status">
-                    <strong>Status:</strong> {offer.Status_Offre || "Pending"}
-                  </p>
-                  <p className="offer-keywords">
-                    <strong>Keywords:</strong> {offer.Keywords_Offre ? offer.Keywords_Offre.join(", ") : "N/A"}
-                  </p>
-                  <div className="company-info">
-                    {company ? (
-                      <>
-                        <p>
-                          <strong>Company:</strong> {company.Nom_Entreprise || "N/A"}
-                        </p>
-                        <p>
-                          <strong>Email:</strong> {company.Email_Entreprise || "N/A"}
-                        </p>
-                      </>
-                    ) : (
-                      <p>No company information available</p>
-                    )}
+            {approvedOffers.length > 0 ? (
+              approvedOffers.map((offerFlag) => {
+                const offer = offerFlag.Offre || {};
+                const company = offer.Company || {};
+
+                return (
+                  <div key={offerFlag.ID_Flag || offer.ID_Offre} className="offer-card">
+                    <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
+                <p className="offer-description">
+                  <strong>Description du stage:</strong>{" "}
+                  {offer.Description_Offre || "No description available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Durée du stage:</strong>{" "}
+                  {offer.Durée || "No Duree available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Période || "No period available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Keywords_Offre || "No Keywords available"}
+                </p>
+
+                <p className="offer-status">
+                  <strong>Status:</strong> {offer.Status_Offre || "Pending"}
+                </p>
+                    <div className="company-info">
+                      {company ? (
+                        <>
+                          <p>
+                            <strong>Company:</strong> {company.Nom_Entreprise || "N/A"}
+                          </p>
+                          <p>
+                            <strong>Email:</strong> {company.Email_Entreprise || "N/A"}
+                          </p>
+                        </>
+                      ) : (
+                        <p>No company information available</p>
+                      )}
+                    </div>
                   </div>
-                  
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <p className="text-center">No approved offers available.</p>
+            )}
           </div>
         </main>
-      
       </div>
     </div>
   );
-}
-  
+};
 
 export default OffreApprouve;

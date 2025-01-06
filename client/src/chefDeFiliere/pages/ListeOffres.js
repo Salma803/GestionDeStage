@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import UseAuth from "../hooks/UseAuth";
 import NavBar from "../Components/NavBar";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
@@ -8,6 +10,8 @@ import SideNav from "../Components/SideNav";
 import '../css/ListeOffres.css';
 
 const ListeOffres = () => {
+  const isAuthenticated = UseAuth();
+    const navigate = useNavigate();
   const [offres, setOffres] = useState([]);
   const [comments, setComments] = useState({});
   const [editingOfferId, setEditingOfferId] = useState(null);
@@ -18,21 +22,31 @@ const ListeOffres = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/chefdefiliere/me', {
-          headers: {
-            accessToken: sessionStorage.getItem("accessToken"),
-          },
+        const token = sessionStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("Access token is missing");
+        }
+
+        const response = await axios.get("http://localhost:3001/chefdefiliere/me", {
+          headers: { accessToken: token },
         });
+
+        if (!response.data || !response.data.ID_CDF) {
+          throw new Error("Invalid user data received");
+        }
+
         setIdCdf(response.data.ID_CDF);
         await fetchOffers();
       } catch (error) {
-        setError('Failed to fetch user data');
-        console.error('Error fetching user data:', error);
+        setError("Failed to fetch user data");
+        console.error("Error fetching user data:", error);
+        if (error.response && error.response.status === 401) {
+          navigate("/login");
+        }
       } finally {
         setLoading(false);
       }
     };
-
     const fetchOffers = async () => {
       try {
         const response = await axios.get("http://localhost:3001/entreprise/listeOffres");
@@ -108,9 +122,22 @@ const ListeOffres = () => {
               <div key={offer.ID_Offre} className="offer-card">
                 <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
                 <p className="offer-description">
-                  <strong>Description:</strong>{" "}
+                  <strong>Description du stage:</strong>{" "}
                   {offer.Description_Offre || "No description available"}
                 </p>
+                <p className="offer-description">
+                  <strong>Durée du stage:</strong>{" "}
+                  {offer.Durée || "No Duree available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Période || "No period available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Keywords_Offre || "No Keywords available"}
+                </p>
+
                 <p className="offer-status">
                   <strong>Status:</strong> {offer.Status_Offre || "Pending"}
                 </p>
@@ -118,16 +145,16 @@ const ListeOffres = () => {
                   {offer.Company ? (
                     <>
                       <p>
-                        <strong>Company:</strong> {offer.Company.Nom_Entreprise}
+                        <strong>Entreprise:</strong> {offer.Company.Nom_Entreprise}
                       </p>
                       <p>
                         <strong>Email:</strong> {offer.Company.Email_Entreprise}
                       </p>
                       <p>
-                        <strong>Phone:</strong> {offer.Company.Tel_Entreprise}
+                        <strong>Tel:</strong> {offer.Company.Tel_Entreprise}
                       </p>
                       <p>
-                        <strong>Address:</strong> {offer.Company.Adresse_Entreprise}
+                        <strong>Adresse:</strong> {offer.Company.Adresse_Entreprise}
                       </p>
                     </>
                   ) : (
@@ -179,7 +206,7 @@ const ListeOffres = () => {
             ))}
           </div>
         </main>
-        <Footer />
+        
       </div>
     </div>
   );

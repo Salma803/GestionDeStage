@@ -158,7 +158,7 @@ router.get('/approvedOffers/:id_cdf', async (req, res) => {
         {
           model: Offre,
           as: 'Offre',
-          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre', 'Status_Offre'], // Specify attributes to return
+           // Specify attributes to return
           include: [
             {
               model: Entreprise, // Include the company information
@@ -197,7 +197,7 @@ router.get('/disapprovedOffers/:id_cdf', async (req, res) => {
         {
           model: Offre,
           as: 'Offre',
-          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre', 'Status_Offre'], // Specify attributes to return
+           // Specify attributes to return
           include: [
             {
               model: Entreprise, // Include the company information
@@ -220,6 +220,93 @@ router.get('/disapprovedOffers/:id_cdf', async (req, res) => {
   }
 });
 
+// Route to fetch candidatures for Chef de Filière's students
+router.get('/candidatures/:id_cdf', async (req, res) => {
+  const { id_cdf } = req.params; // Extract Chef de Filière ID from params
+  console.log('Fetching candidatures for Chef de Filière ID:', id_cdf);
+
+  try {
+    // Fetch candidatures for students managed by the Chef de Filière with the given conditions
+    const candidatures = await Candidature.findAll({
+      include: [
+        {
+          model: Etudiant,
+          as: 'Etudiant', // Assuming 'Etudiant' is the alias for the associated student
+          where: { 
+            Filiere_Etudiant: id_cdf // Ensure the student's Filiere matches the Chef de Filière
+          },
+          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant'], // Student details
+        },
+        {
+          model: Offre,
+          as: 'Offre', // Assuming 'Offre' is the alias for the associated offer
+          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre'], // Offer details
+        },
+      ],
+      where: {
+        Réponse_Entreprise: 'accepted', // Filter only candidatures where the company's response is accepted
+      }
+    });
+
+    if (!candidatures || candidatures.length === 0) {
+      return res.status(404).json({ error: 'No candidatures found for this Chef de Filière' });
+    }
+
+    // Send the candidatures as the response
+    res.status(200).json(candidatures);
+  } catch (error) {
+    console.error('Error fetching candidatures:', error);
+    res.status(500).json({ error: 'Failed to fetch candidatures' });
+  }
+});
+
+// Endpoint to fetch student details using studentId
+router.get('/etudiant/:studentId', async (req, res) => {
+  const { studentId } = req.params;  // Get studentId from the request parameters
+  try {
+    // Find the student by ID
+    const student = await Etudiant.findOne({
+      where: { ID_Etudiant: studentId },
+
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });  // If no student is found
+    }
+
+    // Send back the student details
+    res.json(student);  // Return the student data
+  } catch (error) {
+    console.error('Error fetching student details:', error);
+    res.status(500).json({ error: 'Failed to fetch student details' });  // Handle errors
+  }
+});
+
+router.put('/candidature/accept/:cdfId/:candidatureId', async (req, res) => {
+  const { cdfId, candidatureId } = req.params;
+  const { response } = req.body;  // The new response value (should be 'accepted')
+
+  try {
+    // Check if the candidature exists
+    const candidature = await Candidature.findOne({
+      where: { ID_Candidature: candidatureId },
+    });
+
+    if (!candidature) {
+      return res.status(404).json({ error: 'Candidature not found' });
+    }
+
+    // Update the Réponse_CDF field and store the CDF's ID in the Candidature model
+    candidature.Réponse_CDF = response;  // Set response to 'accepted'
+    candidature.ID_CDF = cdfId; // Store the Chef de Filière's ID directly
+    await candidature.save();
+
+    res.status(200).json({ success: true, message: 'Candidature accepted successfully' });
+  } catch (err) {
+    console.error('Error accepting candidature:', err);
+    res.status(500).json({ error: 'Failed to accept candidature' });
+  }
+});
 
 
 module.exports = router;

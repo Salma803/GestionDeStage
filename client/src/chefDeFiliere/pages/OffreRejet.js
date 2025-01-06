@@ -40,26 +40,31 @@ const OffreRejet = () => {
       }
     };
 
+
     const fetchDisapprovedOffers = async (id) => {
       try {
         const response = await axios.get(`http://localhost:3001/chefdefiliere/disapprovedOffers/${id}`);
-        
-        if (response.data.message) {
-          setError(response.data.message); // Set the message as the error
-          setDisapprovedOffers([]); // Set empty array if no offers
+        if (response.status === 200 && response.data) {
+          setDisapprovedOffers(response.data);
+        } else if (response.status === 404) {
+          setError('No approved offers found.');
+          setDisapprovedOffers([]);
         } else {
-          setDisapprovedOffers(response.data || []); // Set disapproved offers data
+          throw new Error('Unexpected server response');
         }
       } catch (error) {
         
-        setDisapprovedOffers([]); // Set empty array if error
+        setDisapprovedOffers([]);
       }
     };
-    
-    
 
     fetchUserData();
   }, []);
+
+    
+    
+
+
 
   if (loading) {
     return (
@@ -84,47 +89,58 @@ const OffreRejet = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-          
-  
-          <h1 className="offers-title">Liste des Offres Desapprouvés</h1>
+          <h1 className="offers-title">Liste des Offres Rejetés</h1>
           <div className="offers-cards-container">
-            {disapprovedOffers.map((offerFlag) => {
-              const offer = offerFlag.Offre || {};
-              const company = offer.Company || {};
-  
-              return (
-                <div key={offerFlag.ID_Flag || offer.ID_Offre} className="offer-card">
-                  <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
-                  <p className="offer-description">
-                    <strong>Description:</strong> {offer.Description_Offre || "No description available"}
-                  </p>
-                  <p className="offer-status">
-                    <strong>Status:</strong> {offer.Status_Offre || "Pending"}
-                  </p>
-                  <p className="offer-keywords">
-                    <strong>Keywords:</strong> {offer.Keywords_Offre ? offer.Keywords_Offre.join(", ") : "N/A"}
-                  </p>
-                  <div className="company-info">
-                    {company ? (
-                      <>
-                        <p>
-                          <strong>Company:</strong> {company.Nom_Entreprise || "N/A"}
-                        </p>
-                        <p>
-                          <strong>Email:</strong> {company.Email_Entreprise || "N/A"}
-                        </p>
-                      </>
-                    ) : (
-                      <p>No company information available</p>
-                    )}
+            {disapprovedOffers.length > 0 ? (
+              disapprovedOffers.map((offerFlag) => {
+                const offer = offerFlag.Offre || {};
+                const company = offer.Company || {};
+
+                return (
+                  <div key={offerFlag.ID_Flag || offer.ID_Offre} className="offer-card">
+                    <h2 className="offer-title">{offer.Titre_Offre || "No Title"}</h2>
+                <p className="offer-description">
+                  <strong>Description du stage:</strong>{" "}
+                  {offer.Description_Offre || "No description available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Durée du stage:</strong>{" "}
+                  {offer.Durée || "No Duree available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Période || "No period available"}
+                </p>
+                <p className="offer-description">
+                  <strong>Mots-clés du stage:</strong>{" "}
+                  {offer.Keywords_Offre || "No Keywords available"}
+                </p>
+
+                <p className="offer-status">
+                  <strong>Status:</strong> {offer.Status_Offre || "Pending"}
+                </p>
+                    <div className="company-info">
+                      {company ? (
+                        <>
+                          <p>
+                            <strong>Company:</strong> {company.Nom_Entreprise || "N/A"}
+                          </p>
+                          <p>
+                            <strong>Email:</strong> {company.Email_Entreprise || "N/A"}
+                          </p>
+                        </>
+                      ) : (
+                        <p>No company information available</p>
+                      )}
+                    </div>
                   </div>
-                  
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <p className="text-center">No diapproved offers available.</p>
+            )}
           </div>
         </main>
-      
       </div>
     </div>
   );

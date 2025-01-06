@@ -8,9 +8,12 @@ const CreerOffre = () => {
   const [formData, setFormData] = useState({
     titre_offre: '',
     description_offre: '',
-    status_offre: '',
-    keywords_offre: '', // We will split this into an array when sending
-    id_company: '', // This will be set automatically based on user data
+    status_offre: 'open', // Default value
+    keywords_offre: '',
+    id_company: '', // Set automatically
+    duree: '',
+    periode: '',
+    tuteur: '',
   });
 
   const [error, setError] = useState('');
@@ -48,22 +51,22 @@ const CreerOffre = () => {
     setError('');
     setSuccess('');
 
-    // Convert the comma-separated keywords string to an array
-    const keywordsArray = formData.keywords_offre
-      ? formData.keywords_offre.split(',').map((keyword) => keyword.trim())
-      : [];
-
-    const dataToSend = { ...formData, keywords_offre: keywordsArray };
-
     try {
-      const response = await axios.post('http://localhost:3001/entreprise/creerOffre', dataToSend);
+      const response = await axios.post('http://localhost:3001/entreprise/creerOffre', formData, {
+        headers: {
+          accessToken: sessionStorage.getItem("accessToken"),
+        },
+      });
       setSuccess('Offer created successfully!');
       setFormData({
         titre_offre: '',
         description_offre: '',
-        status_offre: '',
+        status_offre: 'open', // Reset to default
         keywords_offre: '',
-        id_company: userId, // Keep the company ID unchanged after successful submission
+        id_company: userId, // Keep company ID
+        duree: '',
+        periode: '',
+        tuteur: '',
       });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create offer');
@@ -101,14 +104,15 @@ const CreerOffre = () => {
         </Form.Group>
         <Form.Group className="mb-3" controlId="status_offre">
           <Form.Label>Status</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter offer status (open/closed)"
+          <Form.Select
             name="status_offre"
             value={formData.status_offre}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3" controlId="keywords_offre">
           <Form.Label>Keywords</Form.Label>
@@ -117,6 +121,36 @@ const CreerOffre = () => {
             placeholder="Enter keywords (comma-separated)"
             name="keywords_offre"
             value={formData.keywords_offre}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="duree">
+          <Form.Label>Duration</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter duration"
+            name="duree"
+            value={formData.duree}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="periode">
+          <Form.Label>Period</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter period"
+            name="periode"
+            value={formData.periode}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="tuteur">
+          <Form.Label>Tutor</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter tutor name"
+            name="tuteur"
+            value={formData.tuteur}
             onChange={handleChange}
           />
         </Form.Group>
