@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const { OffreFlag, Offre,ChefFiliere,Entreprise,Etudiant } = require('../models');
+const { OffreFlag, Offre,ChefFiliere,Entreprise, Etudiant, Candidature, ChefDeFiliere  } = require('../models');
 
 const { validateToken } = require('../middlewares/AuthMiddleware');
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Offre, Entreprise,OffreFlag } = require('../models');
+const { Offre, Entreprise,OffreFlag, Candidature, Etudiant, ChefFiliere } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validateToken } = require('../middlewares/AuthMiddleware');
@@ -277,6 +277,86 @@ router.put('/candidature/accept/:entrepriseId/:candidatureId', async (req, res) 
     res.status(500).json({ error: 'Failed to accept candidature' });
   }
 });
+
+// Route to view all candidatures for an offer by entreprise
+router.get('/candidatures/:entrepriseId/:offerId', async (req, res) => {
+  const { entrepriseId, offerId } = req.params;
+
+  try {
+    // Check if the offer belongs to the entreprise
+    const offer = await Offre.findOne({
+      where: { 
+        ID_Offre: offerId,
+        ID_Company: entrepriseId 
+      }
+    });
+
+    if (!offer) {
+      return res.status(404).json({ error: 'Offer not found or does not belong to this entreprise' });
+    }
+
+    // Fetch candidatures for the offer
+    const candidatures = await Candidature.findAll({
+      where: { ID_Offre: offerId },
+      include: [
+        {
+          model: Etudiant,
+          as: 'Etudiant',  // Using the alias defined in the model
+          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant', 'CV_Etudiant','Annee_Etudiant'],
+        },
+      ],
+    });
+
+    if (candidatures.length === 0) {
+      return res.status(404).json({ error: 'No candidatures found for this offer' });
+    }
+
+    res.status(200).json(candidatures);
+  } catch (error) {
+    console.error('Error fetching candidatures for entreprise:', error);
+    res.status(500).json({ error: 'Failed to fetch candidatures' });
+  }
+});
+
+// Route to modify Réponse_Entreprise when company accepts
+router.put('/candidature/accept/:entrepriseId/:candidatureId', async (req, res) => {
+  const { entrepriseId, candidatureId } = req.params;
+  const { response } = req.body;  // The new response value (should be 'accepted')
+
+  try {
+    // Check if the candidature exists and if it belongs to the right entreprise
+    const candidature = await Candidature.findOne({
+      where: { ID_Candidature: candidatureId },
+      include: [
+        {
+          model: Offre,
+          as: 'Offre',  // Assuming 'Offre' is the alias in the model
+          where: { ID_Company: entrepriseId },  // Check if the entreprise owns the offer
+        },
+      ],
+    });
+
+    if (!candidature) {
+      return res.status(404).json({ error: 'Candidature not found or does not belong to this entreprise' });
+    }
+
+    // Update the Réponse_Entreprise field
+    candidature.Réponse_Entreprise = response;  // 'accepted' or other status
+    await candidature.save();
+
+    res.status(200).json({ success: true, message: 'Candidature accepted successfully' });
+  } catch (err) {
+    console.error('Error accepting candidature:', err);
+    res.status(500).json({ error: 'Failed to accept candidature' });
+  }
+});
+
+
+
+
+
+
+
 
 
 module.exports = router;

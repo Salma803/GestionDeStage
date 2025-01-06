@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Container, Spinner, Alert, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';  // Import Link for navigation
+import { Table, Container, Spinner, Alert } from 'react-bootstrap';
 
-const CompanyOffers = ({companyId}) => {
+const OffreApprouve = () => {
   const [userId, setUserId] = useState(null);
-  const [offers, setOffers] = useState([]);
+  const [approvedOffers, setApprovedOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/entreprise/me', {
+        const response = await axios.get('http://localhost:3001/chefdefiliere/me', {
           headers: {
             accessToken: sessionStorage.getItem("accessToken"),
           },
         });
-        setUserId(response.data.ID_Entreprise);
-        await fetchOffers(response.data.ID_Entreprise);
+        setUserId(response.data.ID_CDF);
+        await fetchApprovedOffers(response.data.ID_CDF);
       } catch (error) {
         setError('Failed to fetch user data');
         console.error('Error fetching user data:', error);
@@ -27,27 +26,34 @@ const CompanyOffers = ({companyId}) => {
       }
     };
 
-    const fetchOffers = async (id) => {
-      try {
-        const response = await axios.get(`http://localhost:3001/entreprise/offresParEntreprise/${id}`);
-        setOffers(response.data);
-      } catch (err) {
-        const errMsg = err.response?.data?.error || 'Failed to fetch offers';
-        setError(errMsg);
-        console.error('Error fetching offers:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+const fetchApprovedOffers = async (id) => {
+  try {
+    const response = await axios.get(`http://localhost:3001/chefdefiliere/approvedOffers/${id}`);
+    
+    if (!response.status === 404) {
+      setError('No approved offers found.');
+      setApprovedOffers([]); // Set empty array if no offers
+    } else if (response.status === 500) {
+      setError('Failed to fetch approved offers');
+      setApprovedOffers([]); // Set empty array in case of server error
+    } else {
+      setApprovedOffers(response.data || []); // Set approved offers data
+    }
+  } catch (error) {
+    
+    setApprovedOffers([]); // Set empty array if error occurs
+  }
+};
+
 
     fetchUserData();
-  }, [companyId]);
+  }, []);
 
   if (loading) {
     return (
       <Container className="text-center mt-5">
         <Spinner animation="border" variant="primary" />
-        <p>Loading offers...</p>
+        <p>Loading approved offers...</p>
       </Container>
     );
   }
@@ -62,8 +68,10 @@ const CompanyOffers = ({companyId}) => {
 
   return (
     <Container className="mt-5">
-      <h2>Offers for Company ID: {companyId}</h2>
-      {offers.length > 0 ? (
+      <h2>Approved Offers</h2>
+      {approvedOffers.length === 0 ? (
+        <Alert variant="info">No approved offers found.</Alert>
+      ) : (
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -73,38 +81,33 @@ const CompanyOffers = ({companyId}) => {
               <th>Status</th>
               <th>Keywords</th>
               <th>Company Name</th>
-              <th>Actions</th>  {/* New column for actions */}
+              <th>Company Email</th>
             </tr>
           </thead>
           <tbody>
-            {offers.map((offer) => {
+            {approvedOffers.map((offerFlag) => {
+              const offer = offerFlag.Offre || {};
               const company = offer.Company || {};
               return (
-                <tr key={offer.ID_Offre}>
-                  <td>{offer.ID_Offre}</td>
+                <tr key={offerFlag.ID_Flag || offer.ID_Offre}>
+                  <td>{offer.ID_Offre || 'N/A'}</td>
                   <td>{offer.Titre_Offre || 'N/A'}</td>
                   <td>{offer.Description_Offre || 'N/A'}</td>
                   <td>{offer.Status_Offre || 'N/A'}</td>
                   <td>{offer.Durée || 'N/A'}</td>
                   <td>{offer.Période || 'N/A'}</td>
                   <td>{offer.Tuteur || 'N/A'}</td>
-                  <td>{offer.Keywords_Offre || 'N/A'}</td>
+                  <td>{offer.Keywords_Offre ? offer.Keywords_Offre.join(', ') : 'N/A'}</td>
                   <td>{company.Nom_Entreprise || 'N/A'}</td>
-                  <td>
-                    <Link to={`/entreprise/candidatures/${offer.ID_Offre}`}>
-                      <Button variant="info">Consulter Candidature</Button>
-                    </Link>
-                  </td>
+                  <td>{company.Email_Entreprise || 'N/A'}</td>
                 </tr>
               );
             })}
           </tbody>
         </Table>
-      ) : (
-        <Alert variant="info">No offers found for this company.</Alert>
       )}
     </Container>
   );
 };
 
-export default CompanyOffers;
+export default OffreApprouve;

@@ -79,6 +79,7 @@ const StudentProfile = () => {
         <p><strong>Phone:</strong> {student?.Tel_Etudiant}</p>
         <p><strong>Field of Study:</strong> {student?.Filiere_Etudiant}</p>
         <p><strong>Date of Birth:</strong> {student?.Date_Naissance_Etudiant}</p>
+        <p><strong>Annee:</strong> {student?.Annee_Etudiant}</p>
         <p><strong>Search Status:</strong> {student?.Statut_Recherche === 'false' ? "Not Searching" : "Searching"}</p>
       </div>
 
