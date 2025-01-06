@@ -23,10 +23,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           allowNull: true,
         },
-        Réponse_Etudiant: {
-          type: DataTypes.STRING,
-          allowNull: true,
-        },
         Réponse_CDF: {
           type: DataTypes.STRING,
           allowNull: true,

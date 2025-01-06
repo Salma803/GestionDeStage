@@ -261,8 +261,7 @@ router.post('/candidater', async (req, res) => {
     await Candidature.create({
       ID_Etudiant,
       ID_Offre,
-      Réponse_Entreprise: 'pending', // Initially, no response from the company
-      Réponse_Etudiant: 'pending', // The student is waiting for a response
+      Réponse_Entreprise: 'pending', // Initially, no response from the company // The student is waiting for a response
       Réponse_CDF: 'pending' // The offer is awaiting review by the Chef de Filière
     });
 
@@ -359,7 +358,6 @@ router.put('/candidature/updateResponse/:candidatureId', async (req, res) => {
     }
 
     // Update the Réponse_Etudiant field
-    candidature.Réponse_Etudiant = response;
     await candidature.save();
 
     res.status(200).json({ success: true, message: 'Response updated successfully' });

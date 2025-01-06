@@ -34,7 +34,7 @@ router.get('/find/:cdfId', async (req, res) => {
   }
 });
 
-router.get('/etudiant/:cdfId', async (req, res) => {
+router.get('/etudiants/:cdfId', async (req, res) => {
   const { cdfId } = req.params; // Correctly extract cdfId
   try {
     // Find all students with the given ID_CDF

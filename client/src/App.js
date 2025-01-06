@@ -27,7 +27,7 @@ import OffreRejet from "./chefDeFiliere/pages/OffreRejet";
 import LoginPage from "./chefDeFiliere/pages/LoginCDF";
 import InfoCDF from "./chefDeFiliere/pages/InfoCDF";
 import EtudiantsCDF from "./chefDeFiliere/pages/EtudiantsCDF";
-import ListeCandidatures from "./chefDeFiliere/CandidatureCDF";
+import ListeCandidatures from "./chefDeFiliere/pages/CandidatureCDF";
 // Routes for entreprise
 import CreerOffre from "./entreprise/CreerOffre";
 import ConsulterOffres from "./entreprise/ConsulterOffres";

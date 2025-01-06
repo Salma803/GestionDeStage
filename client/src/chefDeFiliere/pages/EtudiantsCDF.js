@@ -37,7 +37,7 @@ const EtudiantsCDF = () => {
       const fetchEtudiants = async () => {
         setLoading(true);
         try {
-          const response = await axios.get(`http://localhost:3001/chefdefiliere/etudiant/${cdfId}`, {
+          const response = await axios.get(`http://localhost:3001/chefdefiliere/etudiants/${cdfId}`, {
             headers: {
               accessToken: sessionStorage.getItem("accessToken"),
             },

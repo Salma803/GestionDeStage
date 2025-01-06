@@ -114,39 +114,6 @@ const CreerOffre = () => {
             <option value="closed">Closed</option>
           </Form.Select>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="Durée">
-          <Form.Label>Durée</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter offer duration"
-            name="Durée"
-            value={formData.Durée}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="Période">
-          <Form.Label>Période</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter offer period"
-            name="Période"
-            value={formData.Période}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="Tuteur">
-          <Form.Label>Tuteur</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter supervisor's name"
-            name="Tuteur"
-            value={formData.Tuteur}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
         <Form.Group className="mb-3" controlId="keywords_offre">
           <Form.Label>Keywords</Form.Label>
           <Form.Control

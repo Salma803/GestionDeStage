@@ -115,6 +115,15 @@ const ListeOffres = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
+          <div>
+                <Link to="/chefdefiliere/offresapprouvees">Offres approuvées</Link>
+                </div>
+                <div>
+                  <Link to="/chefdefiliere/offresrejetees">Offres rejetées</Link>
+                </div>
+                <div>
+                  <Link to="/chefdefiliere/candidatures">Voir les Candidatures</Link>
+                </div>
           
           <h1 className="offers-title">Liste des Offres</h1>
           <div className="offers-cards-container">
