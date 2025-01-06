@@ -85,6 +85,9 @@ const CompanyOffers = ({companyId}) => {
                   <td>{offer.Titre_Offre || 'N/A'}</td>
                   <td>{offer.Description_Offre || 'N/A'}</td>
                   <td>{offer.Status_Offre || 'N/A'}</td>
+                  <td>{offer.Durée || 'N/A'}</td>
+                  <td>{offer.Période || 'N/A'}</td>
+                  <td>{offer.Tuteur || 'N/A'}</td>
                   <td>{offer.Keywords_Offre || 'N/A'}</td>
                   <td>{company.Nom_Entreprise || 'N/A'}</td>
                   <td>

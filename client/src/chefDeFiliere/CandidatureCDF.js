@@ -146,6 +146,7 @@ const ListeCandidatures = () => {
                                         <p><strong>Phone:</strong> {studentDetail.Tel_Etudiant || "N/A"}</p>
                                         <p><strong>Date of Birth:</strong> {studentDetail.Date_Naissance_Etudiant || "N/A"}</p>
                                         <p><strong>Filière:</strong> {studentDetail.Filiere_Etudiant || "N/A"}</p>
+                                        <p><strong>Année:</strong> {studentDetail.Annee_Etudiant || "N/A"}</p>
                                         <p>
                                             {studentDetail.CV_Etudiant ? (
                                                 <Button

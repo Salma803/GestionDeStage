@@ -13,6 +13,7 @@ const ModifyStudent = () => {
     Tel_Etudiant: '',
     CV_Etudiant: '',
     Filiere_Etudiant: '',
+    Annee_Etudiant: '',
     Statut_Recherche: '',
     MotDePasse_Etudiant: ''
   });
@@ -125,6 +126,15 @@ const ModifyStudent = () => {
             type="text"
             name="Filiere_Etudiant"
             value={student.Filiere_Etudiant}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Année</label>
+          <input
+            type="text"
+            name="Annee_Etudiant"
+            value={student.Annee_Etudiant}
             onChange={handleChange}
           />
         </div>

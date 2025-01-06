@@ -143,6 +143,7 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
               Email_Etudiant: student.Email_Etudiant,
               Tel_Etudiant: student.Tel_Etudiant,
               Filiere_Etudiant: student.Filiere_Etudiant,
+              Annee_Etudiant: student.Annee_Etudiant,
               MotDePasse_Etudiant: generateRandomPassword(), // Generate a random password here
             });
           }
@@ -317,6 +318,7 @@ router.put('/student/:id', async (req, res) => {
     Email_Etudiant,
     Tel_Etudiant,
     Filiere_Etudiant,
+    Annee_Etudiant,
     Statut_Recherche,
     MotDePasse_Etudiant,
   } = req.body;
@@ -338,6 +340,7 @@ router.put('/student/:id', async (req, res) => {
       Email_Etudiant,
       Tel_Etudiant,
       Filiere_Etudiant,
+      Annee_Etudiant,
       Statut_Recherche,
       MotDePasse_Etudiant,
     });

@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       Keywords_Offre: {
-        type: DataTypes.JSON, // Store keywords as JSON
+        type: DataTypes.STRING,
       },
       Status_Offre: {
         type: DataTypes.STRING,
@@ -25,6 +25,25 @@ module.exports = (sequelize, DataTypes) => {
       ID_Company: {
         type: DataTypes.INTEGER,
         allowNull: false, // Ensure every offer is associated with a company
+      },
+      // New fields added below
+      Durée: {
+        type: DataTypes.STRING, // Adjust type if you prefer a specific format
+        allowNull: false, // Ensure duration is mandatory
+        validate: {
+          notEmpty: true,
+        },
+      },
+      Période: {
+        type: DataTypes.STRING, // Adjust type if necessary
+        allowNull: false, // Ensure period is mandatory
+        validate: {
+          notEmpty: true,
+        },
+      },
+      Tuteur: {
+        type: DataTypes.STRING, // Store the supervisor's name
+        allowNull: true, // Supervisor field can be optional
       },
     },
     {

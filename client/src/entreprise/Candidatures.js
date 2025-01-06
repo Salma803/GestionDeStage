@@ -107,6 +107,7 @@ const CandidaturesEntreprise = () => {
               <th>Student Name</th>
               <th>Email</th>
               <th>Filière</th>
+              <th>Annee</th>
               <th>CV</th> {/* New column for CV button */}
               <th>Réponse Entreprise</th>
             </tr>
@@ -118,6 +119,7 @@ const CandidaturesEntreprise = () => {
                 <td>{candidature.Etudiant.Nom_Etudiant} {candidature.Etudiant.Prenom_Etudiant}</td>
                 <td>{candidature.Etudiant.Email_Etudiant}</td>
                 <td>{candidature.Etudiant.Filiere_Etudiant}</td>
+                <td>{candidature.Etudiant.Annee_Etudiant}</td>
                 <td>
                   {/* Check if the CV filename exists, then display a button */}
                   {candidature.Etudiant.CV_Etudiant ? (

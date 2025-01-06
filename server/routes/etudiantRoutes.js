@@ -88,6 +88,7 @@ router.get('/me', validateToken, async (req, res) => {
       Tel_Etudiant: student.Tel_Etudiant,
       Filiere_Etudiant: student.Filiere_Etudiant,
       Statut_Recherche: student.Statut_Recherche,
+      Annee_Etudiant: student.Annee_Etudiant,
       CV_Etudiant: student.CV_Etudiant
     });
   } catch (error) {

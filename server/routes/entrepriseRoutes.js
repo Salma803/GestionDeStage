@@ -100,6 +100,9 @@ router.post('/creerOffre', async (req, res) => {
     description_offre: Description_Offre,
     status_offre: Status_Offre,
     keywords_offre: Keywords_Offre,
+    Durée: Durée,
+    Période: Période,
+    Tuteur: Tuteur,
     id_company: ID_Company,
   } = req.body;
 
@@ -132,6 +135,9 @@ router.post('/creerOffre', async (req, res) => {
       Status_Offre,
       Keywords_Offre: Keywords_Offre || [], // Default to an empty array if not provided
       ID_Company,
+      Durée,
+      Période,
+      Tuteur,
     });
 
     res.status(201).json(nvOffre);
@@ -149,6 +155,9 @@ router.put('/offre/:id', async (req, res) => {
     titre_offre: Titre_Offre,
     description_offre: Description_Offre,
     status_offre: Status_Offre,
+    Durée: Durée,
+    Période: Période,
+    Tuteur: Tuteur,
     keywords_offre: Keywords_Offre
   } = req.body;
 
@@ -169,6 +178,9 @@ router.put('/offre/:id', async (req, res) => {
     offer.Description_Offre = Description_Offre || offer.Description_Offre;
     offer.Status_Offre = Status_Offre || offer.Status_Offre;
     offer.Keywords_Offre = Keywords_Offre || offer.Keywords_Offre;
+    offer.Durée = Durée || offer.Durée;
+    offer.Période = Période || offer.Période;
+    offer.Tuteur = Tuteur || offer.Tuteur;
 
     await offer.save();
 
@@ -232,7 +244,7 @@ router.get('/candidatures/:entrepriseId/:offerId', async (req, res) => {
         {
           model: Etudiant,
           as: 'Etudiant',  // Using the alias defined in the model
-          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant', 'CV_Etudiant'],
+          attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant', 'CV_Etudiant','Annee_Etudiant'],
         },
       ],
     });

@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     Filiere_Etudiant: {
       type: DataTypes.STRING, // Change to match the type of 'ID_CDF' in ChefFiliere
     },
+    Annee_Etudiant: DataTypes.STRING,
     Statut_Recherche: {
       type: DataTypes.STRING,
       defaultValue: 'false',  // Default value as a string 'false'

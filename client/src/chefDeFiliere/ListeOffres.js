@@ -110,6 +110,15 @@ const ListeOffres = () => {
             <p>
               <strong>Status:</strong> {offer.Status_Offre || "Pending"}
             </p>
+            <p>
+              <strong>Durée:</strong> {offer.Durée}
+            </p>
+            <p>
+              <strong>Période:</strong> {offer.Période}
+            </p>
+            <p>
+              <strong>Tuteur:</strong> {offer.Tuteur}
+            </p>
             <div className="company-info">
               {offer.Company ? (
                 <>

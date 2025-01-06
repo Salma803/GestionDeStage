@@ -63,6 +63,7 @@ const ListStudents = () => {
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
+            <th>Année</th>
             <th>Date de Naissance</th>
             <th>Téléphone</th>
             <th>CV</th>
@@ -78,6 +79,7 @@ const ListStudents = () => {
               <td>{student.Nom_Etudiant}</td>
               <td>{student.Prenom_Etudiant}</td>
               <td>{student.Email_Etudiant}</td>
+              <td>{student.Annee_Etudiant}</td>
               <td>{new Date(student.Date_Naissance_Etudiant).toLocaleDateString()}</td>
               <td>{student.Tel_Etudiant}</td>
               <td>

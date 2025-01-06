@@ -9,6 +9,9 @@ const CreerOffre = () => {
     titre_offre: '',
     description_offre: '',
     status_offre: '',
+    Durée: '',
+    Période: '',
+    Tuteur: '',
     keywords_offre: '', // We will split this into an array when sending
     id_company: '', // This will be set automatically based on user data
   });
@@ -62,6 +65,9 @@ const CreerOffre = () => {
         titre_offre: '',
         description_offre: '',
         status_offre: '',
+        Durée: '',
+        Période: '',
+        Tuteur: '',
         keywords_offre: '',
         id_company: userId, // Keep the company ID unchanged after successful submission
       });
@@ -106,6 +112,39 @@ const CreerOffre = () => {
             placeholder="Enter offer status (open/closed)"
             name="status_offre"
             value={formData.status_offre}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="Durée">
+          <Form.Label>Durée</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter offer duration"
+            name="Durée"
+            value={formData.Durée}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="Période">
+          <Form.Label>Période</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter offer period"
+            name="Période"
+            value={formData.Période}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="Tuteur">
+          <Form.Label>Tuteur</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter supervisor's name"
+            name="Tuteur"
+            value={formData.Tuteur}
             onChange={handleChange}
             required
           />

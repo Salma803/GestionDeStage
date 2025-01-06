@@ -100,6 +100,10 @@ const OfferDetails = () => {
       <h3>{offer.Titre_Offre}</h3>
       <p>{offer.Description_Offre}</p>
       <p><strong>Status:</strong> {offer.Status_Offre}</p>
+      <p><strong>Durée:</strong> {offer.Durée}</p>
+      <p><strong>Période:</strong> {offer.Période}</p>
+      <p><strong>Tuteur:</strong> {offer.Tuteur}</p>
+      
 
       {/* Company Details */}
       <div className="company-details">
