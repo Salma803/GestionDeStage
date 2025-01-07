@@ -7,7 +7,7 @@ const ListInternships = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch all internships
+    // Récupérer tous les stages
     axios
       .get('http://localhost:3001/gestionnaire/internships')
       .then((response) => {
@@ -15,14 +15,46 @@ const ListInternships = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching internships:', error);
-        setError('An error occurred while fetching internships.');
+        console.error('Erreur lors de la récupération des stages :', error);
+        setError('Une erreur s\'est produite lors de la récupération des stages.');
         setLoading(false);
       });
   }, []);
 
+  const handleGenerateConvention = (idStage) => {
+    console.log(`Génération de la convention pour le stage ID: ${idStage}`);
+  
+    axios
+      .post(
+        `http://localhost:3001/gestionnaire/internships/${idStage}/generate-convention`, 
+        {}, // Send an empty object if no body is required
+        { responseType: 'blob' } // Expect a Blob (binary data) response
+      )
+      .then((response) => {
+        // Create a URL for the binary data
+        const pdfUrl = window.URL.createObjectURL(new Blob([response.data]));
+        
+        // Create a download link and trigger download
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.setAttribute('download', `convention-${idStage}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        
+        // Revoke the object URL to free memory
+        window.URL.revokeObjectURL(pdfUrl);
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la génération de la convention:', error);
+        alert(`Erreur lors de la génération de la convention pour le stage ID: ${idStage}`);
+      });
+};
+
+  
+
   if (loading) {
-    return <p>Loading internships...</p>;
+    return <p>Chargement des stages...</p>;
   }
 
   if (error) {
@@ -31,27 +63,28 @@ const ListInternships = () => {
 
   return (
     <div>
-      <h1>List of Internships</h1>
+      <h1>Liste des Stages</h1>
       <table>
         <thead>
           <tr>
             <th>ID Stage</th>
-            <th>Student ID</th>
-            <th>Student Name</th>
-            <th>Date of Birth</th>
+            <th>ID Étudiant</th>
+            <th>Nom Étudiant</th>
+            <th>Date de Naissance</th>
             <th>Email</th>
-            <th>Phone</th>
+            <th>Téléphone</th>
             <th>Filière</th>
-            <th>Year</th>
-            <th>Company Name</th>
-            <th>Company Address</th>
-            <th>Company Phone</th>
-            <th>Company Email</th>
-            <th>Offer Title</th>
-            <th>Offer Description</th>
-            <th>Duration</th>
-            <th>Period</th>
-            <th>Supervisor</th>
+            <th>Année</th>
+            <th>Nom de l'Entreprise</th>
+            <th>Adresse de l'Entreprise</th>
+            <th>Téléphone de l'Entreprise</th>
+            <th>Email de l'Entreprise</th>
+            <th>Titre de l'Offre</th>
+            <th>Description de l'Offre</th>
+            <th>Durée</th>
+            <th>Période</th>
+            <th>Tuteur</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -76,6 +109,13 @@ const ListInternships = () => {
               <td>{stage.Durée}</td>
               <td>{stage.Période}</td>
               <td>{stage.Tuteur}</td>
+              <td>
+                <button
+                  onClick={() => handleGenerateConvention(stage.ID_Stage)}
+                >
+                  Générer Convention
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -52,7 +52,7 @@ const CandidaturesEntreprise = () => {
   useEffect(() => {
     console.log("Candidatures data:", candidatures);
   }, [candidatures]);
-  
+
 
   const handleDownloadCV = (cvFilename) => {
     const fileUrl = `http://localhost:3001/uploads/cvs/${cvFilename}`;
