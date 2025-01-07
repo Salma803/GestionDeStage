@@ -114,6 +114,7 @@ const StudentOffers = () => {
       {/* Add the View Profile Button */}
       <button onClick={handleViewProfile}>View Profile</button>
       <button onClick={handleViewCandidatures}>View My Candidatures</button>
+      <button onClick={() => navigate('/etudiant/entretiens')}>View My Entretiens</button>
 
 
       {/* Filter by Status Flag */}

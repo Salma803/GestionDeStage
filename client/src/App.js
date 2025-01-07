@@ -40,6 +40,8 @@ import StudentHome from "./etudiant/StudentHome";
 import OfferDetails from "./etudiant/OfferDetails"; 
 import StudentProfile from "./etudiant/StudentProfile ";
 import Candidatures from "./etudiant/Candidatures";
+import Entretiens from "./etudiant/Entretiens";
+
 
 function App() {
   return (
@@ -93,10 +95,9 @@ function App() {
             <Route path="/etudiant/offer/:offerId" element={<OfferDetails />} />
             <Route path="/etudiant/profile" element={<StudentProfile />} />
             <Route path="/etudiant/candidatures" element={<Candidatures />} />
-
-
-
-
+            <Route path="/etudiant/entretiens" element={<Entretiens />} />
+            
+          
           
           </Routes>
         </Router>
