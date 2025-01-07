@@ -49,8 +49,7 @@ const ListeCandidatures = () => {
                     setLoading(false);
                 })
                 .catch((error) => {
-                    setError("Error fetching candidatures. Please try again later.");
-                    console.error("Fetch candidatures error:", error);
+                    
                     setLoading(false);
                 });
         }
@@ -132,104 +131,116 @@ const ListeCandidatures = () => {
     }
 
     return (
-        <div className="liste-offres-page">
-          <SideNav />
-          <div className="content-area">
-            <Header />
-            <main className="offers-main">
-              <div>
-                <Link to="/chefDeFiliere/listeOffres" className="back-link">
-                  Back to Offers
-                </Link>
-              </div>
-              <h1 className="offers-title">Liste des Candidatures</h1>
-              <div className="offers-cards-container">
-                {candidatures.length > 0 ? (
-                  candidatures.map((candidature) => {
-                    const student = candidature.Etudiant;
-                    const studentDetail = studentDetails[student?.ID_Etudiant];
+      <div className="liste-offres-page">
+        <SideNav />
+        <div className="content-area">
+        <Header />
+        <main className="offers-main">
+          
+          <h1 className="offers-title">Liste des Candidatures</h1>
+          <div className="offers-cards-container">
+          {candidatures.length > 0 ? (
+            candidatures.map((candidature) => {
+            const student = candidature.Etudiant;
+            const studentDetail = studentDetails[student?.ID_Etudiant];
       
-                    return (
-                      <div
-                        key={candidature.ID_Candidature}
-                        className="offer-card"
-                      >
-                        <h2 className="offer-title">
-                          Internship Offer:{" "}
-                          {candidature.Offre?.Titre_Offre || "No Title"}
-                        </h2>
-                        <p className="offer-description">
-                          <strong>Response from Company:</strong>{" "}
-                          {candidature.Réponse_Entreprise || "Pending"}
-                        </p>
-                        {studentDetail ? (
-                          <div className="company-info">
-                            <h3 className="offers-title">Student Details</h3>
-                            <p>
-                              <strong>Name:</strong> {studentDetail.Nom_Etudiant}{" "}
-                              {studentDetail.Prenom_Etudiant}
-                            </p>
-                            <p>
-                              <strong>Email:</strong> {studentDetail.Email_Etudiant}
-                            </p>
-                            <p>
-                              <strong>Phone:</strong> {studentDetail.Tel_Etudiant}
-                            </p>
-                            <p>
-                              <strong>Date of Birth:</strong>{" "}
-                              {studentDetail.Date_Naissance_Etudiant}
-                            </p>
-                            <p>
-                              <strong>Filière:</strong>{" "}
-                              {studentDetail.Filiere_Etudiant}
-                            </p>
-                            <p>
-                              <strong>Year:</strong> {studentDetail.Annee_Etudiant}
-                            </p>
-                            <p>
-                              {studentDetail.CV_Etudiant ? (
-                                <button
-                                  className="view-cv-button"
-                                  onClick={() =>
-                                    handleDownloadCV(studentDetail.CV_Etudiant)
-                                  }
-                                >
-                                  View CV
-                                </button>
-                              ) : (
-                                "No CV available"
-                              )}
-                            </p>
-                          </div>
-                        ) : (
-                          <p className="loading-details">
-                            Loading student details...
-                          </p>
-                        )}
-                        {candidature.Réponse_CDF !== "accepted" && (
-                          <button
-                            className="accept-candidature-button"
-                            onClick={() =>
-                              handleAcceptCandidature(candidature.ID_Candidature)
-                            }
-                          >
-                            Accept Candidature
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="no-candidatures-message">
-                    No candidatures found.
-                  </p>
-                )}
+            return (
+              <div
+              key={candidature.ID_Candidature}
+              className="offer-card"
+              >
+              <h2 className="offer-title">
+                Offre de Stage:{" "}
+                {candidature.Offre?.Titre_Offre || "Pas de Titre"}
+              </h2>
+              <p className="offer-description">
+                <strong>Réponse de l'Entreprise:</strong>{" "}
+                {candidature.Réponse_Entreprise === "accepted" ? "Candidature acceptée" : "Candidature Refusée"|| "En attente"}
+              </p>
+              <p className="offer-description">
+                <strong>Votre Réponse:</strong>{" "}
+                {candidature.Réponse_CDF === "accepted" ? "Candidature acceptée" : "En attente"}
+              </p>
+              {studentDetail ? (
+                <div className="company-info">
+                <h3 className="offers-title">Détails de l'Étudiant</h3>
+                <p>
+                  <strong>Nom:</strong> {studentDetail.Nom_Etudiant}{" "}
+                  {studentDetail.Prenom_Etudiant}
+                </p>
+                <p>
+                  <strong>Email:</strong> {studentDetail.Email_Etudiant}
+                </p>
+                <p>
+                  <strong>Téléphone:</strong> {studentDetail.Tel_Etudiant}
+                </p>
+                <p>
+                  <strong>Date de Naissance:</strong>{" "}
+                  {studentDetail.Date_Naissance_Etudiant}
+                </p>
+                <p>
+                  <strong>Filière:</strong>{" "}
+                  {studentDetail.Filiere_Etudiant}
+                </p>
+                <p>
+                  <strong>Année:</strong> {studentDetail.Annee_Etudiant}
+                </p>
+                <p>
+                  {studentDetail.CV_Etudiant ? (
+                  <button
+                    className="btn btn-info"
+                    onClick={() =>
+                    handleDownloadCV(studentDetail.CV_Etudiant)
+                    }
+                  >
+                    Voir CV
+                  </button>
+                  ) : (
+                  "Pas de CV disponible"
+                  )}
+                </p>
+                </div>
+              ) : (
+                <p className="loading-details">
+                Chargement des détails de l'étudiant...
+                </p>
+              )}
+              {candidature.Réponse_CDF !== "accepted" && (
+                <button
+                className="btn btn-success"
+                onClick={() =>
+                  handleAcceptCandidature(candidature.ID_Candidature)
+                }
+                >
+                Accepter la Candidature
+                </button>
+              )}
               </div>
-            </main>
+            );
+            })
+          ) : (
+            <p 
+    className="text-center" 
+    style={{
+    fontSize: '1.2rem',
+    color: '#555',
+    backgroundColor: '#f8f9fa',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    marginTop: '20px',
+    textAlign: 'center',
+    }}
+  >
+    Pas de Candidatures trouvées.
+  </p>
+          )}
           </div>
+        </main>
         </div>
+      </div>
       );
       
-};
+  };
 
-export default ListeCandidatures;
+  export default ListeCandidatures;

@@ -37,23 +37,25 @@ const CreateEntreprise = () => {
 
   return (
     <div className="d-flex">
-      {/* Sidebar */}
+      {/* Barre latérale */}
       <SideNav />
 
       <div className="main-content w-100">
-        {/* Header */}
+        {/* En-tête */}
         <Header />
 
-        {/* Content */}
+        {/* Contenu */}
         <div className="container mt-4">
           <div className="card shadow-sm">
-          <h2 style={{ paddingTop :20 +'px'}} className="card-title text-center mb-4">Télécharger le fichiers CSV pour Créer les Entreprises</h2>
+            <h2 style={{ paddingTop: 20 + 'px' }} className="card-title text-center mb-4">
+              Télécharger le fichier CSV pour créer les Entreprises
+            </h2>
 
             <div className="card-body">
               <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 <div className="mb-3">
                   <label htmlFor="fileInput" className="form-label">
-                    Select CSV File
+                    Sélectionner le fichier CSV
                   </label>
                   <input
                     type="file"
@@ -63,10 +65,10 @@ const CreateEntreprise = () => {
                     onChange={handleFileChange}
                     required
                   />
-                  <div className="form-text">Only CSV files are supported.</div>
+                  <div className="form-text">Seuls les fichiers CSV sont pris en charge.</div>
                 </div>
                 <button type="submit" className="btn btn-primary w-100">
-                  Upload CSV
+                  Télécharger le CSV
                 </button>
               </form>
             </div>

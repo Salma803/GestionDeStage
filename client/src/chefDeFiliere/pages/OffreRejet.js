@@ -137,8 +137,21 @@ const OffreRejet = () => {
                 );
               })
             ) : (
-              <p className="text-center">No diapproved offers available.</p>
-            )}
+<p 
+  className="text-center" 
+  style={{
+    fontSize: '1.2rem',
+    color: '#555',
+    backgroundColor: '#f8f9fa',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    marginTop: '20px',
+    textAlign: 'center',
+  }}
+>
+  Pas d'offres desapprouvées trouvées.
+</p>            )}
           </div>
         </main>
       </div>

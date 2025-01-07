@@ -61,8 +61,15 @@ const InfoGestionnaire = () => {
       <SideNav />
       <div className="content-area">
         <Header />
-        <main className="offers-main">
-          <h1 className="offers-title">Gestionnaire Information</h1>
+        <main style={{
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '120px',
+    backgroundColor: '#fff',
+    padding: '20px',
+     // Red border to match the theme
+  }}  className="offers-main">
+          
 
           {loading && <p>Loading...</p>}
 
@@ -70,12 +77,11 @@ const InfoGestionnaire = () => {
 
           {Gestionnaire && (
             <div className="offer-card">
+              <h1 className="offers-title">Vos Informations</h1>
               <h2 className="offer-title">
                 {Gestionnaire.Prenom_Gestionnaire +' ' + Gestionnaire.Nom_Gestionnaire || "No Name Available"}
               </h2>
-              <p>
-                <strong>ID:</strong> {Gestionnaire.ID_Gestionnaire || "N/A"}
-              </p>
+              
               <p>
                 <strong>Email:</strong> {Gestionnaire.Email_Gestionnaire || "N/A"}
               </p>

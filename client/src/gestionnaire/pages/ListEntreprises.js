@@ -68,7 +68,7 @@ const ListEntreprises = () => {
                             navigate(`/gestionnaire/modifyEntreprise/${entreprise.ID_Entreprise}`)
                           }
                         >
-                          Modify
+                          Modifier
                         </button>
                         
                       </td>

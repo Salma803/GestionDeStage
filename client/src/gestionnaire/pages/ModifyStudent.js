@@ -71,7 +71,7 @@ const ModifyStudent = () => {
         {/* Content */}
         <div className="container mt-4">
           <div className="card shadow-sm">
-          <h2 style={{ paddingTop :20 +'px'}}className="card-title text-center mb-4">Modifier Chef de Filière</h2>
+            <h2 style={{ paddingTop: 20 + 'px' }} className="card-title text-center mb-4">Modifier Etudiant</h2>
 
             <div className="card-body">
               {error && <p className="text-danger text-center">{error}</p>}
@@ -86,9 +86,6 @@ const ModifyStudent = () => {
                   { label: 'Date de Naissance', name: 'Date_Naissance_Etudiant', type: 'date' },
                   { label: 'Email', name: 'Email_Etudiant', type: 'email' },
                   { label: 'Téléphone', name: 'Tel_Etudiant' },
-                  { label: 'Filière', name: 'Filiere_Etudiant' },
-                  { label: 'Année', name: 'Annee_Etudiant' },
-                  { label: 'Statut Recherche', name: 'Statut_Recherche' },
                   { label: 'Mot de Passe', name: 'MotDePasse_Etudiant' },
                 ].map((field) => (
                   <div className="mb-3" key={field.name}>
@@ -104,8 +101,39 @@ const ModifyStudent = () => {
                     />
                   </div>
                 ))}
+                <div className="mb-3">
+                  <label htmlFor="Annee_Etudiant">Année</label>
+                  <select
+                    id="Annee_Etudiant"
+                    name="Annee_Etudiant"
+                    className="form-control"
+                    value={student.Annee_Etudiant}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Sélectionnez une année</option>
+                    <option value="1A">1A</option>
+                    <option value="2A">2A</option>
+                    <option value="3A">3A</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="Statut_Recherche">Statut Recherche</label>
+                  <select
+                    id="Statut_Recherche"
+                    name="Statut_Recherche"
+                    className="form-control"
+                    value={student.Statut_Recherche}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Sélectionnez un statut</option>
+                    <option value="true">Oui</option>
+                    <option value="false">Non</option>
+                  </select>
+                </div>
                 <button type="submit" className="btn btn-primary w-100">
-                  Update Student
+                  Mis à jour Etudiant
                 </button>
               </form>
             </div>

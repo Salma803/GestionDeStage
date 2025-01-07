@@ -44,21 +44,21 @@ const ListStudents = () => {
                 <input
                   type="text"
                   className="form-control mb-2"
-                  placeholder="Search by ID"
+                  placeholder="Rechercher par ID"
                   value={searchID}
                   onChange={(e) => setSearchID(e.target.value)}
                 />
                 <input
                   type="text"
                   className="form-control mb-2"
-                  placeholder="Search by Filière"
+                  placeholder="Rechercher par Filière"
                   value={searchFiliere}
                   onChange={(e) => setSearchFiliere(e.target.value)}
                 />
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search by Statut Recherche"
+                  placeholder="Rechercher par Stage Trouvé"
                   value={searchStatut}
                   onChange={(e) => setSearchStatut(e.target.value)}
                 />
@@ -75,7 +75,7 @@ const ListStudents = () => {
                     <th>Téléphone</th>
                     <th>CV</th>
                     <th>Filière</th>
-                    <th>Statut Recherche</th>
+                    <th>Stage Trouvé</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -94,14 +94,14 @@ const ListStudents = () => {
                       <td>
                         {student.CV_Etudiant ? (
                           <a href={student.CV_Etudiant} target="_blank" rel="noopener noreferrer">
-                            View CV
+                            Consulter CV
                           </a>
                         ) : (
-                          'No CV Available'
+                          'Aucun CV posté'
                         )}
                       </td>
                       <td>{student.Filiere_Etudiant}</td>
-                      <td>{student.Statut_Recherche}</td>
+                      <td>{student.Statut_Recherche ? "non" : "oui"}</td>
                       <td>
                         <button
                           className="btn btn-warning me-2"
@@ -109,7 +109,7 @@ const ListStudents = () => {
                             navigate(`/gestionnaire/modifyStudent/${student.ID_Etudiant}`)
                           }
                         >
-                          Modify
+                          Modifier
                         </button>
                         
                       </td>

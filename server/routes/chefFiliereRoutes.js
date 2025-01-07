@@ -141,7 +141,26 @@ router.post('/flaggerOffre/:id_offre/:id_cdf', async (req, res) => {
 });
 
 
+//Route to get the flag of an offer 
+router.get('/flag/:id_offre/:id_cdf', async (req, res) => {
+  const { id_offre, id_cdf } = req.params; // Extract offer ID and CDF ID from params
 
+  try {
+    // Find the flag for the given offer ID and CDF ID
+    const flag = await OffreFlag.findOne({
+      where: { ID_Offre: id_offre, ID_CDF: id_cdf },
+    });
+
+    if (!flag) {
+      return res.status(404).json({ error: 'Flag not found for the given offer ID and CDF ID' });
+    }
+
+    res.status(200).json(flag);
+  } catch (error) {
+    console.error('Error fetching flag:', error);
+    res.status(500).json({ error: 'Failed to fetch flag' });
+  }
+});
 
 // Get all approved offers for a specific ChefFiliere
 router.get('/approvedOffers/:id_cdf', async (req, res) => {

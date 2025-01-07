@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
 
-const CreateEntreprise = () => {
+
+const CreateStudent = () => {
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
@@ -16,18 +17,19 @@ const CreateEntreprise = () => {
     e.preventDefault();
 
     if (!file) {
-      alert('Please select a CSV file.');
+      alert('Selectionner un CSV.');
       return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
 
+    // Send the file to the backend
     axios
-      .post("http://localhost:3001/gestionnaire/upload/entreprises", formData)
+      .post("http://localhost:3001/gestionnaire/upload/students", formData)
       .then((response) => {
-        alert('Entreprises created successfully!');
-        navigate('/gestionnaire/home');
+        alert('Students created successfully!');
+        navigate('/gestionnaire/home'); // Redirect to the homepage
       })
       .catch((error) => {
         console.error('Error uploading CSV:', error);
@@ -37,23 +39,25 @@ const CreateEntreprise = () => {
 
   return (
     <div className="d-flex">
-      {/* Sidebar */}
+      {/* Barre latérale */}
       <SideNav />
 
       <div className="main-content w-100">
-        {/* Header */}
+        {/* En-tête */}
         <Header />
 
-        {/* Content */}
+        {/* Contenu */}
         <div className="container mt-4">
           <div className="card shadow-sm">
-          <h2 style={{ paddingTop :20 +'px'}} className="card-title text-center mb-4">Télécharger le fichiers CSV pour Créer les Etudiants</h2>
+            <h2 style={{ paddingTop: 20 + 'px' }} className="card-title text-center mb-4">
+              Télécharger le fichier CSV pour créer les étudiants
+            </h2>
 
             <div className="card-body">
               <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 <div className="mb-3">
                   <label htmlFor="fileInput" className="form-label">
-                    Select CSV File
+                    Sélectionner un fichier CSV
                   </label>
                   <input
                     type="file"
@@ -63,10 +67,10 @@ const CreateEntreprise = () => {
                     onChange={handleFileChange}
                     required
                   />
-                  <div className="form-text">Only CSV files are supported.</div>
+                  <div className="form-text">Seuls les fichiers CSV sont pris en charge.</div>
                 </div>
                 <button type="submit" className="btn btn-primary w-100">
-                  Upload CSV
+                  Télécharger le CSV
                 </button>
               </form>
             </div>
@@ -77,4 +81,4 @@ const CreateEntreprise = () => {
   );
 };
 
-export default CreateEntreprise;
+export default CreateStudent;

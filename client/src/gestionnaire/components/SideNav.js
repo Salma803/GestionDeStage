@@ -108,6 +108,14 @@ function SideNav() {
             </p>
           </a>
         </li>
+        <li className="nav-item">
+          <a href="/gestionnaire/listInternships" className="nav-link">
+            <i className="nav-icon fas fa-eye" />
+            <p>
+              Consulter les stages
+            </p>
+          </a>
+        </li>
         <li className="nav-header">Paramétres</li>
         <li className="nav-item">
           <a href="/gestionnaire/info" className="nav-link">

@@ -65,8 +65,14 @@ const InfoCDF = () => {
       <SideNav />
       <div className="content-area">
         <Header />
-        <main className="offers-main">
-          <h1 className="offers-title">Chef Filière Information</h1>
+        <main style={{
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '120px',
+    backgroundColor: '#fff',
+    padding: '20px',
+     // Red border to match the theme
+  }}  className="offers-main">
 
           {loading && <p>Loading...</p>}
 
@@ -74,6 +80,8 @@ const InfoCDF = () => {
 
           {chefFiliere && (
             <div className="offer-card">
+                            <h1 className="offers-title">Vos Informations</h1>
+
               <h2 className="offer-title">
                 {chefFiliere.Nom_CDF || "No Name Available"}
               </h2>

@@ -79,7 +79,7 @@ const ListChefsFiliere = () => {
                           className="btn btn-warning me-2"
                           onClick={() => navigate(`/gestionnaire/modifyChefFiliere/${chef.ID_CDF}`)}
                         >
-                          Modify
+                          Modifier
                         </button>
                         
                       </td>

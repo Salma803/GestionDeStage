@@ -91,7 +91,7 @@ function SideNav() {
         </li>
         <li className="nav-header">Paramétres</li>
         <li className="nav-item">
-          <a href="/gestionnaire/info" className="nav-link">
+          <a href="/chefdefiliere/info" className="nav-link">
             <i className="nav-icon fas fa-wrench" />
             <p>
               Mes infos

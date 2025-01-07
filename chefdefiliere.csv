@@ -2,3 +2,6 @@ ID_CDF,Nom_CDF,Prenom_CDF,Email_CDF,Tel_CDF,FiliereAssociee_CDF
 GL,Johnson,Mark,mark.johnson@example.com,9876543210,Computer Science
 SSE,Taylor,Lisa,lisa.taylor@example.com,1239876540,Mechanical Engineering
 GD,White,Robert,robert.white@example.com,4567891230,Electrical Engineering
+BIO,Green,Emily,emily.green@example.com,7894561230,Biotechnology
+CHEM,Smith,John,john.smith@example.com,3216549870,Chemical Engineering
+2IA,Anderson,Michael,micheal.johnson@exmaple.com,6543219870,Information Technology

@@ -47,8 +47,7 @@ const EtudiantsCDF = () => {
           });
           setEtudiants(response.data); // Save the list of students
         } catch (error) {
-          setError("Failed to fetch students.");
-          console.error("Error fetching students:", error);
+          
         } finally {
           setLoading(false);
         }
@@ -65,7 +64,7 @@ const EtudiantsCDF = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-          <h1 className="offers-title">Liste des Étudiants</h1>
+          <h1 style={{display:'flex',justifyContent:'center'}} className="offers-title">Liste des Étudiants</h1>
 
           {loading && <p>Loading...</p>}
 
@@ -100,7 +99,21 @@ const EtudiantsCDF = () => {
             </div>
           )}
 
-          {!loading && !error && etudiants.length === 0 && <p>No students found.</p>}
+          {!loading && !error && etudiants.length === 0 && <p 
+  className="text-center" 
+  style={{
+    fontSize: '1.2rem',
+    color: '#555',
+    backgroundColor: '#f8f9fa',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    marginTop: '20px',
+    textAlign: 'center',
+  }}
+>
+  Pas d'etudiants trouvés pour cette filière.
+</p>}
         </main>
         
       </div>

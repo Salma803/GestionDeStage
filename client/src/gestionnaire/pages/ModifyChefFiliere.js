@@ -95,7 +95,7 @@ const ModifyChefFiliere = () => {
                   </div>
                 ))}
                 <button type="submit" className="btn btn-primary w-100">
-                  Update Chef de Filière
+                  Mise à Jour Chef de Filière
                 </button>
               </form>
             </div>

@@ -8,6 +8,8 @@ import CreateEntreprise from "./gestionnaire/pages/CreateEntreprise";
 import CreateChefFiliere from "./gestionnaire/pages/CreateChefFiliere";
 import Home from "./gestionnaire/components/Home";
 import InfoGestionnaire from "./gestionnaire/pages/InfoGestionnaire";
+import ListInternships from "./gestionnaire/pages/ListInternships";
+
 
 // Individual modification and deletion routes for each user type
 import ModifyStudent from "./gestionnaire/pages/ModifyStudent";
@@ -59,7 +61,8 @@ function App() {
             <Route path="/gestionnaire/createEntreprise" element={<CreateEntreprise />} />
             <Route path="/gestionnaire/info" element={<InfoGestionnaire />} />
             <Route path="/home" element={<Home />} />
-            
+            <Route path="/gestionnaire/listInternships" element={<ListInternships />} />
+
             {/* Modification Routes */}
             <Route path="/gestionnaire/modifyStudent/:id" element={<ModifyStudent />} />
             <Route path="/gestionnaire/modifyChefFiliere/:id" element={<ModifyChefFiliere />} />
