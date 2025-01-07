@@ -1,5 +1,5 @@
 const express = require('express');
-const { OffreFlag, Offre, Entreprise, Etudiant, Candidature } = require('../models'); // Adjust the path based on your project structure
+const { OffreFlag, Offre, Entreprise, Etudiant, Candidature, Entretien, ChefFiliere, Stage } = require('../models'); // Adjust the path based on your project structure
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { validateToken } = require('../middlewares/AuthMiddleware');
@@ -366,6 +366,134 @@ router.put('/candidature/updateResponse/:candidatureId', async (req, res) => {
     res.status(500).json({ error: 'Failed to update response' });
   }
 });
+
+// Route to fetch entretiens for the logged-in student
+router.get('/entretiens', async (req, res) => {
+  try {
+    const studentId = req.query.ID_Etudiant;
+
+    if (!studentId) {
+      return res.status(400).json({ error: 'Missing student ID' });
+    }
+
+    // Fetch entretiens for the student's candidatures
+    const entretiens = await Entretien.findAll({
+      include: [
+        {
+          model: Candidature,
+          as: 'Candidature',
+          where: { ID_Etudiant: studentId },
+          include: [
+            {
+              model: Offre,
+              as: 'Offre',
+              attributes: ['Titre_Offre','Description_Offre','Keywords_Offre','Durée','Période'], 
+            },
+          ],
+        },
+      ],
+    });
+
+    res.json(entretiens);
+  } catch (error) {
+    console.error('Error fetching entretiens:', error);
+    res.status(500).json({ error: 'Failed to fetch entretiens' });
+  }
+});
+
+// Route to accept an offer
+router.post('/accept-offer', async (req, res) => {
+  try {
+    const { ID_Entretien } = req.body;
+
+    if (!ID_Entretien) {
+      return res.status(400).json({ error: 'Missing entretien ID' });
+    }
+
+    // Find the Entretien by ID, including associations to Candidature, Etudiant, and Offre (with Entreprise)
+    const entretien = await Entretien.findByPk(ID_Entretien, {
+      include: [
+        {
+          model: Candidature,
+          as: 'Candidature',
+          include: [
+            {
+              model: Etudiant,
+              as: 'Etudiant',
+            },
+            {
+              model: ChefFiliere,
+              as: 'ChefDeFiliere',
+            },
+            {
+              model: Offre,
+              as: 'Offre',
+              include: [
+                {
+                  model: Entreprise,
+                  as: 'Company',  // Assumes Entreprise is related to Offre via 'ID_Company'
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!entretien) {
+      return res.status(404).json({ error: 'Entretien not found' });
+    }
+
+    // Update the Réponse_Etudiant field to "accepted"
+    entretien.Réponse_Etudiant = 'accepted';
+    await entretien.save();
+
+    // Retrieve associated data
+    const candidature = entretien.Candidature;
+    const etudiant = candidature.Etudiant;
+    const offre = candidature.Offre;
+    const chefdefiliere = candidature.ChefDeFiliere;
+    const entreprise = offre.Company;
+    
+
+    // Create a new Stage entry using the retrieved information
+    const stage = await Stage.create({
+      ID_Entretien: entretien.ID_Entretien,
+
+      ID_Etudiant: etudiant.ID_Etudiant,
+      Nom_Etudiant: etudiant.Nom_Etudiant,
+      Prenom_Etudiant: etudiant.Prenom_Etudiant,
+      Date_Naissance_Etudiant: etudiant.Date_Naissance_Etudiant,
+      Email_Etudiant: etudiant.Email_Etudiant,
+      Tel_Etudiant: etudiant.Tel_Etudiant,
+      Filiere_Etudiant: etudiant.Filiere_Etudiant,
+      Annee_Etudiant: etudiant.Annee_Etudiant,
+
+      Nom_CDF: chefdefiliere.Nom_CDF,
+      Prenom_CDF: chefdefiliere.Prenom_CDF,
+      Email_CDF: chefdefiliere.Email_CDF,
+      Tel_CDF: chefdefiliere.Tel_CDF,
+
+      Nom_Entreprise: entreprise.Nom_Entreprise,
+      Adresse_Entreprise: entreprise.Adresse_Entreprise,
+      Tel_Entreprise: entreprise.Tel_Entreprise,
+      Email_Entreprise: entreprise.Email_Entreprise,
+
+      Titre_Offre: offre.Titre_Offre,
+      Description_Offre: offre.Description_Offre,
+      Durée: offre.Durée,
+      Période: offre.Période,
+      Tuteur: offre.Tuteur,
+    });
+
+    res.json({ message: 'Offer accepted and stage created successfully', stage });
+  } catch (error) {
+    console.error('Error accepting offer:', error);
+    res.status(500).json({ error: 'Failed to accept offer and create stage' });
+  }
+});
+
+
 
 
 
