@@ -48,6 +48,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'ID_CDF',
         as: 'ChefDeFiliere',
       });
+
+      Candidature.hasMany(models.Entretien, {
+        foreignKey: 'ID_Candidature',
+        as: 'Entretiens',
+      });
+      
     };
   
     return Candidature;

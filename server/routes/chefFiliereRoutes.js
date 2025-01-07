@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const { OffreFlag, Offre,ChefFiliere,Entreprise, Etudiant, Candidature, ChefDeFiliere  } = require('../models');
+const { OffreFlag, Offre,ChefFiliere,Entreprise, Etudiant, Candidature, ChefDeFiliere, Entretien  } = require('../models');
 
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
@@ -282,9 +282,10 @@ router.get('/etudiant/:studentId', async (req, res) => {
   }
 });
 
+
 router.put('/candidature/accept/:cdfId/:candidatureId', async (req, res) => {
   const { cdfId, candidatureId } = req.params;
-  const { response } = req.body;  // The new response value (should be 'accepted')
+  const { response } = req.body; // The new response value (should be 'accepted')
 
   try {
     // Check if the candidature exists
@@ -297,14 +298,25 @@ router.put('/candidature/accept/:cdfId/:candidatureId', async (req, res) => {
     }
 
     // Update the Réponse_CDF field and store the CDF's ID in the Candidature model
-    candidature.Réponse_CDF = response;  // Set response to 'accepted'
+    candidature.Réponse_CDF = response; // Set response to 'accepted'
     candidature.ID_CDF = cdfId; // Store the Chef de Filière's ID directly
     await candidature.save();
 
-    res.status(200).json({ success: true, message: 'Candidature accepted successfully' });
+    // Create a new entry in the Entretien table
+    const entretien = await Entretien.create({
+      ID_Candidature: candidatureId,
+      Réponse_Entreprise: 'pending', // Default value
+      Réponse_Etudiant: 'pending',  // Default value
+    });
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Candidature accepted and Entretien created successfully',
+      entretien,
+    });
   } catch (err) {
-    console.error('Error accepting candidature:', err);
-    res.status(500).json({ error: 'Failed to accept candidature' });
+    console.error('Error accepting candidature or creating entretien:', err);
+    res.status(500).json({ error: 'Failed to accept candidature or create entretien' });
   }
 });
 
