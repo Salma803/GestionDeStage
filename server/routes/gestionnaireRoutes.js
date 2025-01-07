@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const csvParser = require('csv-parser');
 const jwt = require('jsonwebtoken');
-const { Gestionnaire, Etudiant, ChefFiliere, Entreprise,Offre} = require('../models');  // Import models
+const { Gestionnaire, Etudiant, ChefFiliere, Entreprise,Offre, Stage} = require('../models');  // Import models
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const fs = require('fs');
 const path = require('path');
@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
       }
 
       // Successful login
-      const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '1h' });
+      const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '5h' });
       res.json({
         accessToken,
         email: user.Email_Gestionnaire,
@@ -165,7 +165,6 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
 });
 
 // Upload CSV to create ChefDeFiliere
-// Upload CSV to create ChefDeFiliere
 router.post('/upload/chefs', upload.single('file'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
@@ -235,7 +234,6 @@ router.post('/upload/chefs', upload.single('file'), async (req, res) => {
 });
 
 
-// Upload CSV to create Entreprises
 // Upload CSV to create Entreprises
 router.post('/upload/entreprises', upload.single('file'), async (req, res) => {
   if (!req.file) {
@@ -681,6 +679,20 @@ router.get('/find/:cdGest', async (req, res) => {
   } catch (error) {
     console.error('Error fetching Gestionnaire:', error);
     res.status(500).json({ error: 'Failed to fetch Gestionnaire' });
+  }
+});
+
+// Route to get all internships
+router.get('/internships', async (req, res) => {
+  try {
+      // Fetch all internships
+      const internships = await Stage.findAll();
+
+      // Send response
+      res.status(200).json(internships);
+  } catch (error) {
+      console.error('Error fetching internships:', error);
+      res.status(500).json({ message: 'An error occurred while fetching internships.' });
   }
 });
 

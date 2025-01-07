@@ -10,7 +10,6 @@ import Home from "./gestionnaire/components/Home";
 import InfoGestionnaire from "./gestionnaire/pages/InfoGestionnaire";
 import ListInternships from "./gestionnaire/pages/ListInternships";
 
-
 // Individual modification and deletion routes for each user type
 import ModifyStudent from "./gestionnaire/pages/ModifyStudent";
 import DeleteStudent from "./gestionnaire/pages/DeleteStudent";
@@ -37,6 +36,7 @@ import CreerOffre from "./entreprise/pages/CreerOffre";
 import ConsulterOffres from "./entreprise/pages/ConsulterOffres";
 import CandidaturesEntreprise from "./entreprise/pages/Candidatures";
 import InfoEntreprise from "./entreprise/pages/InfoEntreprise";
+import ListeStagesEntreprise from "./entreprise/pages/Internships";
 // Routes for etudiant
 import StudentHome from "./etudiant/StudentHome";  
 import OfferDetails from "./etudiant/OfferDetails"; 
@@ -61,8 +61,7 @@ function App() {
             <Route path="/gestionnaire/createEntreprise" element={<CreateEntreprise />} />
             <Route path="/gestionnaire/info" element={<InfoGestionnaire />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/gestionnaire/listInternships" element={<ListInternships />} />
-
+            
             {/* Modification Routes */}
             <Route path="/gestionnaire/modifyStudent/:id" element={<ModifyStudent />} />
             <Route path="/gestionnaire/modifyChefFiliere/:id" element={<ModifyChefFiliere />} />
@@ -77,7 +76,9 @@ function App() {
             <Route path="/gestionnaire/listStudents" element={<ListStudents />} />
             <Route path="/gestionnaire/listChefsFiliere" element={<ListChefsFiliere />} />
             <Route path="/gestionnaire/listEntreprises" element={<ListEntreprises />} />
-          
+
+            <Route path="/gestionnaire/listInternships" element={<ListInternships />} />
+
             {/* Routes for chef de filiere */}
             <Route path="/chefDeFiliere/listeOffres" element={<ListeOffres />} />
             <Route path="/chefDeFiliere/offresApprouvees" element={<OffreApprouve />} />  
@@ -92,6 +93,8 @@ function App() {
             <Route path="/entreprise/consulterOffres" element={<ConsulterOffres />} />
             <Route path="/entreprise/candidatures/:offerId" element={<CandidaturesEntreprise />} />
             <Route path="/entreprise/info" element={<InfoEntreprise />} />
+            <Route path="/entreprise/stages" element={<ListeStagesEntreprise />} />
+
 
             {/* Routes for Etudiant */}
             <Route path="/etudiant/home" element={<StudentHome />} />

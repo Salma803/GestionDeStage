@@ -58,6 +58,13 @@ const GestionnaireHome = () => {
         <button onClick={() => navigate('/gestionnaire/listStudents')}>View Students</button>
         <button onClick={() => navigate('/gestionnaire/listChefsFiliere')}>View Chefs de Filière</button>
         <button onClick={() => navigate('/gestionnaire/listEntreprises')}>View Entreprises</button>
+<<<<<<< HEAD
+=======
+
+        {/* View and Manage internships */}
+        <h3>View and Manage internships</h3>
+        <button onClick={() => navigate('/gestionnaire/listInternships')}>View Internships</button>
+>>>>>>> e8615fb39fe4b94eb530a2f3f7e06e2ca4984f42
       </div>
     </div>
   );

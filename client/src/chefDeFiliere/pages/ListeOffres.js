@@ -45,7 +45,6 @@ const ListeOffres = () => {
         setLoading(false);
       }
     };
-
     const fetchOffers = async () => {
       try {
         const response = await axios.get("http://localhost:3001/entreprise/listeOffres");

@@ -41,7 +41,6 @@ const CandidaturesEntreprise = () => {
         );
         setCandidatures(response.data);
       } catch (err) {
-        
       } finally {
         setLoading(false);
       }
@@ -49,6 +48,11 @@ const CandidaturesEntreprise = () => {
 
     fetchCandidatures();
   }, [offerId, entrepriseId]); // Run when either offerId or entrepriseId changes
+
+  useEffect(() => {
+    console.log("Candidatures data:", candidatures);
+  }, [candidatures]);
+  
 
   const handleDownloadCV = (cvFilename) => {
     const fileUrl = `http://localhost:3001/uploads/cvs/${cvFilename}`;
@@ -90,7 +94,7 @@ const CandidaturesEntreprise = () => {
         setCandidatures((prevCandidatures) =>
           prevCandidatures.map((candidature) =>
             candidature.ID_Candidature === candidatureId
-              ? { ...candidature, Réponse_Entretien: "accepted" }
+              ? { ...candidature, Entretiens: [{ ...candidature.Entretiens[0], Réponse_Entreprise: "accepted" }] }
               : candidature
           )
         );
@@ -177,8 +181,8 @@ const CandidaturesEntreprise = () => {
                         </td>
                         <td>
                           {candidature.Réponse_Entreprise === "accepted" &&
-                          candidature.Réponse_CDF === "accepted" &&
-                          candidature.Réponse_Entretien !== "accepted" ? (
+                            candidature.Réponse_CDF === "accepted" &&
+                            (!candidature.Entretiens || candidature.Entretiens[0].Réponse_Entreprise !== "accepted") ? (
                             <Button
                               variant="info"
                               onClick={() =>
@@ -187,14 +191,13 @@ const CandidaturesEntreprise = () => {
                             >
                               Retenir
                             </Button>
-                          ) : candidature.Réponse_Entretien === "accepted" ? (
-                            <span>Retenu(e) aprés entretien</span>
+                          ) : candidature.Entretiens[0].Réponse_Entreprise === "accepted" ? (
+                            <span>Retenu(e) après entretien</span>
                           ) : (
-                            <span>
-                              Non retenu(e) aprés entretien
-                            </span>
+                            <span>Non retenu(e) après entretien</span>
                           )}
                         </td>
+
                       </tr>
                     ))}
                   </tbody>

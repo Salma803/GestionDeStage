@@ -4,6 +4,8 @@ import axios from 'axios';
 const Entretiens = () => {
   const [entretiens, setEntretiens] = useState([]);
   const [studentId, setStudentId] = useState(null);
+  const [statutRecherche, setStatutRecherche] = useState(false); // set initial value to false
+;
 
   useEffect(() => {
     axios
@@ -14,6 +16,8 @@ const Entretiens = () => {
       })
       .then((response) => {
         setStudentId(response.data.ID_Etudiant);
+        setStatutRecherche(response.data.Statut_Recherche);
+        console.log("Statut Recherche fetched:", response.data.Statut_Recherche);
       })
       .catch((error) => {
         console.error('Error fetching student data:', error);
@@ -52,13 +56,13 @@ const Entretiens = () => {
               : entretien
           )
         );
+        setStatutRecherche(true);
       })
       .catch((error) => {
         console.error('Error accepting offer:', error);
         alert('Failed to accept the offer. Please try again.');
       });
   };
-  
 
   return (
     <div className="student-entretiens">
@@ -87,16 +91,16 @@ const Entretiens = () => {
                 <td>{entretien.Candidature.Offre.Période}</td>
                 <td>{entretien.Réponse_Entreprise || 'No response yet'}</td>
                 <td>
-                  {entretien.Réponse_Etudiant === 'accepted' ? (
-                    <span>Accepted</span>
-                  ) : (
+                  {statutRecherche === 'false' && entretien.Réponse_Etudiant !== 'accepted' ? (
                     <button
-                      onClick={() =>
-                        handleAcceptOffer(entretien.Candidature.ID_Candidature)
-                      }
+                      onClick={() => handleAcceptOffer(entretien.ID_Entretien)}
                     >
                       Accept Offer
                     </button>
+                  ) : entretien.Réponse_Etudiant === 'accepted' ? (
+                    <span>Accepted</span>
+                  ) : (
+                    <span>Unavailable</span>
                   )}
                 </td>
               </tr>

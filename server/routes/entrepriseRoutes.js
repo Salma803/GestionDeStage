@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Offre, Entreprise,OffreFlag, Candidature, Etudiant, ChefFiliere, Entretien } = require('../models');
+const { Offre, Entreprise,OffreFlag, Candidature, Etudiant, ChefFiliere, Entretien, Stage } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { validateToken } = require('../middlewares/AuthMiddleware');
@@ -231,6 +231,11 @@ router.get('/candidatures/:entrepriseId/:offerId', async (req, res) => {
           as: 'Etudiant',  // Using the alias defined in the model
           attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant', 'Email_Etudiant', 'Filiere_Etudiant','Annee_Etudiant', 'CV_Etudiant'],
         },
+        {
+          model: Entretien, // Include Entretien if available
+          as: 'Entretiens',
+          attributes: ['Réponse_Entreprise'], // Add relevant fields
+        },
       ],
     });
 
@@ -305,7 +310,25 @@ router.put('/entretien/accept/:entrepriseId/:candidatureId', async (req, res) =>
   }
 });
 
+// Endpoint to fetch stages for a specific entreprise using ID_Entreprise
+router.get('/:id/stages', async (req, res) => {
+  try {
+    const entrepriseEmail = req.params.id; // Get entreprise ID from route parameter
 
+    const stages = await Stage.findAll({
+      where: { Email_Entreprise: entrepriseEmail }, // Filter stages by entreprise ID
+    });
+
+    if (stages.length === 0) {
+      return res.status(404).json({ error: "Aucun stage trouvé pour cette entreprise." });
+    }
+
+    res.json(stages);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des stages de l\'entreprise:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
 
 
 

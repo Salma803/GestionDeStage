@@ -117,7 +117,7 @@ router.post('/login', async (req, res) => {
       }
 
       // Successful login
-      const accessToken = jwt.sign({ Email_Etudiant: user.Email_Etudiant, ID_Etudiant: user.ID_Etudiant }, "secret", { expiresIn: '1h' });
+      const accessToken = jwt.sign({ Email_Etudiant: user.Email_Etudiant, ID_Etudiant: user.ID_Etudiant }, "secret", { expiresIn: '5h' });
       res.json({
         accessToken,
         email: user.Email_Etudiant,
@@ -444,10 +444,6 @@ router.post('/accept-offer', async (req, res) => {
       return res.status(404).json({ error: 'Entretien not found' });
     }
 
-    // Update the Réponse_Etudiant field to "accepted"
-    entretien.Réponse_Etudiant = 'accepted';
-    await entretien.save();
-
     // Retrieve associated data
     const candidature = entretien.Candidature;
     const etudiant = candidature.Etudiant;
@@ -455,6 +451,22 @@ router.post('/accept-offer', async (req, res) => {
     const chefdefiliere = candidature.ChefDeFiliere;
     const entreprise = offre.Company;
     
+    if (!etudiant) {
+      return res.status(404).json({ error: 'Etudiant not found' });
+    }
+    
+    // Check if Statut_Recherche is false
+    if (etudiant.Statut_Recherche === 'true') {
+      return res.status(400).json({ error: 'Etudiant has already an internship' });
+    }
+
+    // Update Statut_Recherche in Etudiant to true
+    etudiant.Statut_Recherche = 'true';
+    await etudiant.save();
+
+    // Update the Réponse_Etudiant field to "accepted"
+    entretien.Réponse_Etudiant = 'accepted';
+    await entretien.save();
 
     // Create a new Stage entry using the retrieved information
     const stage = await Stage.create({
