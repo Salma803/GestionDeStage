@@ -23,7 +23,7 @@ function SideNav() {
         <img src="/dist/img/user2-160x160.jpg" className="img-circle elevation-2"  />
       </div>
       <div className="info">
-        <a href="#" className="d-block">Chef de filière</a>
+        <a href="#" className="d-block">Gestionnaire</a>
       </div>
     </div>
     {/* SidebarSearch Form */}
@@ -43,7 +43,7 @@ function SideNav() {
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
         <li className="nav-item menu-open">
-          <a href="/chefdefiliere/listeoffres" className="nav-link active" >
+          <a href="/gestionnaire/home" className="nav-link active" >
             <i className="nav-icon fas fa-tachometer-alt"  />
             <p>
               Acceuil
@@ -51,10 +51,10 @@ function SideNav() {
           </a>
         </li>
         <li className="nav-item">
-          <a href='/chefdefiliere/offresapprouvees' className="nav-link">
+          <a href='/gestionnaire/createStudent' className="nav-link">
             <i  className="nav-icon fas fa-check" />
             <p>
-              Offres Approuvées
+              Créer Etudiants
               
               <span className="badge badge-info right"></span>
             </p>
@@ -63,10 +63,10 @@ function SideNav() {
         </li>
   
         <li className="nav-item">
-          <a href='/chefdefiliere/offresrejetees' className="nav-link">
-            <i  className="nav-icon fas fa-ban" />
+          <a href='/gestionnaire/createChefFiliere' className="nav-link">
+            <i  className="nav-icon fas fa-check" />
             <p>
-              Offres Rejetées
+              Créer Chef de filière
               
               <span className="badge badge-info right"></span>
             </p>
@@ -74,18 +74,37 @@ function SideNav() {
           
         </li>
         <li className="nav-item">
-          <a href="/chefdefiliere/candidatures" className="nav-link">
+          <a href='/gestionnaire/createEntreprise' className="nav-link">
+            <i  className="nav-icon fas fa-check" />
+            <p>
+              Créer Entreprises
+              
+              <span className="badge badge-info right"></span>
+            </p>
+          </a>
+          
+        </li>
+        <li className="nav-item">
+          <a href="/gestionnaire/listStudents" className="nav-link">
             <i className="nav-icon fas fa-edit" />
             <p>
-              Candidatures
+              Gérer Etudiant
             </p>
           </a>
         </li>
         <li className="nav-item">
-          <a href="/chefdefiliere/etudiants" className="nav-link">
+          <a href="/gestionnaire/listChefsFiliere" className="nav-link">
             <i className="nav-icon fas fa-edit" />
             <p>
-              Mes Etudiants
+              Gérer Chef de filière
+            </p>
+          </a>
+        </li>
+        <li className="nav-item">
+          <a href="/gestionnaire/listEntreprises" className="nav-link">
+            <i className="nav-icon fas fa-edit" />
+            <p>
+              Gérer Entreprises
             </p>
           </a>
         </li>

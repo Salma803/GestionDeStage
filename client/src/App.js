@@ -1,24 +1,26 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import GestionnaireHome from "./gestionnaire/GestionnaireHome";
+import GestionnaireHome from "./gestionnaire/pages/GestionnaireHome";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import CreateStudent from "./gestionnaire/CreateStudent";
-import CreateEntreprise from "./gestionnaire/CreateEntreprise";
-import CreateChefFiliere from "./gestionnaire/CreateChefFiliere";
+import CreateStudent from "./gestionnaire/pages/CreateStudent";
+import CreateEntreprise from "./gestionnaire/pages/CreateEntreprise";
+import CreateChefFiliere from "./gestionnaire/pages/CreateChefFiliere";
+import Home from "./gestionnaire/components/Home";
+import InfoGestionnaire from "./gestionnaire/pages/InfoGestionnaire";
 
 // Individual modification and deletion routes for each user type
-import ModifyStudent from "./gestionnaire/ModifyStudent";
-import DeleteStudent from "./gestionnaire/DeleteStudent";
-import ModifyChefFiliere from "./gestionnaire/ModifyChefFiliere";
-import DeleteChefFiliere from "./gestionnaire/DeleteChefFiliere";
-import ModifyEntreprise from "./gestionnaire/ModifyEntreprise";
-import DeleteEntreprise from "./gestionnaire/DeleteEntreprise";
+import ModifyStudent from "./gestionnaire/pages/ModifyStudent";
+import DeleteStudent from "./gestionnaire/pages/DeleteStudent";
+import ModifyChefFiliere from "./gestionnaire/pages/ModifyChefFiliere";
+import DeleteChefFiliere from "./gestionnaire/pages/DeleteChefFiliere";
+import ModifyEntreprise from "./gestionnaire/pages/ModifyEntreprise";
+import DeleteEntreprise from "./gestionnaire/pages/DeleteEntreprise";
 
 // Routes for viewing lists of accounts
-import ListStudents from "./gestionnaire/ListStudents";
-import ListChefsFiliere from "./gestionnaire/ListChefsFiliere";
-import ListEntreprises from "./gestionnaire/ListEntreprises";
+import ListStudents from "./gestionnaire/pages/ListStudents";
+import ListChefsFiliere from "./gestionnaire/pages/ListChefsFiliere";
+import ListEntreprises from "./gestionnaire/pages/ListEntreprises";
 
 // Routes for chef de filiere
 import ListeOffres from "./chefDeFiliere/pages/ListeOffres";
@@ -53,6 +55,8 @@ function App() {
             <Route path="/gestionnaire/createStudent" element={<CreateStudent />} />
             <Route path="/gestionnaire/createChefFiliere" element={<CreateChefFiliere />} />
             <Route path="/gestionnaire/createEntreprise" element={<CreateEntreprise />} />
+            <Route path="/gestionnaire/info" element={<InfoGestionnaire />} />
+            <Route path="/home" element={<Home />} />
             
             {/* Modification Routes */}
             <Route path="/gestionnaire/modifyStudent/:id" element={<ModifyStudent />} />
@@ -88,6 +92,9 @@ function App() {
             <Route path="/etudiant/offer/:offerId" element={<OfferDetails />} />
             <Route path="/etudiant/profile" element={<StudentProfile />} />
             <Route path="/etudiant/candidatures" element={<Candidatures />} />
+
+
+
 
           
           </Routes>

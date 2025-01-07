@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const csvParser = require('csv-parser');
 const jwt = require('jsonwebtoken');
-const { Gestionnaire, Etudiant, ChefFiliere, Entreprise } = require('../models');  // Import models
+const { Gestionnaire, Etudiant, ChefFiliere, Entreprise,Offre} = require('../models');  // Import models
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const fs = require('fs');
 const path = require('path');
@@ -633,6 +633,9 @@ router.get('/entreprises', async (req, res) => {
 /* Route to get student statistics for the Gestionnaire*/
 router.get('/statistics', async (req, res) => {
   try {
+
+    const totalOffers = await Offre.count();
+    const totalCompanys = await Entreprise.count();
     // Query the database for statistics
     const totalStudents = await Etudiant.count();
     /*const totalInternships = await Internship.count();
@@ -642,6 +645,8 @@ router.get('/statistics', async (req, res) => {
 
     // Send the statistics as a response
     res.json({
+      totalOffers,
+      totalCompanys,
       totalStudents,
       totalInternships,
       studentsWithInternships,
@@ -652,7 +657,32 @@ router.get('/statistics', async (req, res) => {
   }
 });
 
+router.get('/me', validateToken, (req, res) => {
+  // req.user contains decoded token information
+  const ID_Gestionnaire = req.user.ID_Gestionnaire;
+  const Email_Gestionnaire = req.user.Email_Gestionnaire;
+  res.json({ ID_Gestionnaire , Email_Gestionnaire });
+});
+router.get('/find/:cdGest', async (req, res) => {
+  const { cdGest } = req.params; // Extracting the parameter correctly
+  try {
+    // Query the database for the Gestionnaire
+    const gestionnaire = await Gestionnaire.findOne({
+      where: { ID_Gestionnaire: cdGest },
+    });
 
+    // If not found, return a 404 error
+    if (!gestionnaire) {
+      return res.status(404).json({ error: 'Gestionnaire not found' });
+    }
+
+    // Return the found Gestionnaire
+    res.json(gestionnaire);
+  } catch (error) {
+    console.error('Error fetching Gestionnaire:', error);
+    res.status(500).json({ error: 'Failed to fetch Gestionnaire' });
+  }
+});
 
 
 
