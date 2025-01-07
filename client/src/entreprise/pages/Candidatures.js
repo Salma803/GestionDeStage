@@ -182,7 +182,7 @@ const CandidaturesEntreprise = () => {
                         <td>
                           {candidature.Réponse_Entreprise === "accepted" &&
                             candidature.Réponse_CDF === "accepted" &&
-                            (!candidature.Entretiens || candidature.Entretiens[0].Réponse_Entreprise !== "accepted") ? (
+                            (!candidature.Entretiens || (candidature.Entretiens[0] && candidature.Entretiens[0].Réponse_Entreprise !== "accepted")) ? (
                             <Button
                               variant="info"
                               onClick={() =>
@@ -191,12 +191,13 @@ const CandidaturesEntreprise = () => {
                             >
                               Retenir
                             </Button>
-                          ) : candidature.Entretiens[0].Réponse_Entreprise === "accepted" ? (
+                          ) : candidature.Entretiens && candidature.Entretiens[0] && candidature.Entretiens[0].Réponse_Entreprise === "accepted" ? (
                             <span>Retenu(e) après entretien</span>
                           ) : (
                             <span>Non retenu(e) après entretien</span>
                           )}
                         </td>
+
 
                       </tr>
                     ))}
