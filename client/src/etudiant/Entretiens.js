@@ -91,7 +91,7 @@ const Entretiens = () => {
                 <td>{entretien.Candidature.Offre.Période}</td>
                 <td>{entretien.Réponse_Entreprise || 'No response yet'}</td>
                 <td>
-                  {statutRecherche === 'false' && entretien.Réponse_Etudiant !== 'accepted' ? (
+                  {statutRecherche === 'false' && entretien.Réponse_Etudiant !== 'accepted' && entretien.Réponse_Entreprise === 'accepted'  ? (
                     <button
                       onClick={() => handleAcceptOffer(entretien.ID_Entretien)}
                     >
