@@ -34,7 +34,7 @@ const LoginPage = () => {
 
       // Redirect based on role
       if (role === "entreprise") {
-        navigate("/entreprise/creeroffre");
+        navigate("/entreprise/consulteroffres");
       } else if (role === "etudiant") {
         navigate("/etudiant/home");
       } else if (role === "gestionnaire") {

@@ -2,8 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
+import UseAuth from "../hooks/UseAuth";
+import NavBar from "../components/NavBar";
+import SideNav from "../components/SideNav";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const CreerOffre = () => {
+  const isAuthenticated = UseAuth();
+
   const [userId, setUserId] = useState(null);
   const [formData, setFormData] = useState({
     titre_offre: '',
@@ -74,17 +81,20 @@ const CreerOffre = () => {
   };
 
   return (
+    <div className="liste-offres-page">
+      <SideNav />
+      <div className="content-area">
+        <Header />
     <Container className="mt-5">
-      <div><Link to="/entreprise/consulteroffres">Voir les Offres</Link></div>
-      <h2>Create New Offer</h2>
+      <h2 style={{display:'flex',justifyContent:'center'}}>Créer une nouvelle offre</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="titre_offre">
-          <Form.Label>Title</Form.Label>
+          <Form.Label>Titre</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter offer title"
+            placeholder="Entrez un titre"
             name="titre_offre"
             value={formData.titre_offre}
             onChange={handleChange}
@@ -95,7 +105,7 @@ const CreerOffre = () => {
           <Form.Label>Description</Form.Label>
           <Form.Control
             as="textarea"
-            placeholder="Enter offer description"
+            placeholder="Entrez une description"
             name="description_offre"
             value={formData.description_offre}
             onChange={handleChange}
@@ -103,72 +113,65 @@ const CreerOffre = () => {
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="status_offre">
-          <Form.Label>Status</Form.Label>
+          <Form.Label>Statut</Form.Label>
           <Form.Select
             name="status_offre"
             value={formData.status_offre}
             onChange={handleChange}
             required
           >
-            <option value="open">Open</option>
-            <option value="closed">Closed</option>
+            <option value="open">Ouvert</option>
+            <option value="closed">Fermé</option>
           </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3" controlId="keywords_offre">
-          <Form.Label>Keywords</Form.Label>
+          <Form.Label>Mots-Clés</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter keywords (comma-separated)"
+            placeholder="Entrez des mots clés (séparés par des virgules)"
             name="keywords_offre"
             value={formData.keywords_offre}
             onChange={handleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="duree">
-          <Form.Label>Duration</Form.Label>
+          <Form.Label>Durée</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter duration"
+            placeholder="Entrez la durée de stage"
             name="duree"
             value={formData.duree}
             onChange={handleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="periode">
-          <Form.Label>Period</Form.Label>
+          <Form.Label>Période</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter period"
+            placeholder="Entrez la période de stage "
             name="periode"
             value={formData.periode}
             onChange={handleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="tuteur">
-          <Form.Label>Tutor</Form.Label>
+          <Form.Label>Tuteur</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter tutor name"
+            placeholder="Entrez le nom du tuteur"
             name="tuteur"
             value={formData.tuteur}
             onChange={handleChange}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="id_company">
-          <Form.Label>Company ID</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Company ID will be set automatically"
-            name="id_company"
-            value={formData.id_company}
-            disabled
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
+        
+        <Button variant="success" type="submit">
           Create Offer
         </Button>
       </Form>
     </Container>
+    </div>
+    </div>
   );
 };
 

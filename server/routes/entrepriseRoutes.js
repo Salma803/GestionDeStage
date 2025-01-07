@@ -40,10 +40,10 @@ router.get('/me', validateToken, (req, res) => {
 });
 
 //Route to find the enreprise information by ID
-router.get('/find/:cdfId', async (req, res) => {
+router.get('/find/:entrepriseID', async (req, res) => {
   const { entrepriseID } = req.params; // Extract clientID from req.params
   try {
-    const entreprise = await ChefFiliere.findOne({ where: { ID_Entreprise: entrepriseID } }); // Use ID_CDF instead of id
+    const entreprise = await Entreprise.findOne({ where: { ID_Entreprise: entrepriseID } }); // Use ID_CDF instead of id
     if (!entreprise) {
       return res.status(404).json({ error: 'Entreprise not found' });
     }

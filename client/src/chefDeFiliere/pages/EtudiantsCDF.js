@@ -3,8 +3,11 @@ import axios from "axios";
 import SideNav from "../Components/SideNav";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
+import UseAuth from "../hooks/UseAuth";
 
 const EtudiantsCDF = () => {
+  const isAuthenticated = UseAuth();
+
   const [cdfId, setCdfId] = useState(null); // Store the Chef Filière ID
   const [etudiants, setEtudiants] = useState([]); // Store the list of students
   const [error, setError] = useState(null); // Store errors

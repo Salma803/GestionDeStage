@@ -23,7 +23,7 @@ function SideNav() {
         <img src="/dist/img/user2-160x160.jpg" className="img-circle elevation-2"  />
       </div>
       <div className="info">
-        <a href="#" className="d-block">Chef de filière</a>
+        <a href="#" className="d-block"> Entreprise</a>
       </div>
     </div>
     {/* SidebarSearch Form */}
@@ -43,18 +43,18 @@ function SideNav() {
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
         <li className="nav-item menu-open">
-          <a href="/chefdefiliere/listeoffres" className="nav-link active" >
+          <a href="/entreprise/consulteroffres" className="nav-link active" >
             <i className="nav-icon fas fa-tachometer-alt"  />
             <p>
-              Offres
+              Mes Offres
             </p>
           </a>
         </li>
         <li className="nav-item">
-          <a href='/chefdefiliere/offresapprouvees' className="nav-link">
-            <i  className="nav-icon fas fa-check" />
+          <a href='/entreprise/creeroffre' className="nav-link">
+            <i  className="nav-icon fas fa-edit" />
             <p>
-              Offres Approuvées
+              Créer une offre
               
               <span className="badge badge-info right"></span>
             </p>
@@ -63,35 +63,21 @@ function SideNav() {
         </li>
   
         <li className="nav-item">
-          <a href='/chefdefiliere/offresrejetees' className="nav-link">
-            <i  className="nav-icon fas fa-ban" />
+          <a href='/entreprise/stages' className="nav-link">
+            <i  className="nav-icon fas fa-eye" />
             <p>
-              Offres Rejetées
+              Consulter Stages
               
               <span className="badge badge-info right"></span>
             </p>
           </a>
           
         </li>
-        <li className="nav-item">
-          <a href="/chefdefiliere/candidatures" className="nav-link">
-            <i className="nav-icon fas fa-edit" />
-            <p>
-              Candidatures
-            </p>
-          </a>
-        </li>
-        <li className="nav-item">
-          <a href="/chefdefiliere/etudiants" className="nav-link">
-            <i className="nav-icon fas fa-edit" />
-            <p>
-              Mes Etudiants
-            </p>
-          </a>
-        </li>
+        
+        
         <li className="nav-header">Paramétres</li>
         <li className="nav-item">
-          <a href="/gestionnaire/info" className="nav-link">
+          <a href="/entreprise/info" className="nav-link">
             <i className="nav-icon fas fa-wrench" />
             <p>
               Mes infos
@@ -119,4 +105,4 @@ function SideNav() {
   )
 }
 
-export default SideNav
+export default SideNav;

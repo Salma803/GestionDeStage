@@ -11,7 +11,7 @@ function Header() {
       <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars" /></a>
     </li>
     <li className="nav-item d-none d-sm-inline-block">
-      <a href="/homegestionnaire/" className="nav-link">Home</a>
+      <a href="/entreprise/consulteroffres" className="nav-link">Home</a>
     </li>
     <li className="nav-item d-none d-sm-inline-block">
       <a href="#" className="nav-link">Contact</a>

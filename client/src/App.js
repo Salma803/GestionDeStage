@@ -31,10 +31,10 @@ import InfoCDF from "./chefDeFiliere/pages/InfoCDF";
 import EtudiantsCDF from "./chefDeFiliere/pages/EtudiantsCDF";
 import ListeCandidatures from "./chefDeFiliere/pages/CandidatureCDF";
 // Routes for entreprise
-import CreerOffre from "./entreprise/CreerOffre";
-import ConsulterOffres from "./entreprise/ConsulterOffres";
-import CandidaturesEntreprise from "./entreprise/Candidatures";
-
+import CreerOffre from "./entreprise/pages/CreerOffre";
+import ConsulterOffres from "./entreprise/pages/ConsulterOffres";
+import CandidaturesEntreprise from "./entreprise/pages/Candidatures";
+import InfoEntreprise from "./entreprise/pages/InfoEntreprise";
 // Routes for etudiant
 import StudentHome from "./etudiant/StudentHome";  
 import OfferDetails from "./etudiant/OfferDetails"; 
@@ -86,6 +86,7 @@ function App() {
             <Route path="/entreprise/creerOffre" element={<CreerOffre />} />
             <Route path="/entreprise/consulterOffres" element={<ConsulterOffres />} />
             <Route path="/entreprise/candidatures/:offerId" element={<CandidaturesEntreprise />} />
+            <Route path="/entreprise/info" element={<InfoEntreprise />} />
 
             {/* Routes for Etudiant */}
             <Route path="/etudiant/home" element={<StudentHome />} />
