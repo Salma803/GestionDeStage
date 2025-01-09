@@ -38,11 +38,11 @@ import CandidaturesEntreprise from "./entreprise/pages/Candidatures";
 import InfoEntreprise from "./entreprise/pages/InfoEntreprise";
 import ListeStagesEntreprise from "./entreprise/pages/Internships";
 // Routes for etudiant
-import StudentHome from "./etudiant/StudentHome";  
-import OfferDetails from "./etudiant/OfferDetails"; 
-import StudentProfile from "./etudiant/StudentProfile ";
-import Candidatures from "./etudiant/Candidatures";
-import Entretiens from "./etudiant/Entretiens";
+import StudentHome from "./etudiant/pages/StudentHome";  
+import OfferDetails from "./etudiant/pages/OfferDetails"; 
+import StudentProfile from "./etudiant/pages/StudentProfile ";
+import Candidatures from "./etudiant/pages/Candidatures";
+import Entretiens from "./etudiant/pages/Entretiens";
 
 
 function App() {

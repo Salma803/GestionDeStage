@@ -71,7 +71,7 @@ router.post('/login', async (req, res) => {
           return res.status(401).json({ error: "Wrong username and password combination" });
       }
       // Successful login
-      const accessToken = jwt.sign( { Email_CDF :user.Email_CDF,  ID_CDF :user.ID_CDF }, "secret", {expiresIn: '1h'});
+      const accessToken = jwt.sign( { Email_CDF :user.Email_CDF,  ID_CDF :user.ID_CDF }, "secret", {expiresIn: '5h'});
       res.json({
         accessToken,
         email: user.Email_CDF,

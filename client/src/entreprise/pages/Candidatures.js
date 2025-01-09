@@ -194,7 +194,7 @@ const CandidaturesEntreprise = () => {
                           ) : candidature.Entretiens && candidature.Entretiens[0] && candidature.Entretiens[0].Réponse_Entreprise === "accepted" ? (
                             <span>Retenu(e) après entretien</span>
                           ) : (
-                            <span>Non retenu(e) après entretien</span>
+                            <span>En attente</span>
                           )}
                         </td>
 

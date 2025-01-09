@@ -88,7 +88,7 @@ const OffreRejet = () => {
       <SideNav />
       <div className="content-area">
         <Header />
-        <main className="offers-main">
+        <body className="offers-main">
           <h1 className="offers-title">Liste des Offres Rejetés</h1>
           <div className="offers-cards-container">
             {disapprovedOffers.length > 0 ? (
@@ -153,7 +153,7 @@ const OffreRejet = () => {
   Pas d'offres desapprouvées trouvées.
 </p>            )}
           </div>
-        </main>
+        </body>
       </div>
     </div>
   );

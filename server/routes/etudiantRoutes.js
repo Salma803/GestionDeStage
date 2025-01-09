@@ -325,9 +325,9 @@ router.get('/candidatures', async (req, res) => {
       where: { ID_Etudiant },
       include: [{
         model: Offre,
-        as: 'Offre',  // Assuming 'Offre' is the alias for the associated offer
-        attributes: ['ID_Offre', 'Titre_Offre'],
-      }],
+        as: 'Offre',
+        attributes: ['Titre_Offre','Description_Offre','Keywords_Offre','Durée','Période'], 
+      },],
     });
 
     if (!candidatures || candidatures.length === 0) {

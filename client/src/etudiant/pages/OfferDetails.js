@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
+import Header from '../components/Header'; // Assuming you have a Header component
+
+
 
 const OfferDetails = () => {
   const [offer, setOffer] = useState(null);
@@ -95,37 +99,49 @@ const OfferDetails = () => {
   }
 
   return (
-    <div className="offer-details">
-      <h2>Offer Details</h2>
-      <h3>{offer.Titre_Offre}</h3>
-      <p>{offer.Description_Offre}</p>
-      <p><strong>Status:</strong> {offer.Status_Offre}</p>
-      <p><strong>Durée:</strong> {offer.Durée}</p>
-      <p><strong>Période:</strong> {offer.Période}</p>
-      <p><strong>Tuteur:</strong> {offer.Tuteur}</p>
-      
-
-      {/* Company Details */}
-      <div className="company-details">
-        <h4>Company Information</h4>
-        <p><strong>Name:</strong> {offer.Company.Nom_Entreprise}</p>
-        <p><strong>Address:</strong> {offer.Company.Adresse_Entreprise}</p>
-        <p><strong>Phone:</strong> {offer.Company.Tel_Entreprise}</p>
-        <p><strong>Email:</strong> {offer.Company.Email_Entreprise}</p>
+    <div className="liste-offres-page">
+        <SideNav />
+        <div className="content-area">
+        <Header />
+        <main className="offers-main">
+    <div className="container my-5">
+      <div className="card p-4 shadow">
+        <h3 className="text-primary">{offer.Titre_Offre}</h3>
+        <p>{offer.Description_Offre}</p>
+        <p><strong>Statut:</strong> {offer.Status_Offre === 'open' ? 'ouverte' : 'fermée'}</p>
+        <p><strong>Durée:</strong> {offer.Durée}</p>
+        <p><strong>Période:</strong> {offer.Période}</p>
+        <p><strong>Tuteur:</strong> {offer.Tuteur}</p>
+  
+        <div className="mt-4">
+          <h4>Informations sur l'entreprise</h4>
+          <p><strong>Nom:</strong> {offer.Company.Nom_Entreprise}</p>
+          <p><strong>Adresse:</strong> {offer.Company.Adresse_Entreprise}</p>
+          <p><strong>Téléphone:</strong> {offer.Company.Tel_Entreprise}</p>
+          <p><strong>Email:</strong> {offer.Company.Email_Entreprise}</p>
+        </div>
+  
+        {status && <p className="mt-3 alert alert-info">{status}</p>}
+  
+        <div className="d-flex gap-2 mt-4">
+          {hasApplied ? (
+            <button className="btn btn-outline-danger" onClick={handleRemoveApplication}>
+              Supprimer Candidature
+            </button>
+          ) : (
+            <button className="btn btn-outline-success" onClick={handleApply}>
+              Candidater
+            </button>
+          )}
+          <button className="btn btn-outline-secondary" onClick={() => window.history.back()}>
+            Retour aux Offres
+          </button>
+        </div>
       </div>
-
-      {/* Application Status */}
-      {status && <p>{status}</p>}
-
-      {/* Apply or Remove Application Button */}
-      {hasApplied ? (
-        <button onClick={handleRemoveApplication}>Supprimer Candidature</button>
-      ) : (
-        <button onClick={handleApply}>Candidater</button>
-      )}
-
-      <button onClick={() => window.history.back()}>Back to Offers</button>
     </div>
+    </main>
+        </div>
+      </div>
   );
 };
 

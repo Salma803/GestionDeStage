@@ -133,6 +133,7 @@ const ListeCandidatures = () => {
     return (
       <div className="liste-offres-page">
         <SideNav />
+
         <div className="content-area">
         <Header />
         <main className="offers-main">
@@ -239,6 +240,7 @@ const ListeCandidatures = () => {
         </main>
         </div>
       </div>
+
       );
       
   };
