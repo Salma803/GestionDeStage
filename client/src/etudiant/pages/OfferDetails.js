@@ -77,7 +77,7 @@ const OfferDetails = () => {
       });
   };
 
-  const handleRemoveApplication = () => {
+  /*const handleRemoveApplication = () => {
     if (!student) {
       alert('Please log in to remove your application.');
       return;
@@ -94,7 +94,7 @@ const OfferDetails = () => {
         console.error('Error removing application:', error);
         setStatus('Failed to remove application');
       });
-  };
+  };*/
 
   if (!offer) {
     return <div>Loading...</div>;
@@ -127,9 +127,7 @@ const OfferDetails = () => {
   
         <div className="d-flex gap-2 mt-4">
           {hasApplied ? (
-            <button className="btn btn-outline-danger" onClick={handleRemoveApplication}>
-              Supprimer Candidature
-            </button>
+              <p>vous avez déjà postulé à cette offre</p>
           ) : (
             <button className="btn btn-outline-success" onClick={handleApply}>
               Candidater

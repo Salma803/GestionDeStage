@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const { OffreFlag, Offre,ChefFiliere,Entreprise, Etudiant, Candidature, ChefDeFiliere, Entretien  } = require('../models');
+const { OffreFlag, Offre, ChefFiliere, Entreprise, Etudiant, Candidature, ChefDeFiliere, Entretien } = require('../models');
 
 const { validateToken } = require('../middlewares/AuthMiddleware');
 
@@ -11,7 +11,7 @@ router.get('/me', validateToken, (req, res) => {
   // req.user contains decoded token information
   const ID_CDF = req.user.ID_CDF;
   const Email_CDF = req.user.Email_CDF;
-  res.json({ ID_CDF , Email_CDF });
+  res.json({ ID_CDF, Email_CDF });
 });
 
 //Route to find the cdf information by ID
@@ -59,27 +59,27 @@ router.post('/login', async (req, res) => {
   const { email, mot_de_passe } = req.body;
 
   try {
-      // Find Admin by email
-      const user = await ChefFiliere.findOne({ where: { Email_CDF: email } });
+    // Find Admin by email
+    const user = await ChefFiliere.findOne({ where: { Email_CDF: email } });
 
-      // Check if Admin exists
-      if (!user) {
-          return res.status(404).json({ error: "Account doesn't exist" });
-      }
-      //comparer les mot de passe hashé
-      if (mot_de_passe != user.MotDePasse_CDF) {
-          return res.status(401).json({ error: "Wrong username and password combination" });
-      }
-      // Successful login
-      const accessToken = jwt.sign( { Email_CDF :user.Email_CDF,  ID_CDF :user.ID_CDF }, "secret", {expiresIn: '5h'});
-      res.json({
-        accessToken,
-        email: user.Email_CDF,
-      });
+    // Check if Admin exists
+    if (!user) {
+      return res.status(404).json({ error: "Account doesn't exist" });
+    }
+    //comparer les mot de passe hashé
+    if (mot_de_passe != user.MotDePasse_CDF) {
+      return res.status(401).json({ error: "Wrong username and password combination" });
+    }
+    // Successful login
+    const accessToken = jwt.sign({ Email_CDF: user.Email_CDF, ID_CDF: user.ID_CDF }, "secret", { expiresIn: '5h' });
+    res.json({
+      accessToken,
+      email: user.Email_CDF,
+    });
 
   } catch (error) {
-      console.error('Error logging in:', error);
-      return res.status(500).json({ error: 'Unexpected error during login' });
+    console.error('Error logging in:', error);
+    return res.status(500).json({ error: 'Unexpected error during login' });
   }
 });
 
@@ -165,7 +165,7 @@ router.get('/flag/:id_offre/:id_cdf', async (req, res) => {
 // Get all approved offers for a specific ChefFiliere
 router.get('/approvedOffers/:id_cdf', async (req, res) => {
   const { id_cdf } = req.params; // ChefFiliere ID (ID_CDF)
-  
+
   try {
     // Find all approved flags for the specified ChefFiliere
     const approvedOffers = await OffreFlag.findAll({
@@ -177,7 +177,7 @@ router.get('/approvedOffers/:id_cdf', async (req, res) => {
         {
           model: Offre,
           as: 'Offre',
-           // Specify attributes to return
+          // Specify attributes to return
           include: [
             {
               model: Entreprise, // Include the company information
@@ -204,7 +204,7 @@ router.get('/approvedOffers/:id_cdf', async (req, res) => {
 // Get all disapproved offers for a specific ChefFiliere
 router.get('/disapprovedOffers/:id_cdf', async (req, res) => {
   const { id_cdf } = req.params; // ChefFiliere ID (ID_CDF)
-  
+
   try {
     // Find all disapproved flags for the specified ChefFiliere
     const disapprovedOffers = await OffreFlag.findAll({
@@ -216,7 +216,7 @@ router.get('/disapprovedOffers/:id_cdf', async (req, res) => {
         {
           model: Offre,
           as: 'Offre',
-           // Specify attributes to return
+          // Specify attributes to return
           include: [
             {
               model: Entreprise, // Include the company information
@@ -245,30 +245,44 @@ router.get('/candidatures/:id_cdf', async (req, res) => {
   console.log('Fetching candidatures for Chef de Filière ID:', id_cdf);
 
   try {
-    // Fetch candidatures for students managed by the Chef de Filière with the given conditions
+    // Fetch candidatures with associated data
     const candidatures = await Candidature.findAll({
       include: [
         {
           model: Etudiant,
           as: 'Etudiant', // Assuming 'Etudiant' is the alias for the associated student
-          where: { 
-            Filiere_Etudiant: id_cdf // Ensure the student's Filiere matches the Chef de Filière
+          where: {
+            Filiere_Etudiant: id_cdf, // Ensure the student's Filiere matches the Chef de Filière
           },
           attributes: ['ID_Etudiant', 'Nom_Etudiant', 'Prenom_Etudiant'], // Student details
         },
         {
           model: Offre,
           as: 'Offre', // Assuming 'Offre' is the alias for the associated offer
-          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre'], // Offer details
+          attributes: ['ID_Offre', 'Titre_Offre', 'Description_Offre', 'Durée', 'Période'], // Offer details
+          include: [
+            {
+              model: Entreprise,
+              as: 'Company', // Assuming 'Company' is the alias for the associated entreprise
+              attributes: [
+                'Nom_Entreprise',
+                'Adresse_Entreprise',
+                'Tel_Entreprise',
+                'Email_Entreprise',
+              ], // Enterprise details
+            },
+          ],
         },
       ],
       where: {
         Réponse_Entreprise: 'accepted', // Filter only candidatures where the company's response is accepted
-      }
+      },
     });
 
     if (!candidatures || candidatures.length === 0) {
-      return res.status(404).json({ error: 'No candidatures found for this Chef de Filière' });
+      return res
+        .status(404)
+        .json({ error: 'No candidatures found for this Chef de Filière' });
     }
 
     // Send the candidatures as the response
@@ -278,6 +292,7 @@ router.get('/candidatures/:id_cdf', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch candidatures' });
   }
 });
+
 
 // Endpoint to fetch student details using studentId
 router.get('/etudiant/:studentId', async (req, res) => {
@@ -328,8 +343,8 @@ router.put('/candidature/accept/:cdfId/:candidatureId', async (req, res) => {
       Réponse_Etudiant: 'pending',  // Default value
     });
 
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       message: 'Candidature accepted and Entretien created successfully',
       entretien,
     });
