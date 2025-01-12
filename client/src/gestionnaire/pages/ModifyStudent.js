@@ -3,8 +3,11 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 const ModifyStudent = () => {
+  const isAuthenticated = UseAuth();
+
   const { id } = useParams();
   const [student, setStudent] = useState({
     ID_Etudiant: '',

@@ -4,7 +4,7 @@ function Header() {
   return (
     <div>
 {/* Navbar */}
-<nav className="main-header navbar navbar-expand navbar navbar-dark ">
+<nav className="main-header navbar navbar-expand navbar navbar-light ">
   {/* Left navbar links */}
   <ul className="navbar-nav">
     <li className="nav-item">

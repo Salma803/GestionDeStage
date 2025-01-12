@@ -3,10 +3,12 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 
 
 const OfferDetails = () => {
+  const isAuthenticated = UseAuth();
   const [offer, setOffer] = useState(null);
   const [student, setStudent] = useState(null); // Store student details
   const { offerId } = useParams();

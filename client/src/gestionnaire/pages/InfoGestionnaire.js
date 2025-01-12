@@ -3,8 +3,10 @@ import axios from "axios";
 import SideNav from "../components/SideNav";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import UseAuth from "../hooks/UseAuth";
 
 const InfoGestionnaire = () => {
+  const isAuthenticated = UseAuth();
   const [cdfId, setCdfId] = useState(null); // Store the Gestionnaire ID
   const [Gestionnaire, setGestionnaire] = useState(null); // Store Gestionnaire details
   const [error, setError] = useState(null); // Store errors

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import UseAuth from "../hooks/UseAuth";
+
 import SideNav from "../components/SideNav";
 import Header from "../components/Header";
 import { Table, Button, Spinner, Alert } from "react-bootstrap";
 
 const CandidaturesEntreprise = () => {
+  const isAuthenticated = UseAuth();
+
   const { offerId } = useParams(); // Get offerId from URL
   const [candidatures, setCandidatures] = useState([]);
   const [loading, setLoading] = useState(true);

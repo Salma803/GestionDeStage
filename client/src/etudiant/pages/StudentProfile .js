@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 const StudentProfile = () => {
+  const isAuthenticated = UseAuth();
   const [student, setStudent] = useState(null);
   const [cvFile, setCvFile] = useState(null);
   const [cvLink, setCvLink] = useState(null);

@@ -3,9 +3,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 
 const CreateStudent = () => {
+  const isAuthenticated = UseAuth();
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 

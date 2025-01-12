@@ -3,9 +3,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
-
+import UseAuth from "../hooks/UseAuth";
 
 const Candidatures = () => {
+  const isAuthenticated = UseAuth();
   const [candidatures, setCandidatures] = useState([]);
   const [studentId, setStudentId] = useState(null);  // Store student ID
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const Candidatures = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center">
+                <td colSpan="6" className="text-center">
                   Aucune candidature trouvée.
                 </td>
               </tr>

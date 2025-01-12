@@ -9,7 +9,6 @@ const UseAuth = (redirectPath = '/chefdefiliere/login') => {
 
     useEffect(() => {
         let isMounted = true; // Prevent updates if component unmounts
-
         const checkAuth = async () => {
             const token = sessionStorage.getItem("accessToken");
             if (!token) {

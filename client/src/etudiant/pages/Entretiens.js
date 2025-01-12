@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 
 const Entretiens = () => {
+  const isAuthenticated = UseAuth();
   const [entretiens, setEntretiens] = useState([]);
   const [studentId, setStudentId] = useState(null);
   const [statutRecherche, setStatutRecherche] = useState(false); // set initial value to false

@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 const ListStudents = () => {
+  const isAuthenticated = UseAuth();
   const [students, setStudents] = useState([]);
   const [searchID, setSearchID] = useState('');
   const [searchFiliere, setSearchFiliere] = useState('');

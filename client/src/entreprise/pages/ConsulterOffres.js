@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SideNav from "../components/SideNav";
 import Header from "../components/Header";
+import UseAuth from "../hooks/UseAuth";
+
 
 const CompanyOffers = () => {
   const [offers, setOffers] = useState([]);
@@ -10,6 +12,8 @@ const CompanyOffers = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const isAuthenticated = UseAuth();
+
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -27,8 +31,7 @@ const CompanyOffers = () => {
         );
         setOffers(offersResponse.data);
       } catch (error) {
-        setError("Failed to fetch offers");
-        console.error("Error fetching offers:", error);
+        setOffers([]);
       } finally {
         setLoading(false);
       }
@@ -60,15 +63,7 @@ const CompanyOffers = () => {
               <h2 className="card-title text-center mb-4">Offres de l'entreprise</h2>
 
               {/* Champ de recherche */}
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Rechercher par ID"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)} // Mettre à jour le terme de recherche
-                />
-              </div>
+             
 
               {/* Tableau */}
               {loading ? (

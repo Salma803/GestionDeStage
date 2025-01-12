@@ -12,7 +12,7 @@ function SideNav() {
 
   return (
     <div>
-<aside className="main-sidebar sidebar-dark-danger elevation-4 " >
+<aside className="main-sidebar sidebar-light-danger elevation-4 " >
   {/* Brand Logo */}
   
   {/* Sidebar */}
@@ -23,7 +23,7 @@ function SideNav() {
         <img src="/dist/img/user2-160x160.jpg" className="img-circle elevation-2"  />
       </div>
       <div className="info">
-        <a href="#" className="d-block">Chef de filière</a>
+        <a href="#" className="d-block">Etudiant</a>
       </div>
     </div>
     {/* SidebarSearch Form */}

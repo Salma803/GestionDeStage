@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import UseAuth from "../hooks/UseAuth";
 
 const ListInternships = () => {
+  const isAuthenticated = UseAuth();
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

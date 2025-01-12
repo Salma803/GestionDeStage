@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 
 const StudentOffers = () => {
+  const isAuthenticated = UseAuth();
   const [offers, setOffers] = useState([]);
   const [statusFlag, setStatusFlag] = useState('');
   const [idCdf, setIdCdf] = useState('');

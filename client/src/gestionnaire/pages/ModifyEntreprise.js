@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
 import Header from '../components/Header'; // Assuming you have a Header component
+import UseAuth from "../hooks/UseAuth";
 
 const ModifyEntreprise = () => {
+  const isAuthenticated = UseAuth();
   const { id } = useParams();
   const [entreprise, setEntreprise] = useState({
     Nom_Entreprise: '',
