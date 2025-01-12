@@ -112,18 +112,6 @@ const CreerOffre = () => {
             required
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="status_offre">
-          <Form.Label>Statut</Form.Label>
-          <Form.Select
-            name="status_offre"
-            value={formData.status_offre}
-            onChange={handleChange}
-            required
-          >
-            <option value="open">Ouvert</option>
-            <option value="closed">Fermé</option>
-          </Form.Select>
-        </Form.Group>
         <Form.Group className="mb-3" controlId="keywords_offre">
           <Form.Label>Mots-Clés</Form.Label>
           <Form.Control

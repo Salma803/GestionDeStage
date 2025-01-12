@@ -28,12 +28,12 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: "Wrong username and password combination" });
     }
 
-      // Successful login
-      const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '5h' });
-      res.json({
-        accessToken,
-        email: user.Email_Gestionnaire,
-      });
+    // Successful login
+    const accessToken = jwt.sign({ Email_Gestionnaire: user.Email_Gestionnaire, ID_Gestionnaire: user.ID_Gestionnaire }, "secret", { expiresIn: '5h' });
+    res.json({
+      accessToken,
+      email: user.Email_Gestionnaire,
+    });
 
   } catch (error) {
     console.error('Error logging in:', error);
@@ -97,6 +97,7 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
   }
   console.log('File uploaded:', req.file); // Log uploaded file information
 
+
   const filePath = req.file.path;
   const students = [];
 
@@ -104,65 +105,90 @@ router.post('/upload/students', upload.single('file'), async (req, res) => {
     fs.createReadStream(filePath)
       .pipe(csvParser())
       .on('data', (row) => {
-        console.log('Row data:', row); // Log the data being read from the CSV
-        students.push(row); // Push each student to an array to be processed later
+        students.push(row);
       })
       .on('end', async () => {
-        console.log('CSV processing finished, students:', students); // Log the final student array
-
         try {
-          const existingEmails = await Etudiant.findAll({
+          // Find existing students in the database
+          const existingStudents = await Etudiant.findAll({
             attributes: ['Email_Etudiant'],
             where: {
               Email_Etudiant: students.map(student => student.Email_Etudiant),
             },
           });
 
-          const existingEmailsSet = new Set(existingEmails.map(e => e.Email_Etudiant));
-          const newStudents = students.filter(student => !existingEmailsSet.has(student.Email_Etudiant));
+          const existingStudentsMap = new Map(
+            existingStudents.map(student => [student.Email_Etudiant, student])
+          );
 
-          console.log('New students to be created:', newStudents); // Log the students who are not already in the database
+          for (const student of students) {
+            console.log('Processing student:', student);
+            const isExisting = existingStudentsMap.has(student.Email_Etudiant);
 
-          for (const student of newStudents) {
-            console.log('Processing student:', student); // Log each student being processed
+            if (isExisting) {
+              // Update existing student
+              const existingStudent = existingStudentsMap.get(student.Email_Etudiant);
 
-            const generateRandomPassword = () => {
-              const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-              let password = '';
-              for (let i = 0; i < 12; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-              }
-              return password;
-            };
+              const statutEtudiant = student.Statut_Etudiant;
+              const suppriméEtudiant = statutEtudiant !== 'en cours' ? 'true' : 'false';
 
-            await Etudiant.create({
-              ID_Etudiant: student.ID_Etudiant,
-              Nom_Etudiant: student.Nom_Etudiant,
-              Prenom_Etudiant: student.Prenom_Etudiant,
-              Date_Naissance_Etudiant: student.Date_Naissance_Etudiant,
-              Email_Etudiant: student.Email_Etudiant,
-              Tel_Etudiant: student.Tel_Etudiant,
-              Filiere_Etudiant: student.Filiere_Etudiant,
-              Annee_Etudiant: student.Annee_Etudiant,
-              MotDePasse_Etudiant: generateRandomPassword(), // Generate a random password here
-            });
+              await Etudiant.update(
+                {
+                  Filiere_Etudiant: student.Filiere_Etudiant || existingStudent.Filiere_Etudiant,
+                  Annee_Etudiant: student.Annee_Etudiant || existingStudent.Annee_Etudiant,
+                  Statut_Etudiant: statutEtudiant,
+                  Supprimé_Etudiant: suppriméEtudiant,
+                  Statut_Recherche : 'false',
+                },
+                {
+                  where: { Email_Etudiant: student.Email_Etudiant },
+                }
+              );
+            } else {
+              // Create new student
+              const statutEtudiant = student.Statut_Etudiant;
+              const suppriméEtudiant = statutEtudiant !== 'en cours' ? 'true' : 'false';
+              // Function to generate a random password
+              const generateRandomPassword = () => {
+                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let password = '';
+                for (let i = 0; i < 12; i++) {
+                  password += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return password;
+              };
+
+              await Etudiant.create({
+                ID_Etudiant: student.ID_Etudiant,
+                Nom_Etudiant: student.Nom_Etudiant,
+                Prenom_Etudiant: student.Prenom_Etudiant,
+                Date_Naissance_Etudiant: student.Date_Naissance_Etudiant,
+                Email_Etudiant: student.Email_Etudiant,
+                Tel_Etudiant: student.Tel_Etudiant,
+                Filiere_Etudiant: student.Filiere_Etudiant,
+                Annee_Etudiant: student.Annee_Etudiant,
+                Statut_Etudiant: statutEtudiant,
+                Supprimé_Etudiant: suppriméEtudiant,
+                MotDePasse_Etudiant: generateRandomPassword(),
+              });
+            }
           }
 
           fs.unlinkSync(filePath); // Clean up the uploaded file
-          console.log('File deleted after processing.');
-
-          res.status(201).json({ message: 'Students created successfully!' });
+          res.status(201).json({ message: 'Students processed successfully!' });
         } catch (error) {
-          console.error('Error processing students:', error); // Log any errors in processing the students
+          console.error('Error processing students:', error);
           fs.unlinkSync(filePath); // Clean up the uploaded file in case of error
-          res.status(500).json({ error: 'Failed to create students from CSV' });
+          res.status(500).json({ error: 'Failed to process students from CSV' });
         }
       });
   } catch (error) {
-    console.error('Error reading CSV file:', error); // Log errors in reading the CSV file
+    console.error('Error reading CSV file:', error);
     res.status(500).json({ error: 'Error processing CSV file' });
   }
 });
+
+
 
 // Upload CSV to create ChefDeFiliere
 router.post('/upload/chefs', upload.single('file'), async (req, res) => {
@@ -318,6 +344,7 @@ router.put('/student/:id', async (req, res) => {
     Tel_Etudiant,
     Filiere_Etudiant,
     Annee_Etudiant,
+    Statut_Etudiant,
     Statut_Recherche,
     MotDePasse_Etudiant,
   } = req.body;
@@ -340,6 +367,7 @@ router.put('/student/:id', async (req, res) => {
       Tel_Etudiant,
       Filiere_Etudiant,
       Annee_Etudiant,
+      Statut_Etudiant,
       Statut_Recherche,
       MotDePasse_Etudiant,
     });

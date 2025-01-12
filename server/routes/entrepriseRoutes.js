@@ -64,6 +64,12 @@ router.get('/listeOffres', async (req, res) => {
           include: [{
               model: Entreprise,
               as: 'Company',
+              attributes: [
+                'Nom_Entreprise', 
+                'Adresse_Entreprise', 
+                'Tel_Entreprise', 
+                'Email_Entreprise'
+              ],
           }],
       });
       res.status(200).json(offres);
@@ -330,6 +336,19 @@ router.get('/:id/stages', async (req, res) => {
   }
 });
 
+// route to close an offer
+router.put("/fermerOffre/:offerId", async (req, res) => {
+  const { offerId } = req.params;
+  try {
+    await Offre.update(
+      { Status_Offre: "closed" },
+      { where: { ID_Offre: offerId } }
+    );
+    res.status(200).json({ message: "Offer closed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error closing the offer" });
+  }
+});
 
 
 

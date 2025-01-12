@@ -79,20 +79,20 @@ const ListeOffres = () => {
       alert("User ID not available.");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         `http://localhost:3001/chefdefiliere/flaggerOffre/${id_offre}/${idCdf}`,
         { id_offre, id_cdf: idCdf, status_flag, comments: comments[id_offre] || "" },
         { headers: { accessToken: sessionStorage.getItem("accessToken") } }
       );
-  
+
       // Update the specific flag in the state
       setFlags((prev) => ({
         ...prev,
         [id_offre]: response.data, // Assuming response.data contains the flag details
       }));
-  
+
       setEditingOfferId(null); // Exit editing mode
       alert(`Offer ${status_flag} successfully!`);
     } catch (error) {
@@ -100,7 +100,7 @@ const ListeOffres = () => {
       alert("Failed to flag offer.");
     }
   };
-  
+
 
   const handleCommentChange = (id_offre, value) => {
     setComments((prev) => ({ ...prev, [id_offre]: value }));
@@ -119,52 +119,55 @@ const ListeOffres = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-        <h1 className="offers-title">Liste des Offres</h1>
+          <h1 className="offers-title">Liste des Offres</h1>
 
           <div className="offers-cards-container">
-            {offres.map((offer) => (
+            {offres.filter((offer) => offer.Status_Offre === "open").map((offer) => (
               <div key={offer.ID_Offre} className="offer-card">
-                <h2>{offer.Titre_Offre || "No Title"}</h2>
-                <p><strong>Description:</strong> {offer.Description_Offre || "No description"}</p>
-                <p><strong>Durée:</strong> {offer.Durée || "N/A"}</p>
-                <p><strong>Mots-clés:</strong> {offer.Keywords_Offre || "N/A"}</p>
-                <p><strong>Status:</strong> {offer.Status_Offre}</p>
+                <h3 className="text-primary">{offer.Titre_Offre}</h3>
+                <p>{offer.Description_Offre}</p>
+                <p><strong>Durée:</strong> {offer.Durée}</p>
+                <p><strong>Période:</strong> {offer.Période}</p>
+                <h4>Informations sur l'entreprise</h4>
+                <p><strong>Nom:</strong> {offer.Company.Nom_Entreprise}</p>
+                <p><strong>Adresse:</strong> {offer.Company.Adresse_Entreprise}</p>
+                <p><strong>Téléphone:</strong> {offer.Company.Tel_Entreprise}</p>
+                <p><strong>Email:</strong> {offer.Company.Email_Entreprise}</p>
 
                 {flags[offer.ID_Offre] && (
-  <div
-    style={{
-      marginTop: "10px",
-      padding: "10px",
-      borderRadius: "8px",
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-      margin: "10px 0",
-      backgroundColor:
-        flags[offer.ID_Offre].Status_Flag === "approved"
-          ? "#d4edda" // Light green for approved
-          : "#f8d7da", // Light red for rejected
-      color:
-        flags[offer.ID_Offre].Status_Flag === "approved"
-          ? "#155724" // Dark green text for approved
-          : "#721c24", // Dark red text for rejected
-      border: `1px solid ${
-        flags[offer.ID_Offre].Status_Flag === "approved"
-          ? "#c3e6cb" // Green border for approved
-          : "#f5c6cb" // Red border for rejected
-      }`,
-    }}
-  >
-    <p>
-      <strong>Décision du flag:</strong>{" "}
-      {flags[offer.ID_Offre].Status_Flag === "approved" ? "Recommandé" : "Rejeté"}
-    </p>
-    <p>
-      <strong>Commentaire:</strong>{" "}
-      {flags[offer.ID_Offre].Comments
-        ? flags[offer.ID_Offre].Comments
-        : "Pas de commentaire"}
-    </p>
-  </div>
-)}
+                  <div
+                    style={{
+                      marginTop: "10px",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                      margin: "10px 0",
+                      backgroundColor:
+                        flags[offer.ID_Offre].Status_Flag === "approved"
+                          ? "#d4edda" // Light green for approved
+                          : "#f8d7da", // Light red for rejected
+                      color:
+                        flags[offer.ID_Offre].Status_Flag === "approved"
+                          ? "#155724" // Dark green text for approved
+                          : "#721c24", // Dark red text for rejected
+                      border: `1px solid ${flags[offer.ID_Offre].Status_Flag === "approved"
+                        ? "#c3e6cb" // Green border for approved
+                        : "#f5c6cb" // Red border for rejected
+                        }`,
+                    }}
+                  >
+                    <p>
+                      <strong>Décision du flag:</strong>{" "}
+                      {flags[offer.ID_Offre].Status_Flag === "approved" ? "Recommandé" : "Rejeté"}
+                    </p>
+                    <p>
+                      <strong>Commentaire:</strong>{" "}
+                      {flags[offer.ID_Offre].Comments
+                        ? flags[offer.ID_Offre].Comments
+                        : "Pas de commentaire"}
+                    </p>
+                  </div>
+                )}
 
                 {editingOfferId === offer.ID_Offre ? (
                   <div>
@@ -173,29 +176,32 @@ const ListeOffres = () => {
                       value={comments[offer.ID_Offre] || ""}
                       onChange={(e) => handleCommentChange(offer.ID_Offre, e.target.value)}
                     ></textarea>
-                    <button className="btn btn-success btn-sm"  onClick={() => handleFlagOffer(offer.ID_Offre, "approved")}>
+                    <button className="btn btn-success btn-sm" onClick={() => handleFlagOffer(offer.ID_Offre, "approved")}>
                       Appouver
                     </button>
-                    <button className="btn btn-danger btn-sm"onClick={() => handleFlagOffer(offer.ID_Offre, "rejected")}>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleFlagOffer(offer.ID_Offre, "rejected")}>
                       Rejeter
                     </button>
                     <button className="btn btn-warning btn-sm" onClick={() => toggleEditMode(null)}>Retour</button>
                   </div>
                 ) : (
-                  <button style={{
-                    padding: "10px 15px",
-                    borderRadius: "8px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                    backgroundColor:"#e7f1ff", // Light blue for unflagged offers
-                    color: '#004085',
-                    border: '1px solid #cce5ff',
-                    cursor: "pointer",
-                  }} onClick={() => toggleEditMode(offer.ID_Offre)}>
+                  <button
+                    style={{
+                      padding: "10px 15px",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                      backgroundColor: "#e7f1ff", // Light blue for unflagged offers
+                      color: '#004085',
+                      border: '1px solid #cce5ff',
+                      cursor: "pointer",
+                    }}
+                    onClick={() => toggleEditMode(offer.ID_Offre)}
+                  >
                     {flags[offer.ID_Offre]?.Status_Flag === "approved"
                       ? "Changer Recommandation"
                       : flags[offer.ID_Offre]?.Status_Flag === "rejected"
-                      ? "Change Rejection"
-                      : "Flagger cette offre"}
+                        ? "Change Rejection"
+                        : "Flagger cette offre"}
                   </button>
                 )}
               </div>

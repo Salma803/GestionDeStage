@@ -77,6 +77,7 @@ const ListStudents = () => {
                     <th>Téléphone</th>
                     <th>CV</th>
                     <th>Filière</th>
+                    <th>Statut</th>
                     <th>Stage Trouvé</th>
                     <th>Actions</th>
                   </tr>
@@ -103,6 +104,7 @@ const ListStudents = () => {
                         )}
                       </td>
                       <td>{student.Filiere_Etudiant}</td>
+                      <td>{student.Statut_Etudiant}</td>
                       <td>{student.Statut_Recherche ? "non" : "oui"}</td>
                       <td>
                         <button

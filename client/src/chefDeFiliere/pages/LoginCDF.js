@@ -30,8 +30,6 @@ const LoginPage = () => {
       const { accessToken } = response.data;
       sessionStorage.setItem("accessToken", accessToken);
 
-      alert(`Login successful! Welcome ${response.data.email}`);
-
       // Redirect based on role
       if (role === "entreprise") {
         navigate("/entreprise/consulteroffres");

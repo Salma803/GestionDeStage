@@ -1,10 +1,10 @@
-ID_Etudiant,Nom_Etudiant,Prenom_Etudiant,Date_Naissance_Etudiant,Email_Etudiant,Tel_Etudiant,Filiere_Etudiant,Annee_Etudiant
-ET001,Doe,John,2001-05-20,john.doe@example.com,1234567890,GL,2A
-ET002,Smith,Jane,2000-11-15,jane.smith@example.com,0987654321,GL,3A
-ET003,Brown,Emily,2002-07-25,emily.brown@example.com,1122334455,SSE,1A
-ET004,Johnson,Michael,2001-01-10,johnson.micheal@example.com,5544332211,GD,2A
-ET005,Williams,Patricia,2000-03-30,patricia.williams@example.com,6677889900,GL,3A
-ET006,Jones,Robert,2002-12-05,robert.jones@example.com,9988776655,SSE,1A
-ET007,Garcia,Linda,2001-09-15,linda.garcia@example.com,5566778899,2IA,2A
-ET008,Miller,David,2000-06-20,david.miller@example.com,3344556677,2IA,3A
-ET009,Davis,Barbara,2002-04-10,barbara.davis@example.com,2233445566,SSE,1A
+ID_Etudiant,Nom_Etudiant,Prenom_Etudiant,Date_Naissance_Etudiant,Email_Etudiant,Tel_Etudiant,Filiere_Etudiant,Annee_Etudiant,Statut_Etudiant
+ET001,Doe,John,2001-05-20,john.doe@example.com,1234567890,GL,2A,en cours
+ET002,Smith,Jane,2000-11-15,jane.smith@example.com,0987654321,GL,3A,en cours
+ET003,Brown,Emily,2002-07-25,emily.brown@example.com,1122334455,SSE,1A,en cours
+ET004,Johnson,Michael,2001-01-10,johnson.micheal@example.com,5544332211,GD,2A,abandonné
+ET005,Williams,Patricia,2000-03-30,patricia.williams@example.com,6677889900,GL,3A,en cours
+ET006,Jones,Robert,2002-12-05,robert.jones@example.com,9988776655,SSE,2A,en cours
+ET007,Garcia,Linda,2001-09-15,linda.garcia@example.com,5566778899,2IA,2A,en cours
+ET008,Miller,David,2000-06-20,david.miller@example.com,3344556677,2IA,3A,diplomé
+ET009,Davis,Barbara,2002-04-10,barbara.davis@example.com,2233445566,GD,2A,en cours

@@ -18,6 +18,7 @@ const ModifyStudent = () => {
     Tel_Etudiant: '',
     Filiere_Etudiant: '',
     Annee_Etudiant: '',
+    Statut_Etudiant: '',
     Statut_Recherche: '',
     MotDePasse_Etudiant: '',
   });
@@ -118,6 +119,22 @@ const ModifyStudent = () => {
                     <option value="1A">1A</option>
                     <option value="2A">2A</option>
                     <option value="3A">3A</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="Statut_Etudiant">Statut</label>
+                  <select
+                    id="Statut_Etudiant"
+                    name="Statut_Etudiant"
+                    className="form-control"
+                    value={student.Statut_Etudiant}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Sélectionnez un statut</option>
+                    <option value="en cours">en cours</option>
+                    <option value="diplomé">diplomé</option>
+                    <option value="abandonné">abandonné</option>
                   </select>
                 </div>
                 <div className="mb-3">

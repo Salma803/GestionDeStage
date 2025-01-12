@@ -111,6 +111,11 @@ router.post('/login', async (req, res) => {
           return res.status(404).json({ error: "Account doesn't exist" });
       }
 
+      // Check if the account is marked as deleted
+      if (user.Supprimé_Etudiant === 'true') {
+        return res.status(403).json({ error: "Ce compte a été supprimé, vous ne pouvez pas vous connecter" });
+      }
+
       // Compare hashed passwords
       if (mot_de_passe !== user.MotDePasse_Etudiant) {
           return res.status(401).json({ error: "Wrong username and password combination" });

@@ -5,15 +5,15 @@ import SideNav from "../components/SideNav";
 import Header from "../components/Header";
 import UseAuth from "../hooks/UseAuth";
 
-
 const CompanyOffers = () => {
   const [offers, setOffers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchStatut, setSearchStatut] = useState(""); // State for statut search
+  const [searchTitre, setSearchTitre] = useState(""); // State for titre search
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isAuthenticated = UseAuth();
-
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -40,10 +40,35 @@ const CompanyOffers = () => {
     fetchOffers();
   }, []);
 
-  // Filter and sort offers
+  // Function to close an offer
+  const closeOffer = async (offerId) => {
+    try {
+      await axios.put(
+        `http://localhost:3001/entreprise/fermerOffre/${offerId}`,
+        {},
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
+      // Update the offer status locally after successful closure
+      setOffers((prevOffers) =>
+        prevOffers.map((offer) =>
+          offer.ID_Offre === offerId ? { ...offer, Status_Offre: "closed" } : offer
+        )
+      );
+    } catch (error) {
+      setError("Erreur lors de la fermeture de l'offre.");
+    }
+  };
+
+  // Filter and sort offers by multiple criteria
   const filteredAndSortedOffers = offers
     .filter((offer) =>
-      offer.ID_Offre.toString().includes(searchTerm) // Search by ID
+      offer.ID_Offre.toString().includes(searchTerm) && // Search by ID
+      offer.Titre_Offre.toLowerCase().includes(searchTitre.toLowerCase()) && // Search by Titre
+      (offer.Status_Offre.toLowerCase().includes(searchStatut.toLowerCase()) || searchStatut === "") // Search by Statut
     )
     .sort((a, b) => a.ID_Offre - b.ID_Offre); // Sort by ID
 
@@ -63,7 +88,40 @@ const CompanyOffers = () => {
               <h2 className="card-title text-center mb-4">Offres de l'entreprise</h2>
 
               {/* Champ de recherche */}
-             
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Rechercher par ID"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              {/* Search by Statut */}
+              <div className="mb-3">
+                <select
+                  className="form-control"
+                  value={searchStatut}
+                  onChange={(e) => setSearchStatut(e.target.value)}
+                >
+                  <option value="">Rechercher par Statut</option>
+                  <option value="open">Ouvert</option>
+                  <option value="closed">Fermé</option>
+                </select>
+              </div>
+
+
+              {/* Search by Titre */}
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Rechercher par Titre"
+                  value={searchTitre}
+                  onChange={(e) => setSearchTitre(e.target.value)}
+                />
+              </div>
 
               {/* Tableau */}
               {loading ? (
@@ -95,7 +153,7 @@ const CompanyOffers = () => {
                         <td>{offer.ID_Offre}</td>
                         <td>{offer.Titre_Offre || "N/A"}</td>
                         <td>{offer.Description_Offre || "N/A"}</td>
-                        <td>{offer.Status_Offre || "N/A"}</td>
+                        <td>{offer.Status_Offre === "open" ? "Ouvert" : offer.Status_Offre === "closed" ? "Fermé" : "N/A"}</td>
                         <td>{offer.Durée || "N/A"}</td>
                         <td>{offer.Période || "N/A"}</td>
                         <td>{offer.Tuteur || "N/A"}</td>
@@ -109,6 +167,14 @@ const CompanyOffers = () => {
                           >
                             Voir Les Candidatures
                           </button>
+                          {offer.Status_Offre !== "closed" && (
+                            <button
+                              className="btn btn-danger ml-2"
+                              onClick={() => closeOffer(offer.ID_Offre)}
+                            >
+                              Fermer l'offre
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
