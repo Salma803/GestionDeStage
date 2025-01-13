@@ -354,5 +354,39 @@ router.put('/candidature/accept/:cdfId/:candidatureId', async (req, res) => {
   }
 });
 
+// Route to update Chef Filière's password
+router.put('/update/:cdfId', async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const { cdfId } = req.params;
+
+  try {
+    // Find the Chef Filière in the database
+    const chefFiliere = await ChefFiliere.findOne({ where: {ID_CDF: cdfId} });
+
+    if (!chefFiliere) {
+      return res.status(404).json({ message: 'Chef Filière not found' });
+    }
+
+    // Check if the current password matches
+    if (chefFiliere.MotDePasse_CDF !== currentPassword) {
+      return res.status(400).json({ message: 'Incorrect current password' });
+    }
+
+    // Update the password directly (without hashing)
+    chefFiliere.MotDePasse_CDF = newPassword;
+
+    // Save the updated Chef Filière object
+    await chefFiliere.save();
+
+    return res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return res.status(500).json({ message: 'Error updating password' });
+  }
+});
+
+module.exports = router;
+
+
 
 module.exports = router;

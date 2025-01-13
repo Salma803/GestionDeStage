@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
-import Header from '../components/Header'; // Assuming you have a Header component
+import SideNav from '../components/SideNav';
+import Header from '../components/Header';
 import UseAuth from "../hooks/UseAuth";
 
 const StudentProfile = () => {
@@ -12,6 +12,13 @@ const StudentProfile = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Password change states
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   useEffect(() => {
     // Fetch student profile data
@@ -56,12 +63,53 @@ const StudentProfile = () => {
       });
 
       setSuccessMessage("CV uploaded successfully!");
-      setCvLink(`http://localhost:3001/uploads/cvs/${response.data.cvFileName}`); // Update the link to the new CV
+      setCvLink(`http://localhost:3001/uploads/cvs/${response.data.cvFileName}`);
       setError(null);
     } catch (error) {
       setError("Failed to upload CV.");
       setSuccessMessage(null);
       console.error("Error uploading CV:", error);
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    // Check if the new passwords match
+    if (newPassword !== confirmPassword) {
+      alert("Les mots de passe ne correspondent pas.");
+      setPasswordSuccess("");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      return;
+    }
+
+    setPasswordError("");
+
+    try {
+      // Assuming the student ID is stored in student.ID_Etudiant
+      const response = await axios.put(
+        `http://localhost:3001/etudiant/updatePassword/${student.ID_Etudiant}`,
+        { currentPassword, newPassword },
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
+
+      alert("Mot de passe mis à jour avec succès.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      alert("Erreur lors de la mise à jour du mot de passe.");
+      setPasswordSuccess("");
+      console.error("Error updating password:", error);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     }
   };
 
@@ -79,7 +127,7 @@ const StudentProfile = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-          <div className="container my-5" style={{ minHeight:"1500px",maxWidth: "800px", margin: "0 auto" }}>
+          <div className="container my-5" style={{ minHeight:"1500px", maxWidth: "800px", margin: "0 auto" }}>
             <div className="card p-4 shadow">
               <div className="mb-4">
                 <p><strong>Nom:</strong> {student?.Nom_Etudiant} {student?.Prenom_Etudiant}</p>
@@ -88,38 +136,67 @@ const StudentProfile = () => {
                 <p><strong>Filière:</strong> {student?.Filiere_Etudiant}</p>
                 <p><strong>Date de Naissance:</strong> {student?.Date_Naissance_Etudiant}</p>
                 <p><strong>Année:</strong> {student?.Annee_Etudiant}</p>
-                <p>
-                  <strong>Stage Trouvé :</strong> {student?.Statut_Recherche === 'false' ? 'Non' : 'Oui'}
-                </p>
+                <p><strong>Stage Trouvé :</strong> {student?.Statut_Recherche === 'false' ? 'Non' : 'Oui'}</p>
               </div>
+              
               <strong>Votre CV: </strong>
-              
-                
-                {cvLink ? (
-                  <a href={cvLink} target="_blank" rel="noopener noreferrer">
-                    Cliquez ici pour voir/télécharger votre CV
-                  </a>
-                ) : (
-                  <p className="text-danger">Aucun CV téléchargé pour le moment.</p>
-                )}
+              {cvLink ? (
+                <a href={cvLink} target="_blank" rel="noopener noreferrer">
+                  Cliquez ici pour voir/télécharger votre CV
+                </a>
+              ) : (
+                <p className="text-danger">Aucun CV téléchargé pour le moment.</p>
+              )}
 
-                <div className="mt-3">
-                  <strong>Télécharger un nouveau CV</strong>
-                  {successMessage && <p className="text-success">{successMessage}</p>}
-                  {error && <p className="text-danger">{error}</p>}
-                  <input type="file" className="form-control mb-2" onChange={handleFileChange} />
-                  <button className="btn btn-outline-primary" onClick={handleFileUpload}>
-                    Télécharger CV
-                  </button>
-                </div>
-              
+              <div className="mt-3">
+                <strong>Télécharger un nouveau CV</strong>
+                {successMessage && <p className="text-success">{successMessage}</p>}
+                {error && <p className="text-danger">{error}</p>}
+                <input type="file" className="form-control mb-2" onChange={handleFileChange} />
+                <button className="btn btn-outline-primary" onClick={handleFileUpload}>Télécharger CV</button>
+              </div>
+
+              <div className="mt-4">
+                <h2>Change Your Password</h2>
+                <form onSubmit={handlePasswordChange}>
+                  <div>
+                    <label>Current Password</label>
+                    <input
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label>New Password</label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label>Confirm New Password</label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {passwordError && <p className="text-danger">{passwordError}</p>}
+                  {passwordSuccess && <p className="text-success">{passwordSuccess}</p>}
+                  <button type="submit" className="btn btn-outline-primary">Update Password</button>
+                </form>
+              </div>
             </div>
           </div>
         </main>
       </div>
     </div>
   );
-  
 };
 
 export default StudentProfile;

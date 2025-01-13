@@ -510,6 +510,37 @@ router.post('/accept-offer', async (req, res) => {
   }
 });
 
+// Route to update entreprise's password
+router.put('/updatePassword/:id', async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const { id } = req.params;
+
+  try {
+    // Find the Entreprise in the database
+    const etudiant = await Etudiant.findOne({ where: { ID_Etudiant: id } });
+
+    if (!etudiant) {
+      return res.status(404).json({ message: 'Etudiant not found' });
+    }
+
+    // Check if the current password matches
+    if (etudiant.MotDePasse_Etudiant !== currentPassword) {
+      return res.status(400).json({ message: 'Incorrect current password' });
+    }
+
+    // Update the password directly (without hashing)
+    etudiant.MotDePasse_Etudiant = newPassword;
+
+    // Save the updated Entreprise object
+    await etudiant.save();
+
+    return res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return res.status(500).json({ message: 'Error updating password' });
+  }
+});
+
 
 
 

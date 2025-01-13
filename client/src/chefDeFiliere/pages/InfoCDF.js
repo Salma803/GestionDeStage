@@ -5,7 +5,6 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import UseAuth from "../hooks/UseAuth";
 
-
 const InfoCDF = () => {
   const isAuthenticated = UseAuth();
 
@@ -13,6 +12,13 @@ const InfoCDF = () => {
   const [chefFiliere, setChefFiliere] = useState(null); // Store Chef Filière details
   const [error, setError] = useState(null); // Store errors
   const [loading, setLoading] = useState(true); // Loading state
+
+  // State for password change
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Step 1: Fetch the user data and retrieve the ID
   useEffect(() => {
@@ -59,6 +65,45 @@ const InfoCDF = () => {
     }
   }, [cdfId]);
 
+  // Handle password change
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    // Validate passwords
+    if (newPassword !== confirmPassword) {
+      alert('Les mots de passe ne correspondent pas.');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      return;
+    }
+
+    setPasswordError('');
+
+    try {
+      const response = await axios.put(`http://localhost:3001/chefdefiliere/update/${cdfId}`, {
+        currentPassword,
+        newPassword
+      }, {
+        headers: {
+          accessToken: sessionStorage.getItem("accessToken"),
+        },
+      });
+
+      alert('Mot de passe mis à jour avec succès');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      alert('Erreur lors de la mise à jour du mot de passe.');
+      console.error('Error updating password:', error);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      
+    }
+  };
+
   // Render the page
   return (
     <div className="liste-offres-page">
@@ -66,13 +111,12 @@ const InfoCDF = () => {
       <div className="content-area">
         <Header />
         <main style={{
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '120px',
-    backgroundColor: '#fff',
-    padding: '20px',
-     // Red border to match the theme
-  }}  className="offers-main">
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: '120px',
+          backgroundColor: '#fff',
+          padding: '20px',
+        }} className="offers-main">
 
           {loading && <p>Loading...</p>}
 
@@ -80,8 +124,7 @@ const InfoCDF = () => {
 
           {chefFiliere && (
             <div className="offer-card">
-                            <h1 className="offers-title">Vos Informations</h1>
-
+              <h1 className="offers-title">Vos Informations</h1>
               <h2 className="offer-title">
                 {chefFiliere.Nom_CDF || "No Name Available"}
               </h2>
@@ -97,15 +140,46 @@ const InfoCDF = () => {
               <p>
                 <strong>Department:</strong> {chefFiliere.FiliereAssociee_CDF || "N/A"}
               </p>
-              <p>
-                <strong>Password:</strong> {chefFiliere.MotDePasse_CDF || "N/A"}
-              </p>
+
+
+              <h2>Change Your Password</h2>
+              <form onSubmit={handlePasswordChange}>
+                <div>
+                  <label>Current Password</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label>New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label>Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                {passwordError && <p className="error-message">{passwordError}</p>}
+                {successMessage && <p className="success-message">{successMessage}</p>}
+                <button type="submit">Update Password</button>
+              </form>
             </div>
           )}
 
           {!loading && !error && !chefFiliere && <p>No data found.</p>}
         </main>
-        
       </div>
     </div>
   );

@@ -453,7 +453,46 @@ router.put('/entreprise/:id', async (req, res) => {
   }
 });
 
+// Update Gestionnaire Information and Change Password in One Route
+router.put('/update/:cdGest', async (req, res) => {
+  const { currentPassword, newPassword, Prenom_Gestionnaire, Nom_Gestionnaire, Email_Gestionnaire, Tel_Gestionnaire } = req.body;
+  const { cdGest } = req.params;
 
+  try {
+    // Find the Gestionnaire based on the access token (You may need to decode the token and get the user ID)
+    const gestionnaire = await Gestionnaire.findOne({ where: { ID_Gestionnaire: cdGest } });
+
+    if (!gestionnaire) {
+      return res.status(404).json({ message: 'Gestionnaire not found' });
+    }
+
+    // Check if current password is provided and if it's correct (Only check if password change is requested)
+    if (currentPassword && gestionnaire.MotDePasse_Gestionnaire !== currentPassword) {
+      return res.status(400).json({ message: 'Incorrect current password' });
+    }
+
+    // Update the Gestionnaire details (Only if new data is provided)
+    if (Prenom_Gestionnaire || Nom_Gestionnaire || Email_Gestionnaire || Tel_Gestionnaire) {
+      await gestionnaire.update({
+        Prenom_Gestionnaire,
+        Nom_Gestionnaire,
+        Email_Gestionnaire,
+        Tel_Gestionnaire
+      });
+    }
+
+    // If new password is provided, update the password
+    if (newPassword) {
+      // Hash the password before saving it (recommended)
+      await gestionnaire.update({ MotDePasse_Gestionnaire: newPassword }); // You can hash the password here
+    }
+
+    return res.status(200).json({ message: 'Gestionnaire updated successfully' });
+  } catch (error) {
+    console.error('Error updating Gestionnaire:', error);
+    return res.status(500).json({ message: 'Error updating Gestionnaire' });
+  }
+});
 
 // -- Delete Routes --
 // Delete Student
