@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import '../css/LoginPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -47,56 +48,53 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <h2 className="text-center">Login</h2>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <form onSubmit={handleSubmit}>
-            <div className="form-group mb-3">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label htmlFor="role">Login as:</label>
-              <select
-                className="form-control"
-                id="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <option value="entreprise">Entreprise</option>
-                <option value="chefdefiliere">Chef de Filière</option>
-                <option value="etudiant">Etudiant</option>
-                <option value="gestionnaire">Gestionnaire</option>
-              </select>
-            </div>
-            <button type="submit" className="btn btn-primary w-100">
-              Login
-            </button>
-          </form>
-        </div>
+    <div className="login-page">
+      <div className="login-container">
+        <h2 className="login-title">Connexion</h2>
+        {error && <div className="alert error-message">{error}</div>}
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="role">Se connecter en tant que:</label>
+            <select
+              className="form-control"
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="entreprise">Entreprise</option>
+              <option value="chefdefiliere">Chef de Filière</option>
+              <option value="etudiant">Etudiant</option>
+              <option value="gestionnaire">Gestionnaire</option>
+            </select>
+          </div>
+          <button type="submit" className="btn login-btn">
+            Se connecter
+          </button>
+        </form>
       </div>
     </div>
   );
 };
-
 export default LoginPage;

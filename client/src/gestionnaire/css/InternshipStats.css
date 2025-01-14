@@ -1,0 +1,36 @@
+.chart-wrapper {
+    padding: 20px;
+    background: #f9f9f9; /* Light gray for better contrast */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.chart-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #4a4a4a; /* Darker gray for better text visibility */
+    margin-bottom: 20px;
+}
+
+.recharts-bar-rectangle {
+    stroke: #4a4a4a; /* Add a border to bars for visibility */
+    stroke-width: 1px;
+}
+.pie-chart-wrapper {
+    background: #f9f9f9; /* Light background for better contrast */
+    border-radius: 10px; /* Rounded corners for a polished look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 20px auto; /* Center the box horizontally and add spacing */
+    margin-right: 100px;
+    padding: 20px; /* Add padding for better spacing */
+  }
+  
+  .pie-chart-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+  }
+  

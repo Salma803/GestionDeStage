@@ -57,13 +57,16 @@ const ListStudents = () => {
                   value={searchFiliere}
                   onChange={(e) => setSearchFiliere(e.target.value)}
                 />
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Rechercher par Stage Trouvé"
-                  value={searchStatut}
-                  onChange={(e) => setSearchStatut(e.target.value)}
-                />
+                
+              <select
+                className="form-control"
+                value={searchStatut}
+                onChange={(e) => setSearchStatut(e.target.value)}
+              >
+                <option value="">Rechercher par Stage Trouvé</option>
+                <option value="true">Oui</option>
+                <option value="false">Non</option>
+              </select>
               </div>
               <table className="table table-bordered table-striped">
                 <thead>
@@ -105,7 +108,7 @@ const ListStudents = () => {
                       </td>
                       <td>{student.Filiere_Etudiant}</td>
                       <td>{student.Statut_Etudiant}</td>
-                      <td>{student.Statut_Recherche ? "non" : "oui"}</td>
+                      <td>{student.Statut_Recherche === 'false' ? "non" : "oui"}</td>
                       <td>
                         <button
                           className="btn btn-warning me-2"

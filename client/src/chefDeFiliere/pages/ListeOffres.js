@@ -95,6 +95,8 @@ const ListeOffres = () => {
 
       setEditingOfferId(null); // Exit editing mode
       alert(`Offer ${status_flag} successfully!`);
+      window.location.reload();
+
     } catch (error) {
       console.error("Error flagging offer:", error);
       alert("Failed to flag offer.");
@@ -145,20 +147,26 @@ const ListeOffres = () => {
                       backgroundColor:
                         flags[offer.ID_Offre].Status_Flag === "approved"
                           ? "#d4edda" // Light green for approved
-                          : "#f8d7da", // Light red for rejected
+                          : flags[offer.ID_Offre].Status_Flag === "rejected"
+                          ? "#f8d7da" // Light red for rejected
+                          : "#fff", // Default background color
                       color:
                         flags[offer.ID_Offre].Status_Flag === "approved"
                           ? "#155724" // Dark green text for approved
-                          : "#721c24", // Dark red text for rejected
+                          : flags[offer.ID_Offre].Status_Flag === "rejected"
+                          ? "#721c24" // Dark red text for rejected
+                          : "#000", // Default text color
                       border: `1px solid ${flags[offer.ID_Offre].Status_Flag === "approved"
                         ? "#c3e6cb" // Green border for approved
-                        : "#f5c6cb" // Red border for rejected
+                        : flags[offer.ID_Offre].Status_Flag === "rejected"
+                        ? "#f5c6cb" // Red border for rejected
+                        : "#ccc" // Default border color
                         }`,
                     }}
                   >
                     <p>
                       <strong>Décision du flag:</strong>{" "}
-                      {flags[offer.ID_Offre].Status_Flag === "approved" ? "Recommandé" : "Rejeté"}
+                      {flags[offer.ID_Offre].Status_Flag === "approved"  ? "Recommandé" : flags[offer.ID_Offre].Status_Flag === "rejected" ? "Rejeté" : "En attente"}
                     </p>
                     <p>
                       <strong>Commentaire:</strong>{" "}
@@ -200,7 +208,7 @@ const ListeOffres = () => {
                     {flags[offer.ID_Offre]?.Status_Flag === "approved"
                       ? "Changer Recommandation"
                       : flags[offer.ID_Offre]?.Status_Flag === "rejected"
-                        ? "Change Rejection"
+                        ? "Changer Rejet"
                         : "Flagger cette offre"}
                   </button>
                 )}

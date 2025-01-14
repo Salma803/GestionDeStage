@@ -154,7 +154,7 @@ const CreerOffre = () => {
         </Form.Group>
         
         <Button variant="success" type="submit">
-          Create Offer
+          Créer l'offre
         </Button>
       </Form>
     </Container>

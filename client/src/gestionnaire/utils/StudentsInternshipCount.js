@@ -9,7 +9,7 @@ function StudentsInternshipCount() {
         const fetchstudentWithInternshipsCount = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/gestionnaire/statistics');
-                setstudentWithInternshipsCount(response.data.studentsWithInternships);
+                setstudentWithInternshipsCount(response.data.totalInternships);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching gift card count:', error);
@@ -28,7 +28,7 @@ function StudentsInternshipCount() {
         <div className="small-box bg-green">
             <div className="inner">
                 <h3>{studentWithInternshipsCount}</h3>
-                <p>Students with Internships</p>
+                <p>Nombre total de stages</p>
             </div>
             <div className="icon">
                 <i className="ion ion-checkmark" />

@@ -28,7 +28,7 @@ function StudentsCount() {
         <div className="small-box bg-yellow">
             <div className="inner">
                 <h3>{studentCount}</h3>
-                <p>Students</p>
+                <p>Etudiants</p>
             </div>
             <div className="icon">
                 <i className="ion ion-person" />

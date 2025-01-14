@@ -28,7 +28,7 @@ function OffersCount() {
         <div className="small-box bg-gray">
             <div className="inner">
                 <h3>{offerCount}</h3>
-                <p>Offers</p>
+                <p>Offres</p>
             </div>
             <div className="icon">
                 <i className="ion ion-ios-briefcase" />

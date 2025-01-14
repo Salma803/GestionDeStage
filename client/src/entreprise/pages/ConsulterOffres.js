@@ -159,22 +159,22 @@ const CompanyOffers = () => {
                         <td>{offer.Tuteur || "N/A"}</td>
                         <td>{offer.Keywords_Offre || "N/A"}</td>
                         <td>
-                          <button
-                            className="btn btn-info"
-                            onClick={() =>
-                              navigate(`/entreprise/candidatures/${offer.ID_Offre}`)
-                            }
-                          >
-                            Voir Les Candidatures
-                          </button>
-                          {offer.Status_Offre !== "closed" && (
-                            <button
-                              className="btn btn-danger ml-2"
-                              onClick={() => closeOffer(offer.ID_Offre)}
-                            >
-                              Fermer l'offre
-                            </button>
-                          )}
+                        <div className="d-flex justify-content-start align-items-center gap-2 mt-2">
+  <button
+    className="btn btn-info"
+    onClick={() => navigate(`/entreprise/candidatures/${offer.ID_Offre}`)}
+  >
+    Voir Les Candidatures
+  </button>
+  {offer.Status_Offre !== "closed" && (
+    <button
+      className="btn btn-danger"
+      onClick={() => closeOffer(offer.ID_Offre)}
+    >
+      Fermer l'offre
+    </button>
+  )}
+</div>
                         </td>
                       </tr>
                     ))}

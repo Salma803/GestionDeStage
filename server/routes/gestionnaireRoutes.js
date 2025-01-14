@@ -2,11 +2,13 @@ const express = require('express');
 const multer = require('multer');
 const csvParser = require('csv-parser');
 const jwt = require('jsonwebtoken');
-const { Gestionnaire, Etudiant, ChefFiliere, Entreprise, Offre, Stage } = require('../models');  // Import models
+const { Gestionnaire, Etudiant,db, ChefFiliere, Entreprise, Offre, Stage } = require('../models');  // Import models
 const { validateToken } = require('../middlewares/AuthMiddleware');
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const Sequelize = require('sequelize')
+
 
 const router = express.Router();
 
@@ -698,15 +700,31 @@ router.get('/entreprises', async (req, res) => {
 /* Route to get student statistics for the Gestionnaire*/
 router.get('/statistics', async (req, res) => {
   try {
-
+    // Count total offers and companies
     const totalOffers = await Offre.count();
     const totalCompanys = await Entreprise.count();
-    // Query the database for statistics
-    const totalStudents = await Etudiant.count();
-    /*const totalInternships = await Internship.count();
-    const studentsWithInternships = await Student.count({ where: { hasInternship: true } });*/
-    const totalInternships = 0;
-    const studentsWithInternships = 0;
+
+    // Count total students who are not deleted and are active
+    const totalStudents = await Etudiant.count({
+      where: {
+        Supprimé_Etudiant: 'false',
+        Statut_Etudiant: 'en cours',
+      },
+    });
+
+    // Count total internships
+    const totalInternships = await Stage.count();
+
+    // Count students with internships
+    const studentsWithInternships = await Etudiant.count({
+      where: {
+        Statut_Recherche: 'true',
+        Statut_Etudiant: 'en cours',
+      },
+    });
+
+    // Calculate students without internships
+    const studentsWithoutInternships = totalStudents - studentsWithInternships;
 
     // Send the statistics as a response
     res.json({
@@ -715,12 +733,84 @@ router.get('/statistics', async (req, res) => {
       totalStudents,
       totalInternships,
       studentsWithInternships,
+      studentsWithoutInternships,
     });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
   }
 });
+
+router.get('/internship-stats', async (req, res) => {
+  try {
+    // Count total students who are not deleted and are active
+    const totalStudents = await Etudiant.count({
+      where: {
+        Supprimé_Etudiant: 'false',
+        Statut_Etudiant: 'en cours',
+      },
+    });
+
+    // Count students with internships
+    const studentsWithInternships = await Etudiant.count({
+      where: {
+        Statut_Recherche: 'true',
+        Statut_Etudiant: 'en cours',
+      },
+    });
+
+    // Calculate students without internships
+    const studentsWithoutInternships = totalStudents - studentsWithInternships;
+
+    // Structure the data for the pie chart
+    const data = [
+      { name: 'With Internships', value: studentsWithInternships },
+      { name: 'Without Internships', value: studentsWithoutInternships },
+    ];
+
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
+
+
+
+// Route: Get entreprises and their stage counts
+router.get('/internships-per-company', async (req, res) => {
+  try {
+    // Get all entreprises
+    const entreprises = await Entreprise.findAll({
+      attributes: ['ID_Entreprise', 'Nom_Entreprise', 'Adresse_Entreprise', 'Tel_Entreprise', 'Email_Entreprise'],
+    });
+
+    // Fetch stage counts for each entreprise
+    const results = await Promise.all(
+      entreprises.map(async (entreprise) => {
+        // Count stages where Nom_Entreprise matches
+        const stageCount = await Stage.count({
+          where: { Nom_Entreprise: entreprise.Nom_Entreprise },
+        });
+
+        return {
+          
+          Nom_Entreprise: entreprise.Nom_Entreprise,
+          StageCount: stageCount,
+        };
+      })
+    );
+
+    res.status(200).json(results); // Send results as JSON
+  } catch (error) {
+    console.error('Error fetching entreprise stage counts:', error);
+    res.status(500).json({ error: 'An error occurred while fetching data.' });
+  }
+});
+
+
+
+
 
 router.get('/me', validateToken, (req, res) => {
   // req.user contains decoded token information

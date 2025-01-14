@@ -3,6 +3,11 @@ import GestionnaireHome from "./gestionnaire/pages/GestionnaireHome";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
+//Landing page
+import LandingPage from "./LandingPage/LandingPage";
+
+
 import CreateStudent from "./gestionnaire/pages/CreateStudent";
 import CreateEntreprise from "./gestionnaire/pages/CreateEntreprise";
 import CreateChefFiliere from "./gestionnaire/pages/CreateChefFiliere";
@@ -54,6 +59,9 @@ function App() {
         </Helmet>
         <Router>
           <Routes>
+
+            {/* Landing Page */}
+            <Route path="/" element={<LandingPage />} />
             {/* Gestionnaire routes */}
             <Route path="/gestionnaire/home" element={<GestionnaireHome />} />
             <Route path="/gestionnaire/createStudent" element={<CreateStudent />} />

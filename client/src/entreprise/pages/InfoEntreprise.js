@@ -97,7 +97,7 @@ const InfoEntreprise = () => {
       setConfirmPassword("");
       setShowPasswordForm(false); // Masquer le formulaire de mot de passe après succès
     } catch (error) {
-      alert("Erreur lors de la mise à jour du mot de passe.");
+      alert("Le mot de passe entré ne correspond pas au mot de passe actuel.");
       console.error("Erreur lors de la mise à jour du mot de passe :", error);
       setCurrentPassword("");
       setNewPassword("");

@@ -28,7 +28,7 @@ function CompanyCount() {
         <div className="small-box bg-yellow">
             <div className="inner">
                 <h3>{companyCount}</h3>
-                <p>Companies</p>
+                <p>Entreprises</p>
             </div>
             <div className="icon">
                 <i className="ion ion-ios-briefcase" />

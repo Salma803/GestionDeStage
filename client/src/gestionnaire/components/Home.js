@@ -5,6 +5,8 @@ import StudentsCount from '../utils/StudentsCount';
 import CompanyCount from '../utils/CompanyCount';
 import OffersCount from '../utils/OffersCount';
 import StudentsInternshipCount from '../utils/StudentsInternshipCount';
+import InternshipStatsPieChart from '../utils/InternshipStatsPieChar';
+import InternshipStats from '../utils/InternshipStats';
 
 function Home() {
   return (
@@ -69,34 +71,46 @@ function Home() {
       </div>
       {/* /.row */}
       {/* Main row */}
-      <div className="row">
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
         {/* Left col */}
-        <section className="col-lg-7 connectedSortable">
           
+        <section className="col-lg-5 connectedSortable">
+        <div >
+            <div className="card-header border-0">
+              <h3 className="card-title">
+                <i className="far fa-chart-bar mr-2" />
+                Nombre de Stages par Entreprise
+              </h3>
+              {/* tools card */}
+              
+              {/* /. tools */}
+            </div>
+            <InternshipStats/>
+          </div>
+        </section>
         
           
           
           
            
-</section>
-          <div className="card bg-white">
+
+
+<section className="col-lg-5 connectedSortable">
+        <div >
             <div className="card-header border-0">
               <h3 className="card-title">
-                <i className="far fa-calendar-alt mr-2" />
-                Calendar
+                <i className="fas fa-chart-pie mr-2" />
+                Statistiques des Stages
               </h3>
               {/* tools card */}
-              <div className="card-tools">
-                {/* button with a dropdown */}
-                
-                <button type="button" className="btn btn-white btn-sm" >
-                  
-                </button>
-              </div>
+              
               {/* /. tools */}
             </div>
-            <DashboardCalendar/>
+            <InternshipStatsPieChart/>
           </div>
+        </section>
+        
+          
       </div>
     </div>
     </div>
