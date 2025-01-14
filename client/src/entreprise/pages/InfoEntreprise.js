@@ -8,19 +8,20 @@ import UseAuth from "../hooks/UseAuth";
 const InfoEntreprise = () => {
   const isAuthenticated = UseAuth();
 
-  const [cdfId, setCdfId] = useState(null); // Store the Entreprise ID
-  const [Entreprise, setEntreprise] = useState(null); // Store Entreprise details
-  const [error, setError] = useState(null); // Store errors
-  const [loading, setLoading] = useState(true); // Loading state
+  const [cdfId, setCdfId] = useState(null); // Stocker l'ID de l'Entreprise
+  const [Entreprise, setEntreprise] = useState(null); // Stocker les détails de l'Entreprise
+  const [error, setError] = useState(null); // Stocker les erreurs
+  const [loading, setLoading] = useState(true); // État de chargement
 
-  // State for password change
+  // État pour le changement de mot de passe
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPasswordForm, setShowPasswordForm] = useState(false); // Basculer la visibilité du formulaire de mot de passe
 
-  // Step 1: Fetch the user data and retrieve the ID
+  // Étape 1 : Récupérer les données de l'utilisateur et l'ID
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -29,10 +30,10 @@ const InfoEntreprise = () => {
             accessToken: sessionStorage.getItem("accessToken"),
           },
         });
-        setCdfId(response.data.ID_Entreprise); // Save the retrieved ID
+        setCdfId(response.data.ID_Entreprise); // Enregistrer l'ID récupéré
       } catch (error) {
-        setError("Failed to fetch user data.");
-        console.error("Error fetching user data:", error);
+        setError("Échec de la récupération des données utilisateur.");
+        console.error("Erreur lors de la récupération des données utilisateur :", error);
       } finally {
         setLoading(false);
       }
@@ -41,23 +42,23 @@ const InfoEntreprise = () => {
     fetchUserData();
   }, []);
 
-  // Step 2: Fetch Entreprise details once the ID is available
+  // Étape 2 : Récupérer les détails de l'Entreprise une fois l'ID disponible
   useEffect(() => {
     if (cdfId) {
       const fetchEntrepriseInfo = async () => {
-        setLoading(true); // Set loading state
+        setLoading(true); // Définir l'état de chargement
         try {
           const response = await axios.get(`http://localhost:3001/entreprise/find/${cdfId}`, {
             headers: {
               accessToken: sessionStorage.getItem("accessToken"),
             },
           });
-          setEntreprise(response.data); // Save Entreprise details
+          setEntreprise(response.data); // Enregistrer les détails de l'Entreprise
         } catch (err) {
-          setError("Failed to fetch Entreprise details.");
-          console.error("Error fetching Entreprise:", err);
+          setError("Échec de la récupération des détails de l'Entreprise.");
+          console.error("Erreur lors de la récupération de l'Entreprise :", err);
         } finally {
-          setLoading(false); // End loading state
+          setLoading(false); // Fin de l'état de chargement
         }
       };
 
@@ -65,7 +66,7 @@ const InfoEntreprise = () => {
     }
   }, [cdfId]);
 
-  // Handle password change
+  // Gérer le changement de mot de passe
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
@@ -94,9 +95,10 @@ const InfoEntreprise = () => {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setShowPasswordForm(false); // Masquer le formulaire de mot de passe après succès
     } catch (error) {
       alert("Erreur lors de la mise à jour du mot de passe.");
-      console.error("Error updating password:", error);
+      console.error("Erreur lors de la mise à jour du mot de passe :", error);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -111,62 +113,82 @@ const InfoEntreprise = () => {
         <main className="offers-main">
           <div
             className="container my-5"
-            style={{ minHeight: "1500px", maxWidth: "800px", margin: "0 auto" }}
+            style={{ minHeight: "1500px", margin: "0 auto" }}
           >
-            {loading && <p className="text-center text-muted">Loading...</p>}
+            {loading && <p className="text-center text-muted">Chargement...</p>}
             {error && <p className="text-center text-danger">{error}</p>}
             {!loading && !error && !Entreprise && (
-              <p className="text-center text-warning">No data found.</p>
+              <p className="text-center text-warning">Aucune donnée trouvée.</p>
             )}
 
             {Entreprise && (
               <div style={{ marginLeft: "200px" }} className="offer-card">
                 <h2 className="offer-title mt-4">
-                  {Entreprise.Nom_Entreprise || "No Name Available"}
+                  {Entreprise.Nom_Entreprise || "Nom non disponible"}
                 </h2>
                 <p>
-                  <strong>Email:</strong> {Entreprise.Email_Entreprise}
+                  <strong>Email :</strong> {Entreprise.Email_Entreprise}
                 </p>
                 <p>
-                  <strong>Téléphone:</strong> {Entreprise.Tel_Entreprise}
+                  <strong>Téléphone :</strong> {Entreprise.Tel_Entreprise}
                 </p>
                 <p>
-                  <strong>Adresse:</strong> {Entreprise.Adresse_Entreprise}
+                  <strong>Adresse :</strong> {Entreprise.Adresse_Entreprise}
                 </p>
 
-                <h2>Change Your Password</h2>
-                <form onSubmit={handlePasswordChange}>
-                  <div>
-                    <label>Current Password</label>
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      required
-                    />
+                {!showPasswordForm && (
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => setShowPasswordForm(true)}
+                  >
+                    Changer le mot de passe
+                  </button>
+                )}
+
+                {showPasswordForm && (
+                  <div className="mt-4">
+                    <strong style={{color:'InfoText'}}>Changer votre mot de passe</strong>
+                    <form onSubmit={handlePasswordChange}>
+                      <div>
+                        <label>MDP actuel</label>
+                        <input
+                          type="password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Nouveau MDP</label>
+                        <input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Confirmer le nouveau MDP</label>
+                        <input
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      {passwordError && <p className="error-message">{passwordError}</p>}
+                      {successMessage && <p className="success-message">{successMessage}</p>}
+                      <button className="btn btn-success" type="submit">Changer MDP</button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary "
+                        onClick={() => setShowPasswordForm(false)}
+                      >
+                        Annuler
+                      </button>
+                    </form>
                   </div>
-                  <div>
-                    <label>New Password</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label>Confirm New Password</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  {passwordError && <p className="error-message">{passwordError}</p>}
-                  {successMessage && <p className="success-message">{successMessage}</p>}
-                  <button type="submit">Update Password</button>
-                </form>
+                )}
               </div>
             )}
           </div>

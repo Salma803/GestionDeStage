@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import UseAuth from "../hooks/UseAuth";
+import SideNav from '../components/SideNav'; // Assuming you have a SideNav component
+import Header from '../components/Header'; // Assuming you have a Header component
+
 
 const ListInternships = () => {
   const isAuthenticated = UseAuth();
@@ -64,66 +67,77 @@ const ListInternships = () => {
   }
 
   return (
-    <div>
-      <h1>Liste des Stages</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>ID Stage</th>
-            <th>ID Étudiant</th>
-            <th>Nom Étudiant</th>
-            <th>Date de Naissance</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Filière</th>
-            <th>Année</th>
-            <th>Nom de l'Entreprise</th>
-            <th>Adresse de l'Entreprise</th>
-            <th>Téléphone de l'Entreprise</th>
-            <th>Email de l'Entreprise</th>
-            <th>Titre de l'Offre</th>
-            <th>Description de l'Offre</th>
-            <th>Durée</th>
-            <th>Période</th>
-            <th>Tuteur</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {internships.map((stage) => (
-            <tr key={stage.ID_Stage}>
-              <td>{stage.ID_Stage}</td>
-              <td>{stage.ID_Etudiant}</td>
-              <td>
-                {stage.Prenom_Etudiant} {stage.Nom_Etudiant}
-              </td>
-              <td>{stage.Date_Naissance_Etudiant}</td>
-              <td>{stage.Email_Etudiant}</td>
-              <td>{stage.Tel_Etudiant}</td>
-              <td>{stage.Filiere_Etudiant}</td>
-              <td>{stage.Annee_Etudiant}</td>
-              <td>{stage.Nom_Entreprise}</td>
-              <td>{stage.Adresse_Entreprise}</td>
-              <td>{stage.Tel_Entreprise}</td>
-              <td>{stage.Email_Entreprise}</td>
-              <td>{stage.Titre_Offre}</td>
-              <td>{stage.Description_Offre}</td>
-              <td>{stage.Durée}</td>
-              <td>{stage.Période}</td>
-              <td>{stage.Tuteur}</td>
-              <td>
-                <button
-                  onClick={() => handleGenerateConvention(stage.ID_Stage)}
-                >
-                  Générer Convention
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <div className="d-flex">
+      <SideNav />
+      <div className="main-content w-100">
+      <Header />
+
+        <div style={{ margin:'10px',padding: '80px' }}>
+              
+              {/* Search Bar */}
+              
+              
+              {/* Table */}
+              <table className="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>ID Stage</th>
+                    <th>ID Étudiant</th>
+                    <th>Nom Étudiant</th>
+                    <th>Date de Naissance</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Filière</th>
+                    <th>Année</th>
+                    <th>Nom de l'Entreprise</th>
+                    <th>Adresse de l'Entreprise</th>
+                    <th>Téléphone de l'Entreprise</th>
+                    <th>Email de l'Entreprise</th>
+                    <th>Titre de l'Offre</th>
+                    <th>Description de l'Offre</th>
+                    <th>Durée</th>
+                    <th>Période</th>
+                    <th>Tuteur</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {internships.map((stage) => (
+                    <tr key={stage.ID_Stage}>
+                      <td>{stage.ID_Stage}</td>
+                      <td>{stage.ID_Etudiant}</td>
+                      <td>{`${stage.Prenom_Etudiant} ${stage.Nom_Etudiant}`}</td>
+                      <td>{stage.Date_Naissance_Etudiant}</td>
+                      <td>{stage.Email_Etudiant}</td>
+                      <td>{stage.Tel_Etudiant}</td>
+                      <td>{stage.Filiere_Etudiant}</td>
+                      <td>{stage.Annee_Etudiant}</td>
+                      <td>{stage.Nom_Entreprise}</td>
+                      <td>{stage.Adresse_Entreprise}</td>
+                      <td>{stage.Tel_Entreprise}</td>
+                      <td>{stage.Email_Entreprise}</td>
+                      <td>{stage.Titre_Offre}</td>
+                      <td>{stage.Description_Offre}</td>
+                      <td>{stage.Durée}</td>
+                      <td>{stage.Période}</td>
+                      <td>{stage.Tuteur}</td>
+                      <td>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleGenerateConvention(stage.ID_Stage)}
+                        >
+                          Générer Convention
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
   );
 };
+
 
 export default ListInternships;

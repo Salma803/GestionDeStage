@@ -133,10 +133,10 @@ const StudentOffers = () => {
             </div>
 
             <div className="d-flex justify-content-between mb-3">
-              <button className="btn btn-outline-danger" onClick={handleSearch}>
+              <button className="btn btn-success" onClick={handleSearch}>
                 Rechercher
               </button>
-              <button className="btn btn-outline-secondary" onClick={handleShowAll}>
+              <button className="btn btn-secondary" onClick={handleShowAll}>
                 Afficher tout
               </button>
             </div>
@@ -157,7 +157,7 @@ const StudentOffers = () => {
                       <td>{offer.Description_Offre}</td>
                       <td>
                         <button
-                          className="btn btn-outline-danger"
+                          className="btn btn-info"
                           onClick={() => handleViewOffer(offer.ID_Offre)}
                         >
                           Voir Offre

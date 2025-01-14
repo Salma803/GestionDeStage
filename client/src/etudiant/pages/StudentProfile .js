@@ -19,6 +19,7 @@ const StudentProfile = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [showPasswordForm, setShowPasswordForm] = useState(false); // Toggle password form visibility
 
   useEffect(() => {
     // Fetch student profile data
@@ -30,7 +31,6 @@ const StudentProfile = () => {
       })
       .then((response) => {
         setStudent(response.data);
-        // Assuming the CV file name is stored in 'CV_Etudiant' and you need to add the full URL path
         setCvLink(response.data.CV_Etudiant ? `http://localhost:3001/uploads/cvs/${response.data.CV_Etudiant}` : null);
         setLoading(false);
       })
@@ -75,7 +75,6 @@ const StudentProfile = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
-    // Check if the new passwords match
     if (newPassword !== confirmPassword) {
       alert("Les mots de passe ne correspondent pas.");
       setPasswordSuccess("");
@@ -88,7 +87,6 @@ const StudentProfile = () => {
     setPasswordError("");
 
     try {
-      // Assuming the student ID is stored in student.ID_Etudiant
       const response = await axios.put(
         `http://localhost:3001/etudiant/updatePassword/${student.ID_Etudiant}`,
         { currentPassword, newPassword },
@@ -103,9 +101,10 @@ const StudentProfile = () => {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setPasswordSuccess("Mot de passe mis à jour avec succès.");
     } catch (error) {
       alert("Erreur lors de la mise à jour du mot de passe.");
-      setPasswordSuccess("");
+      setPasswordError("Erreur lors de la mise à jour du mot de passe.");
       console.error("Error updating password:", error);
       setCurrentPassword("");
       setNewPassword("");
@@ -127,7 +126,7 @@ const StudentProfile = () => {
       <div className="content-area">
         <Header />
         <main className="offers-main">
-          <div className="container my-5" style={{ minHeight:"1500px", maxWidth: "800px", margin: "0 auto" }}>
+          <div className="container my-5" style={{ minHeight: "1500px", maxWidth: "800px", margin: "0 auto" }}>
             <div className="card p-4 shadow">
               <div className="mb-4">
                 <p><strong>Nom:</strong> {student?.Nom_Etudiant} {student?.Prenom_Etudiant}</p>
@@ -138,7 +137,7 @@ const StudentProfile = () => {
                 <p><strong>Année:</strong> {student?.Annee_Etudiant}</p>
                 <p><strong>Stage Trouvé :</strong> {student?.Statut_Recherche === 'false' ? 'Non' : 'Oui'}</p>
               </div>
-              
+
               <strong>Votre CV: </strong>
               {cvLink ? (
                 <a href={cvLink} target="_blank" rel="noopener noreferrer">
@@ -153,43 +152,58 @@ const StudentProfile = () => {
                 {successMessage && <p className="text-success">{successMessage}</p>}
                 {error && <p className="text-danger">{error}</p>}
                 <input type="file" className="form-control mb-2" onChange={handleFileChange} />
-                <button className="btn btn-outline-primary" onClick={handleFileUpload}>Télécharger CV</button>
+                <button className="btn btn-primary" onClick={handleFileUpload}>Télécharger CV</button>
               </div>
 
               <div className="mt-4">
-                <h2>Change Your Password</h2>
-                <form onSubmit={handlePasswordChange}>
+                {!showPasswordForm ? (
+                  <button className="btn btn-primary" onClick={() => setShowPasswordForm(true)}>
+                    Change Your Password
+                  </button>
+                ) : (
                   <div>
-                    <label>Current Password</label>
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      required
-                    />
+                    <h2>Change Your Password</h2>
+                    <form onSubmit={handlePasswordChange}>
+                      <div>
+                        <label>Current Password</label>
+                        <input
+                          type="password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>New Password</label>
+                        <input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Confirm New Password</label>
+                        <input
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      {passwordError && <p className="text-danger">{passwordError}</p>}
+                      {passwordSuccess && <p className="text-success">{passwordSuccess}</p>}
+                      <button type="submit" className="btn btn-primary">Update Password</button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary ms-2"
+                        onClick={() => setShowPasswordForm(false)}
+                      >
+                        Cancel
+                      </button>
+                    </form>
                   </div>
-                  <div>
-                    <label>New Password</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label>Confirm New Password</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  {passwordError && <p className="text-danger">{passwordError}</p>}
-                  {passwordSuccess && <p className="text-success">{passwordSuccess}</p>}
-                  <button type="submit" className="btn btn-outline-primary">Update Password</button>
-                </form>
+                )}
               </div>
             </div>
           </div>

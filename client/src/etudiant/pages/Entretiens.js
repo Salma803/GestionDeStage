@@ -103,7 +103,7 @@ const Entretiens = () => {
                   <td>
                     {statutRecherche === 'false' && entretien.Réponse_Etudiant !== 'accepted' && entretien.Réponse_Entreprise === 'accepted' ? (
                       <button
-                        className="btn btn-outline-success"
+                        className="btn btn-success"
                         onClick={() => handleAcceptOffer(entretien.ID_Entretien)}
                       >
                         Accepter le stage

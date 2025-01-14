@@ -79,7 +79,7 @@ const Candidatures = () => {
                   <td>{candidature.Réponse_CDF === 'accepted' ? 'Candidature acceptée par votre CDF' : 'En attente'}</td>
                   <td>
                     <button
-                      className="btn btn-outline-info"
+                      className="btn btn-info"
                       onClick={() => handleViewOffer(candidature.ID_Offre)}
                     >
                       Voir l'offre

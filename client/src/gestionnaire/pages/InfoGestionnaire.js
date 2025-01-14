@@ -11,14 +11,15 @@ const InfoGestionnaire = () => {
   const [Gestionnaire, setGestionnaire] = useState(null); // Store Gestionnaire details
   const [error, setError] = useState(null); // Store errors
   const [loading, setLoading] = useState(true); // Loading state
+  const [showPasswordForm, setShowPasswordForm] = useState(false); // Control password form visibility
   const [formData, setFormData] = useState({
-    Prenom_Gestionnaire: '',
-    Nom_Gestionnaire: '',
-    Email_Gestionnaire: '',
-    Tel_Gestionnaire: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '', // New field for confirm password
+    Prenom_Gestionnaire: "",
+    Nom_Gestionnaire: "",
+    Email_Gestionnaire: "",
+    Tel_Gestionnaire: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "", // New field for confirm password
   });
 
   // Step 1: Fetch the user data and retrieve the ID
@@ -59,9 +60,9 @@ const InfoGestionnaire = () => {
             Nom_Gestionnaire: response.data.Nom_Gestionnaire,
             Email_Gestionnaire: response.data.Email_Gestionnaire,
             Tel_Gestionnaire: response.data.Tel_Gestionnaire,
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '', // Initialize the confirm password
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "", // Initialize the confirm password
           });
         } catch (err) {
           setError("Failed to fetch Gestionnaire details.");
@@ -91,47 +92,49 @@ const InfoGestionnaire = () => {
     // Step 3: Validate that newPassword and confirmPassword match
     if (newPassword !== confirmPassword) {
       alert("Les mots de passe ne correspondent pas.");
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '' // Clear the confirm password field on error
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "", // Clear the confirm password field on error
       }));
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.put(`http://localhost:3001/gestionnaire/update/${cdfId}`, {
-        currentPassword,
-        newPassword,
-        Prenom_Gestionnaire,
-        Nom_Gestionnaire,
-        Email_Gestionnaire,
-        Tel_Gestionnaire,
-      }, {
-        headers: {
-          accessToken: sessionStorage.getItem("accessToken"),
+      const response = await axios.put(
+        `http://localhost:3001/gestionnaire/update/${cdfId}`,
+        {
+          currentPassword,
+          newPassword,
+          Prenom_Gestionnaire,
+          Nom_Gestionnaire,
+          Email_Gestionnaire,
+          Tel_Gestionnaire,
         },
-      });
+        {
+          headers: {
+            accessToken: sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
 
-      alert("Vos informations ont été mis à jour avec succès.");
-      setFormData(prevState => ({
+      alert("Vos informations ont été mises à jour avec succès.");
+      setFormData((prevState) => ({
         ...prevState,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '' // Clear the confirm password field on error
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "", // Clear the confirm password field
       }));
-
     } catch (error) {
-      alert("Erreur lors de la mise à jour du mot de passe.");
+      alert("Le mot de passe entré ne correspond pas au mot de passe actuel.");
       console.error("Error updating information or password:", error);
-      // Clear password fields on error
-      setFormData(prevState => ({
+      setFormData((prevState) => ({
         ...prevState,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '' // Clear the confirm password field on error
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "", // Clear the confirm password field
       }));
     } finally {
       setLoading(false);
@@ -144,14 +147,16 @@ const InfoGestionnaire = () => {
       <SideNav />
       <div className="content-area">
         <Header />
-        <main style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginTop: '120px',
-          backgroundColor: '#fff',
-          padding: '20px',
-        }} className="offers-main">
-
+        <main
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "120px",
+            backgroundColor: "#fff",
+            padding: "20px",
+          }}
+          className="offers-main"
+        >
           {loading && <p>Loading...</p>}
 
           {error && <p className="error-message">{error}</p>}
@@ -197,39 +202,51 @@ const InfoGestionnaire = () => {
                     onChange={handleChange}
                   />
                 </div>
+                <div className="d-flex justify-content-between align-items-center mt-3">
+  <button className="btn btn-success me-2" type="submit">Mettre à jour vos informations</button>
+  <button
+    type="button"
+    className="btn btn-primary"
+    onClick={() => setShowPasswordForm(!showPasswordForm)}
+  >
+    {showPasswordForm ? "Masquer le formulaire" : "Changer de mot de passe"}
+  </button>
+</div>
 
-                <h2>Changer de mot de passe</h2>
-                <div>
-                  <label>Mot de passe actuel:</label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    value={formData.currentPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label>Nouveau mot de passe:</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label>Confirmer le mot de passe:</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                  />
-                </div>
+                {showPasswordForm && (
+                  <>
+                    <h2>Changer de mot de passe</h2>
+                    <div>
+                      <label>Mot de passe actuel:</label>
+                      <input
+                        type="password"
+                        name="currentPassword"
+                        value={formData.currentPassword}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label>Nouveau mot de passe:</label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        value={formData.newPassword}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label>Confirmer le mot de passe:</label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </>
+                )}
 
-                <div>
-                  <button type="submit">Mettre à jour</button>
-                </div>
+                
               </form>
             </div>
           )}

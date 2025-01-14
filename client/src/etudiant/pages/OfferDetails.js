@@ -129,11 +129,11 @@ const OfferDetails = () => {
           {hasApplied ? (
               <p>vous avez déjà postulé à cette offre</p>
           ) : (
-            <button className="btn btn-outline-success" onClick={handleApply}>
+            <button className="btn btn-success" onClick={handleApply}>
               Candidater
             </button>
           )}
-          <button className="btn btn-outline-secondary" onClick={() => window.history.back()}>
+          <button className="btn btn-secondary" onClick={() => window.history.back()}>
             Retour aux Offres
           </button>
         </div>

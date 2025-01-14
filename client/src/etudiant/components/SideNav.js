@@ -43,24 +43,14 @@ function SideNav() {
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
         <li className="nav-item menu-open">
-          <a href="/etudiant/acceuil" className="nav-link active" >
+          <a href='/etudiant/home' className="nav-link active" >
             <i className="nav-icon fas fa-tachometer-alt"  />
             <p>
-              Acceuil
+            Offres
             </p>
           </a>
         </li>
-        <li className="nav-item">
-          <a href='/etudiant/home' className="nav-link">
-            <i  className="nav-icon fas fa-check" />
-            <p>
-               Offres
-              
-              <span className="badge badge-info right"></span>
-            </p>
-          </a>
-          
-        </li>
+        
         <li className="nav-item">
           <a href='/etudiant/candidatures' className="nav-link">
             <i  className="nav-icon fas fa-check" />
