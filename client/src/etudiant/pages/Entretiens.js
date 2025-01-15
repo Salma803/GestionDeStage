@@ -61,6 +61,7 @@ const Entretiens = () => {
               : entretien
           )
         );
+        window.location.reload();
         setStatutRecherche(true);
       })
       .catch((error) => {

@@ -50,6 +50,7 @@ const ListeOffres = () => {
         const response = await axios.get("http://localhost:3001/entreprise/listeOffres");
         setOffres(response.data);
       } catch (error) {
+        setOffres([]);
         console.error("Error fetching offers:", error);
       }
     };

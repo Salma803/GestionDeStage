@@ -13,7 +13,7 @@ function Page() {
       <Header/>
      <Home/>
       <SideNav/>
-      <Footer/>
+      
     </div>
   )
 }

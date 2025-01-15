@@ -50,7 +50,7 @@ const ListeCandidatures = () => {
           setLoading(false);
         })
         .catch((error) => {
-          setError("Failed to fetch candidatures.");
+          setCandidatures([]);
           setLoading(false);
         });
     }
@@ -149,6 +149,7 @@ const ListeCandidatures = () => {
               : candidature
           )
         );
+        window.location.reload();
         filterCandidatures(searchQuery, filter); // Update the filtered list after acceptance
       })
       .catch((error) => {
@@ -320,7 +321,6 @@ const ListeCandidatures = () => {
             )}
           </div>
         </main>
-        <Footer />
       </div>
     </div>
   );
