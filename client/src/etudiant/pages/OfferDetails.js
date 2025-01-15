@@ -126,12 +126,16 @@ const OfferDetails = () => {
         {status && <p className="mt-3 alert alert-info">{status}</p>}
   
         <div className="d-flex gap-2 mt-4">
-          {hasApplied ? (
-              <p>vous avez déjà postulé à cette offre</p>
+          {student && student.Statut_Recherche === 'true' ? (
+            <p >
+              Vous avez déjà un stage
+            </p>
+          ): hasApplied ? (
+            <p >
+              Vous avez déjà postulé à cette offre
+            </p>
           ) : (
-            <button className="btn btn-success" onClick={handleApply}>
-              Candidater
-            </button>
+            <button className='btn btn-success' onClick={handleApply}>candidater</button>
           )}
           <button className="btn btn-secondary" onClick={() => window.history.back()}>
             Retour aux Offres
