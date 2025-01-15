@@ -1,0 +1,19 @@
+ID_Etudiant,Nom_Etudiant,Prenom_Etudiant,Date_Naissance_Etudiant,Email_Etudiant,Tel_Etudiant,Filiere_Etudiant,Annee_Etudiant,Statut_Etudiant
+ET001,Doe,John,2001-05-20,john.doe@example.com,1234567890,GL,2A,en cours
+ET002,Smith,Jane,2000-11-15,jane.smith@example.com,0987654321,GL,3A,en cours
+ET003,Brown,Emily,2002-07-25,emily.brown@example.com,1122334455,SSE,1A,en cours
+ET004,Johnson,Michael,2001-01-10,johnson.micheal@example.com,5544332211,GD,2A,abandonné
+ET005,Williams,Patricia,2000-03-30,patricia.williams@example.com,6677889900,GL,3A,en cours
+ET006,Jones,Robert,2002-12-05,robert.jones@example.com,9988776655,SSE,2A,en cours
+ET007,Garcia,Linda,2001-09-15,linda.garcia@example.com,5566778899,2IA,2A,en cours
+ET008,Miller,David,2000-06-20,david.miller@example.com,3344556677,2IA,3A,diplomé
+ET009,Davis,Barbara,2002-04-10,barbara.davis@example.com,2233445566,GD,2A,en cours
+ET010,Martinez,James,2001-08-22,james.martinez@example.com,4455667788,IDF,3A,en cours
+ET011,Hernandez,Maria,2000-12-30,maria.hernandez@example.com,7788990011,IDSIT,2A,en cours
+ET012,Lopez,Christopher,2002-03-18,christopher.lopez@example.com,8899001122,SSI,1A,en cours
+ET013,Wilson,Anna,2001-04-12,anna.wilson@example.com,3344667788,GL,2A,en cours
+ET014,Moore,Daniel,2000-10-05,daniel.moore@example.com,9988223344,GL,3A,en cours
+ET015,Taylor,Laura,2001-02-28,laura.taylor@example.com,7766554433,SSE,2A,en cours
+ET016,Anderson,Kevin,2002-11-11,kevin.anderson@example.com,6655443322,GD,1A,en cours
+ET017,Thomas,Jessica,2000-07-07,jessica.thomas@example.com,5544332211,2IA,3A,diplomé
+ET018,Jackson,Mark,2001-03-03,mark.jackson@example.com,4433221100,IDF,2A,en cours
